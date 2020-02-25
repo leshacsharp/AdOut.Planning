@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdOut.Planning.Common\AdOut.Planning.Common.csproj" />
+    <ProjectReference Include="..\AdOut.Planning.DataProvider\AdOut.Planning.DataProvider.csproj" />
+    <ProjectReference Include="..\AdOut.Planning.Model\AdOut.Planning.Model.csproj" />
+  </ItemGroup>
+
+</Project>
