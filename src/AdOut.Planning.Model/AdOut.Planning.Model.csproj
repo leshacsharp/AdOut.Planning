@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Api\" />
     <Folder Include="Database\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Api\" />
   </ItemGroup>
 
 </Project>
