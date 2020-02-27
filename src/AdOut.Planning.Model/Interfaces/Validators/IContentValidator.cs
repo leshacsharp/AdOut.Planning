@@ -1,10 +1,11 @@
 ﻿using AdOut.Planning.Model.Classes;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AdOut.Planning.Model.Interfaces.Validators
 {
     public interface IContentValidator
     {
-        ContentValidationResult Valid(Stream content);
+        Task<ContentValidationResult> ValidAsync(Stream content);
     }
 }
