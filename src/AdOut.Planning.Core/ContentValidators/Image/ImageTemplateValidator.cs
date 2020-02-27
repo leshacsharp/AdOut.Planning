@@ -2,19 +2,26 @@
 using AdOut.Planning.Model.Interfaces.Validators;
 using AdOut.Planning.Model.Enum;
 using System.IO;
+using System;
+using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ContentValidators
+namespace AdOut.Planning.Core.ContentValidators.Image
 {
-    public abstract class ImageBaseValidator : IContentValidator
+    public abstract class ImageTemplateValidator : IContentValidator
     {
-        public ContentValidationResult Valid(Stream content)
+        public async Task<ContentValidationResult> ValidAsync(Stream content)
         {
-            var isCorrectFormat = IsCorrectFormat(content);
-            var isCorrectSize = IsCorrectSize(content);
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+
+            var isCorrectFormatTask = IsCorrectFormatAsync(content);
+            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+
+            await Task.WhenAll(isCorrectFormatTask, isCorrectSizeTask);
 
             var validationResult = new ContentValidationResult();
-            if (!isCorrectFormat)
+            if (!isCorrectFormatTask.Result)
             {
                 var formatError = new ContentError()
                 {
@@ -25,7 +32,7 @@ namespace AdOut.Planning.Core.ContentValidators
                 validationResult.Errors.Add(formatError);
             }
 
-            if(!isCorrectSize)
+            if(!isCorrectSizeTask.Result)
             {
                 var sizeError = new ContentError()
                 {
@@ -39,7 +46,8 @@ namespace AdOut.Planning.Core.ContentValidators
             return validationResult;
         }
 
-        protected abstract bool IsCorrectFormat(Stream content);
-        protected abstract bool IsCorrectSize(Stream content);
+        protected abstract Task<bool> IsCorrectFormatAsync(Stream content);
+        protected abstract Task<bool> IsCorrectDimensionAsync(Stream content);
+        protected abstract Task<bool> IsCorrectSizeAsync(Stream content);
     }
 }

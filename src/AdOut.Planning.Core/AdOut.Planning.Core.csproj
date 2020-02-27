@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AdOut.Planning.Common\AdOut.Planning.Common.csproj" />
     <ProjectReference Include="..\AdOut.Planning.DataProvider\AdOut.Planning.DataProvider.csproj" />
     <ProjectReference Include="..\AdOut.Planning.Model\AdOut.Planning.Model.csproj" />

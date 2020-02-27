@@ -1,21 +1,28 @@
 ﻿using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Validators;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ContentValidators
+namespace AdOut.Planning.Core.ContentValidators.Video
 {
     public abstract class VideoBaseValidator : IContentValidator
     {
-        public ContentValidationResult Valid(Stream content)
+        public async Task<ContentValidationResult> ValidAsync(Stream content)
         {
-            var isCorrectFormat = IsCorrectFormat(content);
-            var isCorrectSize = IsCorrectSize(content);
-            var isCorrectDuration = IsCorrectDuration(content);
+            if (content == null)
+                throw new ArgumentNullException();
+
+            var isCorrectFormatTask = IsCorrectFormatAsync(content);
+            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+            var isCorrectDurationTask = IsCorrectDurationAsync(content);
+
+            await Task.WhenAll(isCorrectFormatTask, isCorrectSizeTask, isCorrectDurationTask);
 
             var validationResult = new ContentValidationResult();
-            if (!isCorrectFormat)
+            if (!isCorrectFormatTask.Result)
             {
                 var formatError = new ContentError()
                 {
@@ -26,7 +33,7 @@ namespace AdOut.Planning.Core.ContentValidators
                 validationResult.Errors.Add(formatError);
             }
 
-            if (!isCorrectSize)
+            if (!isCorrectSizeTask.Result)
             {
                 var sizeError = new ContentError()
                 {
@@ -37,7 +44,7 @@ namespace AdOut.Planning.Core.ContentValidators
                 validationResult.Errors.Add(sizeError);
             }
 
-            if (!isCorrectDuration)
+            if (!isCorrectDurationTask.Result)
             {
                 var durationError = new ContentError()
                 {
@@ -51,8 +58,8 @@ namespace AdOut.Planning.Core.ContentValidators
             return validationResult;
         }
 
-        protected abstract bool IsCorrectFormat(Stream content);
-        protected abstract bool IsCorrectSize(Stream content);
-        protected abstract bool IsCorrectDuration(Stream content);
+        protected abstract Task<bool> IsCorrectFormatAsync(Stream content);
+        protected abstract Task<bool> IsCorrectSizeAsync(Stream content);
+        protected abstract Task<bool> IsCorrectDurationAsync(Stream content);
     }
 }
