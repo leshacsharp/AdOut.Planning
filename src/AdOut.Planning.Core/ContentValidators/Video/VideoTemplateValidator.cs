@@ -8,29 +8,34 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.ContentValidators.Video
 {
-    public abstract class VideoBaseValidator : IContentValidator
+    public abstract class VideoTemplateValidator : IContentValidator
     {
         public async Task<ContentValidationResult> ValidAsync(Stream content)
         {
             if (content == null)
                 throw new ArgumentNullException();
 
-            var isCorrectFormatTask = IsCorrectFormatAsync(content);
+            var isCorrectFormat = await IsCorrectFormatAsync(content);
+            if (!isCorrectFormat)
+                throw new ArgumentException(ValidationMessages.NotCorrectFormat, nameof(content));
+
+            var validationResult = new ContentValidationResult();
+ 
+            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
             var isCorrectSizeTask = IsCorrectSizeAsync(content);
             var isCorrectDurationTask = IsCorrectDurationAsync(content);
 
-            await Task.WhenAll(isCorrectFormatTask, isCorrectSizeTask, isCorrectDurationTask);
+            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask, isCorrectDurationTask);
 
-            var validationResult = new ContentValidationResult();
-            if (!isCorrectFormatTask.Result)
+            if (!isCorrectDimensionTask.Result)
             {
-                var formatError = new ContentError()
+                var dimensionError = new ContentError()
                 {
-                    Code = ContentErrorCode.Format,
-                    Description = ValidationMessages.NotCorrectFormat
+                    Code = ContentErrorCode.Dimension,
+                    Description = ValidationMessages.NotCorrectDimension
                 };
 
-                validationResult.Errors.Add(formatError);
+                validationResult.Errors.Add(dimensionError);
             }
 
             if (!isCorrectSizeTask.Result)
@@ -59,7 +64,8 @@ namespace AdOut.Planning.Core.ContentValidators.Video
         }
 
         protected abstract Task<bool> IsCorrectFormatAsync(Stream content);
+        protected abstract Task<bool> IsCorrectDimensionAsync(Stream content);
         protected abstract Task<bool> IsCorrectSizeAsync(Stream content);
-        protected abstract Task<bool> IsCorrectDurationAsync(Stream content);
+        protected abstract Task<bool> IsCorrectDurationAsync(Stream content); 
     }
 }
