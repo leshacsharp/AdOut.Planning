@@ -3,7 +3,6 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
@@ -12,25 +11,10 @@ namespace AdOut.Planning.Core.ContentValidators.Image
     public abstract class ImageBaseValidator : ImageTemplateValidator
     {
         private readonly IConfigurationRepository _configurationRepository;
-        private readonly byte[] _imageSignature;
 
-        public ImageBaseValidator(IConfigurationRepository configurationRepository, byte[] imageSignature)
+        public ImageBaseValidator(IConfigurationRepository configurationRepository)
         {
             _configurationRepository = configurationRepository;
-            _imageSignature = imageSignature;
-        }
-
-        protected override async Task<bool> IsCorrectFormatAsync(Stream content)
-        {     
-            if (content.Length < _imageSignature.Length)
-            {
-                return false;
-            }
-
-            var buffer = new byte[_imageSignature.Length];
-            await content.ReadAsync(buffer, 0, buffer.Length);
-
-            return buffer.SequenceEqual(_imageSignature);
         }
 
         protected override async Task<bool> IsCorrectDimensionAsync(Stream content)

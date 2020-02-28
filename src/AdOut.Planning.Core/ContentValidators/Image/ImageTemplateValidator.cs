@@ -15,24 +15,29 @@ namespace AdOut.Planning.Core.ContentValidators.Image
             if (content == null)
                 throw new ArgumentNullException(nameof(content));
 
-            var isCorrectFormatTask = IsCorrectFormatAsync(content);
-            var isCorrectSizeTask = IsCorrectSizeAsync(content);
-
-            await Task.WhenAll(isCorrectFormatTask, isCorrectSizeTask);
+            var isCorrectFormat = await IsCorrectFormatAsync(content);
+            if (!isCorrectFormat)
+                throw new ArgumentException(ValidationMessages.NotCorrectFormat, nameof(content));
 
             var validationResult = new ContentValidationResult();
-            if (!isCorrectFormatTask.Result)
+
+            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
+            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+
+            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask);
+
+            if (!isCorrectDimensionTask.Result)
             {
-                var formatError = new ContentError()
+                var dimensionError = new ContentError()
                 {
-                    Code = ContentErrorCode.Format,
-                    Description = ValidationMessages.NotCorrectFormat
+                    Code = ContentErrorCode.Dimension,
+                    Description = ValidationMessages.NotCorrectDimension
                 };
 
-                validationResult.Errors.Add(formatError);
+                validationResult.Errors.Add(dimensionError);
             }
 
-            if(!isCorrectSizeTask.Result)
+            if (!isCorrectSizeTask.Result)
             {
                 var sizeError = new ContentError()
                 {

@@ -2,8 +2,8 @@
 {
     public enum ContentErrorCode
     {
-        Format = 100,
-        Size = 200,
+        Size = 100,
+        Dimension = 200,
         Duration = 300
     }
 }

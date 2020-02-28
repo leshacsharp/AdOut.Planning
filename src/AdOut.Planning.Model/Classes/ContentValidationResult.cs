@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Classes
 {
     public class ContentValidationResult
     {
-        public bool IsSuccessed
+        public bool IsValid
         {
             get
             {
