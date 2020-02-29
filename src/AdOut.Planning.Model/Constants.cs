@@ -17,6 +17,8 @@ namespace AdOut.Planning.Model
             public const string JPEG = ".jpeg";
             public const string JPG = ".jpg";
             public const string PNG = ".png";
+            public const string AVI = ".avi";
+            public const string MP4 = ".mp4";
         }
 
         public static class ContentSignatures

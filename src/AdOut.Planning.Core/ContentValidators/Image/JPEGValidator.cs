@@ -11,7 +11,6 @@ namespace AdOut.Planning.Core.ContentValidators.Image
         public JPEGValidator(IConfigurationRepository configurationRepository)
             : base(configurationRepository)
         {
-
         }
 
         protected override async Task<bool> IsCorrectFormatAsync(Stream content)

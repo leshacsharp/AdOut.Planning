@@ -1,15 +1,18 @@
 ﻿using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.ContentValidators.Video
 {
-    public abstract class FFmpegBaseValidator : VideoTemplateValidator
+    public abstract class FFprobeBaseValidator : VideoTemplateValidator
     {
         private readonly IConfigurationRepository _configurationRepository;
+
+        public FFprobeBaseValidator(IConfigurationRepository configurationRepository)
+        {
+            _configurationRepository = configurationRepository;
+        }
 
         protected override Task<bool> IsCorrectDimensionAsync(Stream content)
         {
