@@ -36,15 +36,19 @@ namespace AdOut.Planning.Model
 
         public static class ContentSizes
         {
-            public const int Kb = 1024;
+            public const int Kb = 1024; //bytes
             public const int Mb = Kb * 1024;
             public const int Gb = Mb * 1024;
         }
 
         public static class ConfigurationsTypes
         {
-            public const string ImageDimension = "MinImageDimension";
-            public const string ImageSize = "MaxImageSizeKb";
+            public const string MinImageDimension = "MinImageDimension";
+            public const string MinVideoDimension = "MinVideoDimension";
+            public const string MaxImageSize = "MaxImageSizeKb";
+            public const string MaxVideoSize = "MaxVideoSizeKb";
+            public const string MaxVideoDuration = "MaxVideoDuration";
+            public const string MinVideoDuration = "MinVideoDuration";
         }
     }
 }

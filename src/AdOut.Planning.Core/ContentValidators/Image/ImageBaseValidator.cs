@@ -19,7 +19,7 @@ namespace AdOut.Planning.Core.ContentValidators.Image
 
         protected override async Task<bool> IsCorrectDimensionAsync(Stream content)
         {
-            var imageDimensionConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.ImageDimension).SingleAsync();
+            var imageDimensionConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.MinImageDimension).SingleAsync();
             var dimensionParts = imageDimensionConfig.Value.Split('x', StringSplitOptions.RemoveEmptyEntries);
 
             if (dimensionParts.Length != 2)
@@ -36,7 +36,7 @@ namespace AdOut.Planning.Core.ContentValidators.Image
 
         protected override async Task<bool> IsCorrectSizeAsync(Stream content)
         {
-            var imageSizeConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.ImageSize).SingleAsync();
+            var imageSizeConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.MaxImageSize).SingleAsync();
             var maxImageSize  = int.Parse(imageSizeConfig.Value);
 
             if(content.Length != 0)
