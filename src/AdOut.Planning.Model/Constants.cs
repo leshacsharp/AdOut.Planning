@@ -41,14 +41,20 @@ namespace AdOut.Planning.Model
             public const int Gb = Mb * 1024;
         }
 
+        public static class CodecTypes
+        {
+            public const string Video = "video";
+            public const string Audio = "audio";
+        }
+
         public static class ConfigurationsTypes
         {
             public const string MinImageDimension = "MinImageDimension";
             public const string MinVideoDimension = "MinVideoDimension";
-            public const string MaxImageSize = "MaxImageSizeKb";
-            public const string MaxVideoSize = "MaxVideoSizeKb";
-            public const string MaxVideoDuration = "MaxVideoDuration";
-            public const string MinVideoDuration = "MinVideoDuration";
+            public const string MaxImageSize = "MaxImageSizeMb";
+            public const string MaxVideoSize = "MaxVideoSizeMb";
+            public const string MaxVideoDuration = "MaxVideoDurationSec";
+            public const string MinVideoDuration = "MinVideoDurationSec";
         }
     }
 }

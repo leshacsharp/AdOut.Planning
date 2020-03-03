@@ -1,6 +1,5 @@
 ﻿using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,8 +18,8 @@ namespace AdOut.Planning.Core.ContentValidators.Image
 
         protected override async Task<bool> IsCorrectDimensionAsync(Stream content)
         {
-            var imageDimensionConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.MinImageDimension).SingleAsync();
-            var dimensionParts = imageDimensionConfig.Value.Split('x', StringSplitOptions.RemoveEmptyEntries);
+            var minImageDimensionConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageDimension);
+            var dimensionParts = minImageDimensionConfig.Split('x', StringSplitOptions.RemoveEmptyEntries);
 
             if (dimensionParts.Length != 2)
                 throw new ConfigurationException("Invalid image dimesion config");
@@ -36,16 +35,11 @@ namespace AdOut.Planning.Core.ContentValidators.Image
 
         protected override async Task<bool> IsCorrectSizeAsync(Stream content)
         {
-            var imageSizeConfig = await _configurationRepository.Read(c => c.Type == ConfigurationsTypes.MaxImageSize).SingleAsync();
-            var maxImageSize  = int.Parse(imageSizeConfig.Value);
+            var maxImageSizeConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxImageSize);
+            var maxImageSizeMb  = int.Parse(maxImageSizeConfig);
 
-            if(content.Length != 0)
-            {
-                return false;
-            }
-
-            var imageSizeKb = content.Length / ContentSizes.Kb;
-            return imageSizeKb <= maxImageSize;
+            var imageSizeMb = content.Length / ContentSizes.Mb;
+            return imageSizeMb <= maxImageSizeMb;
         }
     }
 }
