@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace AdOut.Planning.Model
 {
@@ -55,6 +56,12 @@ namespace AdOut.Planning.Model
             public const string MaxVideoSize = "MaxVideoSizeMb";
             public const string MaxVideoDuration = "MaxVideoDurationSec";
             public const string MinVideoDuration = "MinVideoDurationSec";
+        }
+
+        public static class DefaultValues
+        {
+            public static Size DefaultThumbnailSize = new Size(320, 240);
+            public const int DefaultSecForVideoThumbnail = 2;        
         }
     }
 }
