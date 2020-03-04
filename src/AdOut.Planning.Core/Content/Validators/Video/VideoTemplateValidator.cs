@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ContentValidators.Video
+namespace AdOut.Planning.Core.Content.Validators.Video
 {
     public abstract class VideoTemplateValidator : IContentValidator
     {

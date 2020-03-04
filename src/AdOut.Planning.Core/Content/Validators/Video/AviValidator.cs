@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.Core.ContentValidators.Video
+namespace AdOut.Planning.Core.Content.Validators.Video
 {
-    public class AVIValidator : FFprobeBaseValidator
+    public class AviValidator : FFprobeBaseValidator
     {
-        public AVIValidator(IConfigurationRepository configurationRepository)
+        public AviValidator(IConfigurationRepository configurationRepository)
             : base(configurationRepository)
         {
         }

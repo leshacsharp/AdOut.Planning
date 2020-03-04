@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ContentHelpers
+namespace AdOut.Planning.Core.Content.Helpers
 {
     public class VideoHelper : IContentHelper
     {

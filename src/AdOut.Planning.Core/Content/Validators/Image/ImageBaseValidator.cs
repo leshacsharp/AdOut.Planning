@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ContentValidators.Image
+namespace AdOut.Planning.Core.Content.Validators.Image
 {
     public abstract class ImageBaseValidator : ImageTemplateValidator
     {

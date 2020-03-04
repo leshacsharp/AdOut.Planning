@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.Core.ContentValidators.Image
+namespace AdOut.Planning.Core.Content.Validators.Image
 {
-    public class PNGValidator : ImageBaseValidator
+    public class PngValidator : ImageBaseValidator
     {
-        public PNGValidator(IConfigurationRepository configurationRepository)
+        public PngValidator(IConfigurationRepository configurationRepository)
             : base(configurationRepository)
         {
         }
