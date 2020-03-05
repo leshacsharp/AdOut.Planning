@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Interfaces.Factories;
+﻿using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
 using static AdOut.Planning.Model.Constants;

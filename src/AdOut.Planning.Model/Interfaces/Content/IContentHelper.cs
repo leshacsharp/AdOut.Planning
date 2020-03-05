@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace AdOut.Planning.Model.Interfaces.Helpers
+namespace AdOut.Planning.Model.Interfaces.Content
 {
     public interface IContentHelper
     {

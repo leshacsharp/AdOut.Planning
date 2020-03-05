@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Interfaces.Helpers;
+﻿using AdOut.Planning.Model.Interfaces.Content;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;

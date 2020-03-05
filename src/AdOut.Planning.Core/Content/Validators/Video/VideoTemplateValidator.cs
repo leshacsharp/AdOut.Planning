@@ -1,6 +1,6 @@
 ﻿using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
-using AdOut.Planning.Model.Interfaces.Validators;
+using AdOut.Planning.Model.Interfaces.Content;
 using System;
 using System.IO;
 using System.Threading.Tasks;

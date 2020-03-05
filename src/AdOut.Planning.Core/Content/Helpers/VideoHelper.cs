@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Interfaces.Helpers;
+﻿using AdOut.Planning.Model.Interfaces.Content;
 using FFMpegCore;
 using FFMpegCore.FFMPEG;
 using System;

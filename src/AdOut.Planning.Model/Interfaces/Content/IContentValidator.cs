@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.Model.Interfaces.Validators
+namespace AdOut.Planning.Model.Interfaces.Content
 {
     public interface IContentValidator
     {

@@ -1,4 +1,4 @@
-﻿namespace AdOut.Planning.Model.Interfaces.Factories
+﻿namespace AdOut.Planning.Model.Interfaces.Content
 {
     public interface IContentComponentsProvider
     {
