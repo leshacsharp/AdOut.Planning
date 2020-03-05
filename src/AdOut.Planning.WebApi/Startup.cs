@@ -34,6 +34,8 @@ namespace AdOut.Planning.WebApi
             services.AddDataProviderModule();
             services.AddCoreModule();
 
+            //services.Configure<DbSettings>(Configuration.GetSection(nameof(DbSettings)));
+
             services.AddSwaggerGen(setup =>
             {
                 setup.SwaggerDoc("v1", new OpenApiInfo { Title = "AdOut.Planning API", Version = "v1" });
