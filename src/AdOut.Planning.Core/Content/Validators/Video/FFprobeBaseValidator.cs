@@ -64,7 +64,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
             await content.ReadAsync(videoBuffer, 0, videoBuffer.Length);
 
             var videoAnalyzer = new VideoAnalyzer();
-            var analyzerResult = videoAnalyzer.GetVideoInfo(videoBuffer);
+            var analyzerResult = await videoAnalyzer.GetVideoInfoAsync(videoBuffer);
 
             var videoStream = analyzerResult.VideoInfo.Streams.Single(s => s.CodecType == CodecTypes.Video);
             return videoStream;
