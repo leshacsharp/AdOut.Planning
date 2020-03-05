@@ -16,6 +16,9 @@ namespace AdOut.Planning.Core.Content.Storages
 
         public string GenerateFilePath(string fileExtension)
         {
+            if (fileExtension == null)
+                throw new ArgumentNullException(nameof(fileExtension));
+
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var subDirectory = _directorySeparator.GetDirectory();
             var fileName = FileHelper.GetRandomFileName();
@@ -30,6 +33,7 @@ namespace AdOut.Planning.Core.Content.Storages
             {
                 throw new ArgumentNullException(nameof(content));
             }
+
             if (filePath == null)
             {
                 throw new ArgumentNullException(nameof(filePath));
@@ -43,17 +47,29 @@ namespace AdOut.Planning.Core.Content.Storages
 
         public void DeleteFile(string filePath)
         {
+            ValidateFilePath(filePath);
+
+            File.Delete(filePath);
+        }
+
+        public Stream GetFile(string filePath)
+        {
+            ValidateFilePath(filePath);
+
+            return File.OpenRead(filePath);
+        }
+
+        private void ValidateFilePath(string filePath)
+        {
             if (filePath == null)
             {
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"File with path={filePath} was not found", filePath);
             }
-
-            File.Delete(filePath);
-        }
+        } 
     }
 }

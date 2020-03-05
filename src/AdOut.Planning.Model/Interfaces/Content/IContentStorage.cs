@@ -7,6 +7,7 @@ namespace AdOut.Planning.Model.Interfaces.Content
     {
         Task CreateFileAsync(Stream content, string filePath);
         void DeleteFile(string filePath);
+        Stream GetFile(string filePath);
         string GenerateFilePath(string fileExtension);
     }
 }
