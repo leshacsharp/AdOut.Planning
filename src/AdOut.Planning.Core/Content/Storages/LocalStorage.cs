@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Content.Storages
 {
-    public class LocalContentStorage : IContentStorage
+    public class LocalStorage : IContentStorage
     {
         private readonly IDirectoryDistributor _directorySeparator;
-        public LocalContentStorage(IDirectoryDistributor directorySeparator)
+        public LocalStorage(IDirectoryDistributor directorySeparator)
         {
             _directorySeparator = directorySeparator;
         }
@@ -17,7 +17,9 @@ namespace AdOut.Planning.Core.Content.Storages
         public string GenerateFilePath(string fileExtension)
         {
             if (fileExtension == null)
+            {
                 throw new ArgumentNullException(nameof(fileExtension));
+            }
 
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var subDirectory = _directorySeparator.GetDirectory();
@@ -27,7 +29,7 @@ namespace AdOut.Planning.Core.Content.Storages
             return fullPath;
         }
 
-        public Task CreateFileAsync(Stream content, string filePath)
+        public Task CreateObjectAsync(Stream content, string filePath)
         {
             if (content == null)
             {
@@ -39,24 +41,26 @@ namespace AdOut.Planning.Core.Content.Storages
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            using (var writer = new StreamWriter(filePath))
+            using (var fileStream = File.Create(filePath))
             {
-                return content.CopyToAsync(writer.BaseStream);
+                return content.CopyToAsync(fileStream);
             }
         }
 
-        public void DeleteFile(string filePath)
+        public Task DeleteObjectAsync(string filePath)
         {
             ValidateFilePath(filePath);
-
             File.Delete(filePath);
+
+            return Task.CompletedTask;
         }
 
-        public Stream GetFile(string filePath)
+        public Task<Stream> GetObjectAsync(string filePath)
         {
             ValidateFilePath(filePath);
+            var stream = (Stream)File.OpenRead(filePath);
 
-            return File.OpenRead(filePath);
+            return Task.FromResult(stream);
         }
 
         private void ValidateFilePath(string filePath)

@@ -5,9 +5,9 @@ namespace AdOut.Planning.Model.Interfaces.Content
 {
     public interface IContentStorage
     {
-        Task CreateFileAsync(Stream content, string filePath);
-        void DeleteFile(string filePath);
-        Stream GetFile(string filePath);
+        Task CreateObjectAsync(Stream content, string filePath);
+        Task DeleteObjectAsync(string filePath);
+        Task<Stream> GetObjectAsync(string filePath);
         string GenerateFilePath(string fileExtension);
     }
 }
