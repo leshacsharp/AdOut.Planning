@@ -2,6 +2,7 @@ using AdOut.Planning.Core.DI;
 using AdOut.Planning.Core.Settings;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.DataProvider.DI;
+using AdOut.Planning.WebApi.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,11 @@ namespace AdOut.Planning.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ExceptionFilterAttribute>();
+                options.Filters.Add<ModelStateFilterAttribute>();
+            });
 
             services.AddDbContext<PlanningContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
