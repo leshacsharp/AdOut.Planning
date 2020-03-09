@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Content.Helpers
 {
@@ -25,8 +24,7 @@ namespace AdOut.Planning.Core.Content.Helpers
             }
 
             var image = Image.FromStream(content);
-            var defultThumbnailSize = DefaultValues.DefaultThumbnailSize;
-            var thumbnail = image.GetThumbnailImage(defultThumbnailSize.Width, defultThumbnailSize.Height, null, IntPtr.Zero);
+            var thumbnail = image.GetThumbnailImage(width, height, null, IntPtr.Zero);
 
             var thumbnailStream = new MemoryStream();
             thumbnail.Save(thumbnailStream, ImageFormat.Png);

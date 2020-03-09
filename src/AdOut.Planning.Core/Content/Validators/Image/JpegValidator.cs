@@ -28,7 +28,8 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
             var endBuffer = new byte[endSignature.Length];
             var endBufferOffset = (int)content.Length - endBuffer.Length;
-            await content.ReadAsync(endBuffer, endBufferOffset, endBuffer.Length);
+            content.Seek(endBufferOffset, SeekOrigin.Begin);
+            await content.ReadAsync(endBuffer, 0, endBuffer.Length);
 
             return startSignature.SequenceEqual(startBuffer) && endSignature.SequenceEqual(endBuffer);
         }

@@ -42,7 +42,7 @@ namespace AdOut.Planning.Core.Content.Helpers
             var thumbnail = ffmpeg.Snapshot(
                 videoInfo,
                 tempFileInfo,
-                DefaultValues.DefaultThumbnailSize,
+                new System.Drawing.Size(width, height),
                 TimeSpan.FromSeconds(DefaultValues.DefaultSecForVideoThumbnail
             ));
 

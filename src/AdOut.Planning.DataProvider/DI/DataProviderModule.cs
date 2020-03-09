@@ -11,7 +11,9 @@ namespace AdOut.Planning.DataProvider.DI
         public static void AddDataProviderModule(this IServiceCollection services)
         {
             services.AddScoped<IDatabaseContext, PlanningContext>();
+            services.AddScoped<ICommitProvider, CommitProvider>();
 
+            services.AddScoped<IAdRepository, AdRepository>();
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
         }
     }

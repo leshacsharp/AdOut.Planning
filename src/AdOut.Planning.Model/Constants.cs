@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
+using AdOut.Planning.Model.Enum;
 
 namespace AdOut.Planning.Model
 {
@@ -21,6 +21,20 @@ namespace AdOut.Planning.Model
             public const string AVI = ".avi";
             public const string MP4 = ".mp4";
         }
+
+        public static List<string> AllowedExtensions = new List<string>()
+        {
+            ContentExtensions.JPEG, ContentExtensions.JPG, ContentExtensions.PNG, ContentExtensions.AVI, ContentExtensions.MP4
+        };
+
+        public static Dictionary<string, AdType> ContentTypes = new Dictionary<string, AdType>()
+        {
+            { ContentExtensions.JPEG, AdType.Image },
+            { ContentExtensions.JPG, AdType.Image },
+            { ContentExtensions.PNG, AdType.Image },
+            { ContentExtensions.AVI, AdType.Video },
+            { ContentExtensions.MP4, AdType.Video }
+        };
 
         public static class ContentSignatures
         {
@@ -48,6 +62,13 @@ namespace AdOut.Planning.Model
             public const string Audio = "audio";
         }
 
+        public static class HttpStatusCodes
+        {
+            public const int Status400BadRequest = 400;
+            public const int Status401Unauthorized = 401;
+            public const int Status403Forbidden = 403;
+        }
+
         public static class ConfigurationsTypes
         {
             public const string MinImageDimension = "MinImageDimension";
@@ -60,8 +81,10 @@ namespace AdOut.Planning.Model
 
         public static class DefaultValues
         {
-            public static Size DefaultThumbnailSize = new Size(320, 240);
-            public const int DefaultSecForVideoThumbnail = 2;        
+            public const int DefaultThumbnailWidth = 320;
+            public const int DefaultThumbnailHeight = 240;
+            public const int DefaultSecForVideoThumbnail = 2;
+            public const string DefaultThumbnailExtension = ContentExtensions.PNG;
         }
     }
 }

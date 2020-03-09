@@ -1,11 +1,9 @@
-using System;
 using AdOut.Planning.Core.DI;
+using AdOut.Planning.Core.Settings;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.DataProvider.DI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,16 +23,15 @@ namespace AdOut.Planning.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //todo: make Different connections for dev and prod configurations
+            services.AddControllers();
+
             services.AddDbContext<PlanningContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
-
-            services.AddControllers();
 
             services.AddDataProviderModule();
             services.AddCoreModule();
 
-            //services.Configure<DbSettings>(Configuration.GetSection(nameof(DbSettings)));
+            services.Configure<AWSS3Config>(Configuration.GetSection(nameof(AWSS3Config)));
 
             services.AddSwaggerGen(setup =>
             {

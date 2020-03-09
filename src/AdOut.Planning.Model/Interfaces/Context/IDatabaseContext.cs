@@ -1,5 +1,7 @@
 ﻿using AdOut.Planning.Model.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AdOut.Planning.Model.Interfaces.Context
 {
@@ -11,5 +13,6 @@ namespace AdOut.Planning.Model.Interfaces.Context
         public DbSet<Configuration> Configurations { get; set; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
