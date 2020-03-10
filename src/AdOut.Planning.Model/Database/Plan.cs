@@ -28,5 +28,6 @@ namespace AdOut.Planning.Model.Database
 
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<PlanAd> PlanAds { get; set; }
+        public virtual ICollection<PlanAdPoint> PlanAdPoints { get; set; }
     }
 }
