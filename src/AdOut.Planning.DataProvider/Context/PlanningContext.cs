@@ -15,6 +15,7 @@ namespace AdOut.Planning.DataProvider.Context
         public DbSet<Ad> Ads { get; set; }
         public DbSet<Plan> Plans { get; set; }
         public DbSet<PlanAd> PlanAds { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -10,6 +10,7 @@ namespace AdOut.Planning.Model.Interfaces.Context
         public DbSet<Ad> Ads { get; set; }
         public DbSet<Plan> Plans { get; set; }
         public DbSet<PlanAd> PlanAds { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
