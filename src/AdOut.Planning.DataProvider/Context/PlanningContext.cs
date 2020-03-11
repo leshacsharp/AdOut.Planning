@@ -9,7 +9,7 @@ namespace AdOut.Planning.DataProvider.Context
         public PlanningContext(DbContextOptions<PlanningContext> dbContextOptions)
             : base(dbContextOptions)
         {
-
+            Database.EnsureCreated();
         }
 
         public DbSet<Ad> Ads { get; set; }

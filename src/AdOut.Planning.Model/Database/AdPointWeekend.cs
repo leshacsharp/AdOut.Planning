@@ -6,7 +6,7 @@ namespace AdOut.Planning.Model.Database
     [Table("AdPointWeekends")]
     public class AdPointWeekend
     {
-        [ForeignKey(nameof(Weekend))]
+        [ForeignKey(nameof(AdPoint))]
         public int AdPointId { get; set; }
 
         [ForeignKey(nameof(Weekend))]
