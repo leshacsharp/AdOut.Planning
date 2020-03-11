@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Core.Content.Factories;
+﻿using AdOut.Planning.Core.Content.Providers;
 using AdOut.Planning.Core.Content.Storages;
 using AdOut.Planning.Core.Managers;
 using AdOut.Planning.Core.ScheduleValidators;
@@ -19,7 +19,7 @@ namespace AdOut.Planning.Core.DI
 
             services.AddScoped<IDirectoryDistributor, EmptyDirectoryDistributor>();
             services.AddScoped<IContentStorage, LocalStorage>();
-            services.AddScoped<IContentComponentsProvider, ContentComponentsProvider>();
+            services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();
         }
     }
 }

@@ -27,13 +27,13 @@ namespace AdOut.Planning.Model
             ContentExtensions.JPEG, ContentExtensions.JPG, ContentExtensions.PNG, ContentExtensions.AVI, ContentExtensions.MP4
         };
 
-        public static Dictionary<string, AdType> ContentTypes = new Dictionary<string, AdType>()
+        public static Dictionary<string, ContentType> ContentTypes = new Dictionary<string, ContentType>()
         {
-            { ContentExtensions.JPEG, AdType.Image },
-            { ContentExtensions.JPG, AdType.Image },
-            { ContentExtensions.PNG, AdType.Image },
-            { ContentExtensions.AVI, AdType.Video },
-            { ContentExtensions.MP4, AdType.Video }
+            { ContentExtensions.JPEG, ContentType.Image },
+            { ContentExtensions.JPG, ContentType.Image },
+            { ContentExtensions.PNG, ContentType.Image },
+            { ContentExtensions.AVI, ContentType.Video },
+            { ContentExtensions.MP4, ContentType.Video }
         };
 
         public static class ContentSignatures

@@ -1,6 +1,6 @@
 ﻿namespace AdOut.Planning.Model.Enum
 {
-    public enum AdType
+    public enum ContentType
     {
         Image = 0,
         Video = 1

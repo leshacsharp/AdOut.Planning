@@ -1,13 +1,14 @@
 ﻿using AdOut.Planning.Model.Api;
+using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
@@ -17,51 +18,54 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IAdRepository _adRepository;
         private readonly IContentStorage _contentStorage;
-        private readonly IContentComponentsProvider _contentComponentsProvider;
+        private readonly IContentValidatorProvider _contentValidatorProvider;
+        private readonly IContentHelperProvider _contentHelperProvider;
         private readonly ICommitProvider _commitProvider;
             
         public AdManager(
             IAdRepository adRepository,
             IContentStorage contentStorage,
-            IContentComponentsProvider contentComponentsProvider,
+            IContentValidatorProvider contentValidatorProvider,
+            IContentHelperProvider contentHelperProvider,
             ICommitProvider commitProvider) 
             : base(adRepository)
         {
             _adRepository = adRepository;
             _contentStorage = contentStorage;
-            _contentComponentsProvider = contentComponentsProvider;
+            _contentValidatorProvider = contentValidatorProvider;
+            _contentHelperProvider = contentHelperProvider;
             _commitProvider = commitProvider;
         }
 
-        public async Task CreateAdAsync(CreateAdModel createAdModel)
+        public Task<ContentValidationResult> ValidAsync(IFormFile content)
         {
-            var content = createAdModel.Content.OpenReadStream();
-            var extension = Path.GetExtension(createAdModel.Content.FileName);
+            var extension = Path.GetExtension(content.FileName);
             var isAllowedExtension = AllowedExtensions.Contains(extension);
 
-            if(!isAllowedExtension)
+            if (!isAllowedExtension)
             {
                 throw new BadRequestException($"{extension} extension is not allowed");
             }
 
-            var contentComponentsFactory = _contentComponentsProvider.CreateContentFactory(extension);
-            var contentValidator = contentComponentsFactory.CreateContentValidator();
-            var contentHelper = contentComponentsFactory.CreateContentHelper();
+            var contentValidator = _contentValidatorProvider.CreateContentValidator(extension);
 
-            var validationResult = await contentValidator.ValidAsync(content);
-            if(!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(e => e.Description);
-                var validationMessage = string.Join("\n", validationErrors);
-                throw new BadRequestException(validationMessage);
-            }
+            var contentStream = content.OpenReadStream();
+            return contentValidator.ValidAsync(contentStream);
+        }
 
-            var thumbnail = contentHelper.GetThumbnail(content, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
+        public async Task CreateAdAsync(CreateAdModel createAdModel)
+        {
+            var extension = Path.GetExtension(createAdModel.Content.FileName);
+            var contentStream = createAdModel.Content.OpenReadStream();
+
+            var contentHelper = _contentHelperProvider.CreateContentHelper(extension);
+
+            var thumbnail = contentHelper.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
 
             var pathForContent = _contentStorage.GenerateFilePath(extension);
             var pathForThumbnail = _contentStorage.GenerateFilePath(DefaultValues.DefaultThumbnailExtension);
 
-            var saveContentTask = _contentStorage.CreateObjectAsync(content, pathForContent);
+            var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
             var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);
             await Task.WhenAll(saveContentTask, saveThumbnailTask);
 
@@ -72,11 +76,11 @@ namespace AdOut.Planning.Core.Managers
                 PreviewPath = pathForThumbnail,
                 AddedDate = DateTime.UtcNow,
                 Status = Model.Enum.AdStatus.OnModeration,
-                Type = ContentTypes[extension]
+                ContentType = ContentTypes[extension]
             };
 
             Create(ad);
             await _commitProvider.SaveChangesAsync();
-        }
+        } 
     }
 }

@@ -19,7 +19,7 @@ namespace AdOut.Planning.Model.Database
         [StringLength(50,  MinimumLength = 2)]
         public string Title { get; set; }
 
-        public AdType Type { get; set; }
+        public ContentType ContentType { get; set; }
 
         public AdStatus Status { get; set; }
 
