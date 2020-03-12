@@ -5,7 +5,15 @@ namespace AdOut.Planning.Model
 {
     public static class Constants
     {
-        public static class ValidationMessages
+        //_T - template
+        public static class ScheduleValidationMessages
+        {
+            public const string ScheduleDayIsADayOff_T = "Scheduler day of week ({0}) is a day off for Ad Point by {1} location";
+            public const string ScheduleDateIsADayOff_T = "Scheduler date ({0}) is a day off for Ad Point({1})";
+            public const string ScheduleTimeIsNotAllowed_T = "Scheduler time ({0}) is not allowed for AdPoint({1}) time mode({2})";
+        }
+
+        public static class ContentValidationMessages
         {
             public const string NotCorrectFormat = "Format is not correct";
             public const string NotCorrectSize = "Size is not correct";
