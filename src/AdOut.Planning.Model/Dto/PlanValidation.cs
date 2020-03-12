@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
-    public class PlanDto
+    public class PlanValidation
     {
         public PlanType Type { get; set; }
 
@@ -12,6 +12,8 @@ namespace AdOut.Planning.Model.Dto
 
         public DateTime EndDateTime { get; set; }
 
-        public IEnumerable<ScheduleDto> Schedules { get; set; }
+        public IEnumerable<ScheduleValidation> Schedules { get; set; }
+
+        public IEnumerable<PlanAdValidation> PlanAds { get; set; }
     }
 }

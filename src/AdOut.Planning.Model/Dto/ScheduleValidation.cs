@@ -2,7 +2,7 @@
 
 namespace AdOut.Planning.Model.Dto
 {
-    public class ScheduleDto
+    public class ScheduleValidation
     {
         public TimeSpan StartTime { get; set; }
 

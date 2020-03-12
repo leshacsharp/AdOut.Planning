@@ -11,7 +11,7 @@ namespace AdOut.Planning.Model.Dto
 
         public TimeSpan EndWorkingTime { get; set; }
 
-        public IEnumerable<PlanDto> Plans { get; set; }
+        public IEnumerable<PlanValidation> Plans { get; set; }
 
         public IEnumerable<DayOfWeek> DaysOff { get; set; }
     }

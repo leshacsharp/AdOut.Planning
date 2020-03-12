@@ -1,10 +1,13 @@
-﻿using System;
+﻿using AdOut.Planning.Model.Enum;
+using System;
 
 namespace AdOut.Planning.Model.Api
 {
     public class ScheduleModel
     {
         public int[] AdPointIds { get; set; }
+
+        public PlanType PlanType { get; set; }
 
         public TimeSpan StartTime { get; set; }
 

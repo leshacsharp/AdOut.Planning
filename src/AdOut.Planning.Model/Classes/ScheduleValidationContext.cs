@@ -1,4 +1,5 @@
 ﻿using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,8 @@ namespace AdOut.Planning.Model.Classes
 {
     public class ScheduleValidationContext
     {
+        public PlanType PlanType { get; set; }
+
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan EndTime { get; set; }
