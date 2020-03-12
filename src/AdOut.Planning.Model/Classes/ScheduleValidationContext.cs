@@ -12,8 +12,17 @@ namespace AdOut.Planning.Model.Classes
 
         public TimeSpan BreakTime { get; set; }
 
+        public DayOfWeek? DayOfWeek { get; set; }
+
+        public DateTime? Date { get; set; }
+
         public List<AdPointValidation> AdPointValidations { get; set; }
 
-        public string Errors { get; set; }
+        public List<string> Errors { get; set; }
+
+        public ScheduleValidationContext()
+        {
+            Errors = new List<string>();
+        }
     }
 }

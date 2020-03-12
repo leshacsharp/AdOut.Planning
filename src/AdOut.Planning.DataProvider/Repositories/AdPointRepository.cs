@@ -41,15 +41,17 @@ namespace AdOut.Planning.DataProvider.Repositories
                                         {
                                             StartTime = s.StartTime,
                                             EndTime = s.EndTime,
-                                            BreakTime = s.BreakTime
+                                            BreakTime = s.BreakTime,
+                                            DayOfWeek = s.DayOfWeek,
+                                            Date = s.Date
                                         })
                                     },
 
-                            Weekends = from apw in ap.AdPointWeekends
+                            DaysOff = from apw in ap.AdPointDaysOff
 
-                                       join w in Context.Weekends on apw.WeekendId equals w.Id
+                                       join da in Context.DaysOff on apw.DayOffId equals da.Id
 
-                                       select w.Day
+                                       select .DayOfWeek
                         };
 
             return query.ToListAsync();

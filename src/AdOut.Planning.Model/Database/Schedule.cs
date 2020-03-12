@@ -20,6 +20,10 @@ namespace AdOut.Planning.Model.Database
 
         public TimeSpan EndTime { get; set; }
 
-        public TimeSpan BreakTime { get; set; }   
+        public TimeSpan BreakTime { get; set; }
+
+        public DayOfWeek? DayOfWeek { get; set; }
+
+        public DateTime? Date { get; set; }
     }
 }

@@ -21,6 +21,6 @@ namespace AdOut.Planning.Model.Database
         public TimeSpan EndWorkingTime { get; set; }
 
         public virtual ICollection<PlanAdPoint> PlanAdPoints { get; set; }
-        public virtual ICollection<AdPointWeekend> AdPointWeekends { get; set; }
+        public virtual ICollection<AdPointDayOff> AdPointDaysOff { get; set; }
     }
 }

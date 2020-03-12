@@ -18,8 +18,8 @@ namespace AdOut.Planning.DataProvider.Context
         public DbSet<AdPoint> AdPoints { get; set; }
         public DbSet<PlanAd> PlanAds { get; set; }
         public DbSet<PlanAdPoint> PlanAdPoints { get; set; }
-        public DbSet<Weekend> Weekends { get; set; }
-        public DbSet<AdPointWeekend> AdPointWeekends { get; set; }
+        public DbSet<DayOff> DaysOff { get; set; }
+        public DbSet<AdPointDayOff> AdPointDaysOff { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,8 +32,8 @@ namespace AdOut.Planning.DataProvider.Context
             modelBuilder.Entity<PlanAdPoint>()
                         .HasKey(pap => new { pap.PlanId, pap.AdPointId });
 
-            modelBuilder.Entity<AdPointWeekend>()
-                        .HasKey(apw => new { apw.AdPointId, apw.WeekendId });
+            modelBuilder.Entity<AdPointDayOff>()
+                        .HasKey(apw => new { apw.AdPointId, apw.DayOffId });
         }
     }
 }

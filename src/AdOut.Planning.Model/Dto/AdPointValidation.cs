@@ -13,6 +13,6 @@ namespace AdOut.Planning.Model.Dto
 
         public IEnumerable<PlanDto> Plans { get; set; }
 
-        public IEnumerable<DayOfWeek> Weekends { get; set; }
+        public IEnumerable<DayOfWeek> DaysOff { get; set; }
     }
 }

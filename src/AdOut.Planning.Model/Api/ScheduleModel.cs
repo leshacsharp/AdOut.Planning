@@ -11,5 +11,9 @@ namespace AdOut.Planning.Model.Api
         public TimeSpan EndTime { get; set; }
 
         public TimeSpan BreakTime { get; set; }
+
+        public DayOfWeek? DayOfWeek { get; set; }
+
+        public DateTime? Date { get; set; }
     }
 }

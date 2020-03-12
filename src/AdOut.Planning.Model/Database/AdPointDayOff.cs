@@ -3,19 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
-    [Table("AdPointWeekends")]
-    public class AdPointWeekend
+    [Table("AdPointDaysOff")]
+    public class AdPointDayOff
     {
         [ForeignKey(nameof(AdPoint))]
         public int AdPointId { get; set; }
 
-        [ForeignKey(nameof(Weekend))]
-        public int WeekendId { get; set; }
+        [ForeignKey(nameof(DayOff))]
+        public int DayOffId { get; set; }
 
         [Required]
         public virtual AdPoint AdPoint { get; set; }
 
         [Required]
-        public virtual Weekend Weekend { get; set; }
+        public virtual DayOff DayOff { get; set; }
     }
 }
