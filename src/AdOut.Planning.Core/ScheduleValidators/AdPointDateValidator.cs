@@ -16,6 +16,8 @@ namespace AdOut.Planning.Core.ScheduleValidators
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
+            //todo: decompose this is logic
+
             if (context.PlanType == PlanType.Weekly)
             {
                 var schedulerDay = (DayOfWeek)context.DayOfWeek;

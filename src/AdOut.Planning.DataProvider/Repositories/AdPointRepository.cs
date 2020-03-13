@@ -21,6 +21,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
             var query = from ap in Context.AdPoints
                         where adPointIds.Contains(ap.Id)
+
                         select new AdPointValidation()
                         {
                             Location = ap.Location,
@@ -29,7 +30,12 @@ namespace AdOut.Planning.DataProvider.Repositories
 
                             Plans = from pap in ap.PlanAdPoints
                                     join p in Context.Plans on pap.PlanId equals p.Id
-                                    where p.StartDateTime >= planStart && p.StartDateTime <= planEnd
+                                    where p.StartDateTime <= planStart && p.EndDateTime >= planStart || 
+                                          p.StartDateTime <= planEnd && p.EndDateTime >= planEnd || 
+                                          p.StartDateTime >= planStart && p.EndDateTime <= planEnd     
+
+                                    orderby p.StartDateTime
+
                                     select new PlanValidation
                                     {
                                         Type = p.Type,
@@ -38,6 +44,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
                                         Schedules = from s in p.Schedules
                                                     where s.Date == null || s.Date <= planEnd
+                                                   
                                                     select new ScheduleValidation()
                                                     {
                                                         StartTime = s.StartTime,
