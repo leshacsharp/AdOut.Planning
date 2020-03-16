@@ -1,15 +1,13 @@
-﻿using AdOut.Planning.Model.Classes;
-using AdOut.Planning.Model.Interfaces.Schedule;
+﻿using AdOut.Planning.Core.ScheduleValidators.Base;
+using AdOut.Planning.Model.Classes;
 using System;
 using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.ScheduleValidators
 {
-    public class AdPointTimeValidator : IScheduleValidator
+    public class AdPointTimeValidator : BaseScheduleValidator
     {
-        private IScheduleValidator _nextValidator;
-
-        public void Valid(ScheduleValidationContext context)
+        public override void Valid(ScheduleValidationContext context)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
@@ -28,13 +26,5 @@ namespace AdOut.Planning.Core.ScheduleValidators
 
             _nextValidator?.Valid(context);
         }
-
-        public void SetNextValidator(IScheduleValidator validator)
-        {
-            if (validator == null)
-                throw new ArgumentNullException(nameof(validator));
-
-            _nextValidator = validator;
-        }  
     }
 }

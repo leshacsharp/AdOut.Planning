@@ -8,9 +8,10 @@ namespace AdOut.Planning.Model
         //_T - template
         public static class ScheduleValidationMessages
         {
-            public const string ScheduleDayIsADayOff_T = "Scheduler day of week ({0}) is a day off for Ad Point by {1} location";
-            public const string ScheduleDateIsADayOff_T = "Scheduler date ({0}) is a day off for Ad Point({1})";
-            public const string ScheduleTimeIsNotAllowed_T = "Scheduler time ({0}) is not allowed for AdPoint({1}) time mode({2})";
+            public const string ScheduleDayIsADayOff_T = "Schedule day of week ({0}) is a day off for Ad Point by {1} location";
+            public const string ScheduleDateIsADayOff_T = "Schedule date ({0}) is a day off for Ad Point({1})";
+            public const string ScheduleTimeIsNotAllowed_T = "Schedule time ({0}) is not allowed for AdPoint({1}) time mode({2})";
+            public const string ScheduleTimeIntersection_T = "Your schedule time ({0}) intersect schedule time ({1}) on AdPoint({2})";
         }
 
         public static class ContentValidationMessages
