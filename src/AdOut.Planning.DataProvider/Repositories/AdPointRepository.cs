@@ -17,7 +17,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<List<AdPointValidation>> GetAdPointValidationsAsync(int[] adPointIds, DateTime planStart, DateTime planEnd)
+        public Task<List<AdPointValidation>> GetAdPointsValidationAsync(int[] adPointIds, DateTime planStart, DateTime planEnd)
         {
             var query = from ap in Context.AdPoints
                         where adPointIds.Contains(ap.Id)

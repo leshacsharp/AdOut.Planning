@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface IScheduleValidator
     {
-        void Valid(ScheduleValidationContext context);
+        void Validate(ScheduleValidationContext context);
         void SetNextValidator(IScheduleValidator validator);
     }
 }

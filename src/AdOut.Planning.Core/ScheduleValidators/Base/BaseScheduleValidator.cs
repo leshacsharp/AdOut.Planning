@@ -16,6 +16,6 @@ namespace AdOut.Planning.Core.ScheduleValidators.Base
             _nextValidator = validator;
         }
 
-        public abstract void Valid(ScheduleValidationContext context);
+        public abstract void Validate(ScheduleValidationContext context);
     }
 }

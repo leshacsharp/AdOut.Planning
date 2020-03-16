@@ -1,14 +1,17 @@
 ﻿using AdOut.Planning.Core.ScheduleValidators.Base;
+using AdOut.Planning.Model.Attributes;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
 using System;
 using System.Linq;
 using static AdOut.Planning.Model.Constants;
+
 namespace AdOut.Planning.Core.ScheduleValidators
 {
+    [ValidatorOrder(1)]
     public class SpecificAdPointDateValidator : BaseScheduleValidator
     {
-        public override void Valid(ScheduleValidationContext context)
+        public override void Validate(ScheduleValidationContext context)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));

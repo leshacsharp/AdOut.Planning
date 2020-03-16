@@ -1,13 +1,13 @@
-﻿using AdOut.Planning.Model.Enum;
-using System;
+﻿using System;
 
 namespace AdOut.Planning.Model.Api
 {
-    public class ScheduleModel
+    //todo: add annotations
+    public class ScheduleValidationModel
     {
         public int[] AdPointIds { get; set; }
 
-        public PlanType PlanType { get; set; }
+        public PlanValidationModel Plan { get; set; }
 
         public TimeSpan StartTime { get; set; }
 
@@ -18,5 +18,5 @@ namespace AdOut.Planning.Model.Api
         public DayOfWeek? DayOfWeek { get; set; }
 
         public DateTime? Date { get; set; }
-    }
+    }  
 }
