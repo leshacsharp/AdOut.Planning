@@ -14,11 +14,12 @@ namespace AdOut.Planning.Core.ScheduleValidators
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
+            var schedule = context.Schedule;
             foreach (var adPoint in context.AdPointValidations)
             {
-                if(context.StartTime < adPoint.StartWorkingTime || context.EndTime > adPoint.EndWorkingTime)
+                if(schedule.StartTime < adPoint.StartWorkingTime || schedule.EndTime > adPoint.EndWorkingTime)
                 {
-                    var schedulerTimeMode = $"{context.StartTime} - {context.EndTime}";
+                    var schedulerTimeMode = $"{schedule.StartTime} - {schedule.EndTime}";
                     var adPointTimeMode = $"{adPoint.StartWorkingTime} - {adPoint.EndWorkingTime}";
 
                     var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIsNotAllowed_T, schedulerTimeMode, adPoint.Location, adPointTimeMode);

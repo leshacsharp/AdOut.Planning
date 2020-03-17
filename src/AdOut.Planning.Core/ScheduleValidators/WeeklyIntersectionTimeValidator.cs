@@ -16,17 +16,18 @@ namespace AdOut.Planning.Core.ScheduleValidators
 
             if (context.PlanType == Model.Enum.PlanType.Weekly)
             {
+                var schedule = context.Schedule;
                 foreach (var adPeriod in context.AdsPeriods)
                 {
                     if ((adPeriod.Date == null && adPeriod.DayOfWeek == null) ||          
-                         adPeriod.Date?.DayOfWeek == context.DayOfWeek ||
-                         adPeriod.DayOfWeek == context.DayOfWeek)
+                         adPeriod.Date?.DayOfWeek == schedule.DayOfWeek ||
+                         adPeriod.DayOfWeek == schedule.DayOfWeek)
                     {
-                        if (adPeriod.StartTime <= context.StartTime && adPeriod.EndTime >= context.StartTime ||
-                            adPeriod.StartTime <= context.EndTime && adPeriod.EndTime >= context.EndTime ||
-                            adPeriod.StartTime >= context.StartTime && adPeriod.EndTime <= context.EndTime)
+                        if (adPeriod.StartTime <= schedule.StartTime && adPeriod.EndTime >= schedule.StartTime ||
+                            adPeriod.StartTime <= schedule.EndTime && adPeriod.EndTime >= schedule.EndTime ||
+                            adPeriod.StartTime >= schedule.StartTime && adPeriod.EndTime <= schedule.EndTime)
                         {
-                            var scheduleTimeMode = $"{context.DayOfWeek}, {context.StartTime} - {context.EndTime}";
+                            var scheduleTimeMode = $"{schedule.DayOfWeek}, {schedule.StartTime} - {schedule.EndTime}";
 
                             var adPeriodDayOfWeek = adPeriod.DayOfWeek != null ? adPeriod.DayOfWeek.ToString() : "not day of week";
                             var adPeriodTimeMode = $"{adPeriodDayOfWeek}, {adPeriod.StartTime} - {adPeriod.EndTime}";

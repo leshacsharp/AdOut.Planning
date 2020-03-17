@@ -18,7 +18,7 @@ namespace AdOut.Planning.Core.ScheduleValidators
 
             if (context.PlanType == PlanType.Specific)
             {
-                var schedulerDate = context.Date.Value;
+                var schedulerDate = context.Schedule.Date.Value;
                 var schedulerDayOfWeek = schedulerDate.DayOfWeek;
 
                 foreach (var adPoint in context.AdPointValidations)

@@ -37,12 +37,8 @@ namespace AdOut.Planning.Core.Managers
 
             var validationContext = new ScheduleValidationContext()
             {
-                StartTime = scheduleModel.StartTime,
-                EndTime = scheduleModel.EndTime,
-                BreakTime = scheduleModel.BreakTime,
-                Date = scheduleModel.Date,
-                DayOfWeek = scheduleModel.DayOfWeek,
-                PlanType = scheduleModel.Plan.Type
+                Schedule = scheduleModel.Schedule,
+                Plan = scheduleModel.Plan
             };
 
             var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(scheduleModel.AdPointIds, scheduleModel.Plan.StartDateTime, scheduleModel.Plan.EndDateTime);
