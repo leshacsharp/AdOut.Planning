@@ -10,7 +10,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
 {
     public abstract class VideoTemplateValidator : IContentValidator
     {
-        public async Task<ContentValidationResult> ValidAsync(Stream content)
+        public async Task<ValidationResult<ContentError>> ValidateAsync(Stream content)
         {
             if (content == null)
                 throw new ArgumentNullException();
@@ -19,7 +19,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
             if (!isCorrectFormat)
                 throw new ArgumentException(ContentValidationMessages.NotCorrectFormat, nameof(content));
 
-            var validationResult = new ContentValidationResult();
+            var validationResult = new ValidationResult<ContentError>();
  
             var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
             var isCorrectSizeTask = IsCorrectSizeAsync(content);

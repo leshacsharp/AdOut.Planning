@@ -2,7 +2,7 @@
 
 namespace AdOut.Planning.Model.Classes
 {
-    public class ContentValidationResult
+    public class ValidationResult<TError>
     {
         public bool IsValid
         {
@@ -12,11 +12,11 @@ namespace AdOut.Planning.Model.Classes
             }
         }
 
-        public List<ContentError> Errors { get; set; }
-        
-        public ContentValidationResult()
+        public List<TError> Errors { get; set; }
+
+        public ValidationResult()
         {
-            Errors = new List<ContentError>();
+            Errors = new List<TError>();
         }
     }
 }

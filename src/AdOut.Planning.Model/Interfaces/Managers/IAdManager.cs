@@ -8,7 +8,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IAdManager : IBaseManager<Ad>
     {
-        Task<ContentValidationResult> ValidAsync(IFormFile file);
+        Task<ValidationResult<ContentError>> ValidateAsync(IFormFile file);
         Task CreateAdAsync(CreateAdModel createAdModel);
     }
 }

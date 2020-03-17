@@ -37,7 +37,7 @@ namespace AdOut.Planning.Core.Managers
             _commitProvider = commitProvider;
         }
 
-        public Task<ContentValidationResult> ValidAsync(IFormFile content)
+        public Task<ValidationResult<ContentError>> ValidateAsync(IFormFile content)
         {
             var extension = Path.GetExtension(content.FileName);
             var isAllowedExtension = AllowedExtensions.Contains(extension);
@@ -50,7 +50,7 @@ namespace AdOut.Planning.Core.Managers
             var contentValidator = _contentValidatorProvider.CreateContentValidator(extension);
 
             var contentStream = content.OpenReadStream();
-            return contentValidator.ValidAsync(contentStream);
+            return contentValidator.ValidateAsync(contentStream);
         }
 
         public async Task CreateAdAsync(CreateAdModel createAdModel)

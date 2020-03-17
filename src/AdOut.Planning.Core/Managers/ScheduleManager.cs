@@ -30,8 +30,7 @@ namespace AdOut.Planning.Core.Managers
             _scheduleValidatorFactory = scheduleValidatorFactory;
         }
 
-        //todo: think about returned value
-        public async Task ValidateScheduleAsync(ScheduleValidationModel scheduleModel)
+        public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleValidationModel scheduleModel)
         {
             if (scheduleModel == null)
                 throw new ArgumentNullException(nameof(scheduleModel));
@@ -54,6 +53,13 @@ namespace AdOut.Planning.Core.Managers
 
             var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
             scheduleValidator.Validate(validationContext);
+
+            var validationResult = new ValidationResult<string>()
+            {
+                Errors = validationContext.Errors
+            };
+
+            return validationResult;
         }
 
         private List<AdPeriod> GenerateTimeLine(List<AdPointValidation> adPoints)

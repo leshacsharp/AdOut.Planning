@@ -31,7 +31,7 @@ namespace AdOut.Planning.Core.ScheduleValidators
                 }
             }
 
-            _nextValidator?.Valid(context);
+            _nextValidator?.Validate(context);
         }  
     }
 }
