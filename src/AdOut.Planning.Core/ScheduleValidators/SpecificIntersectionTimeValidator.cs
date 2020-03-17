@@ -1,12 +1,13 @@
 ﻿using AdOut.Planning.Core.ScheduleValidators.Base;
 using AdOut.Planning.Model.Attributes;
 using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Enum;
 using System;
 using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.ScheduleValidators
 {
-    [ValidatorOrder(5)]
+    [ValidatorOrder(6)]
     public class SpecificIntersectionTimeValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)
@@ -14,7 +15,7 @@ namespace AdOut.Planning.Core.ScheduleValidators
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            if (context.PlanType == Model.Enum.PlanType.Specific)
+            if (context.Plan.Type == PlanType.Specific)
             {
                 var schedule = context.Schedule;
                 var scheduleDate = schedule.Date.Value;

@@ -16,7 +16,7 @@ namespace AdOut.Planning.Core.ScheduleValidators
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            if (context.PlanType == PlanType.Specific)
+            if (context.Plan.Type == PlanType.Specific)
             {
                 var schedulerDate = context.Schedule.Date.Value;
                 var schedulerDayOfWeek = schedulerDate.DayOfWeek;
