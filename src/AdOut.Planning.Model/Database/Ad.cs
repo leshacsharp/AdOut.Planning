@@ -31,6 +31,8 @@ namespace AdOut.Planning.Model.Database
 
         public DateTime AddedDate { get; set; }
 
+        public DateTime? ConfirmationDate { get; set; }
+
         public virtual ICollection<PlanAd> PlanAds { get; set; }
     }
 }

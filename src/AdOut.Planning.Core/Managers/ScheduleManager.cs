@@ -33,7 +33,9 @@ namespace AdOut.Planning.Core.Managers
         public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleValidationModel scheduleModel)
         {
             if (scheduleModel == null)
+            {
                 throw new ArgumentNullException(nameof(scheduleModel));
+            }
 
             var validationContext = new ScheduleValidationContext()
             {
