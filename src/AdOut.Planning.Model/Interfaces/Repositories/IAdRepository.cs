@@ -9,7 +9,10 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IAdRepository : IBaseRepository<Ad>
     {
-        Task<Ad> FindByIdAsync(int adId);
-        Task<List<AdDto>> GetAds(Expression<Func<Ad, bool>> predicate);
+        Task<Ad> GetByIdAsync(int adId);
+
+        Task<AdDto> GetDtoByIdAsync(int adId);
+
+        Task<List<AdListDto>> GetAds(Expression<Func<Ad, bool>> predicate);
     }
 }

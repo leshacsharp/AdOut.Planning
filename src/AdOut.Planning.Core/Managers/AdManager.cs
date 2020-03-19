@@ -4,7 +4,6 @@ using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Content;
-using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using LinqKit;
@@ -30,8 +29,7 @@ namespace AdOut.Planning.Core.Managers
             IAdRepository adRepository,
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
-            IContentHelperProvider contentHelperProvider,
-            ICommitProvider commitProvider) 
+            IContentHelperProvider contentHelperProvider) 
             : base(adRepository)
         {
             _adRepository = adRepository;
@@ -56,7 +54,12 @@ namespace AdOut.Planning.Core.Managers
             return contentValidator.ValidateAsync(contentStream);
         }
 
-        public Task<List<AdDto>> GetAds(AdsFilterModel filterModel)
+        public Task<AdDto> GetByIdAsync(int adId)
+        {
+            return _adRepository.GetDtoByIdAsync(adId);
+        }
+
+        public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel)
         {
             if (filterModel == null)
             {
@@ -133,7 +136,7 @@ namespace AdOut.Planning.Core.Managers
                 throw new ArgumentNullException(nameof(updateModel));
             }
 
-            var ad = await _adRepository.FindByIdAsync(updateModel.AdId);
+            var ad = await _adRepository.GetByIdAsync(updateModel.AdId);
             if (ad == null)
             {
                 throw new ObjectNotFoundException($"Ad with id={updateModel.AdId} was not found");
@@ -146,13 +149,13 @@ namespace AdOut.Planning.Core.Managers
 
         public async Task DeleteAsync(int adId)
         {
-            var ad = await _adRepository.FindByIdAsync(adId);
+            var ad = await _adRepository.GetByIdAsync(adId);
             if (ad == null)
             {
                 throw new ObjectNotFoundException($"Ad with id={adId} was not found");
             }
 
             Delete(ad);
-        } 
+        }
     }
 }

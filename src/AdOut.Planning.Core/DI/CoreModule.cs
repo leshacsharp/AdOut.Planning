@@ -30,6 +30,7 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IScheduleValidatorFactory, ScheduleValidatorFactory>();
             services.AddScoped<IDirectoryDistributor, EmptyDirectoryDistributor>();
             services.AddScoped<IContentStorage, LocalStorage>();
+            services.AddScoped<IContentHelperProvider, ContentHelperProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();
         }
     }

@@ -1,4 +1,6 @@
 ﻿using AdOut.Planning.Model.Enum;
+using System;
+using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
@@ -12,6 +14,13 @@ namespace AdOut.Planning.Model.Dto
 
         public AdStatus Status { get; set; }
 
-        public string PreviewPath { get; set; }
+        public string Path { get; set; }
+
+        public DateTime AddedDate { get; set; }
+
+        public DateTime? ConfirmationDate { get; set; }
+
+        public IEnumerable<AdPlanDto> Plans { get; set; }
+        public IEnumerable<AdAdPointDto> AdPoints { get; set; }
     }
 }
