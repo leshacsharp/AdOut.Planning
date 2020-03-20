@@ -35,6 +35,11 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
 
+        public bool HavePlans(int adId)
+        {
+            return Context.PlanAds.Any(pa => pa.AdId == adId);
+        }
+
         public Task<Ad> GetByIdAsync(int adId)
         {
             var query = from a in Context.Ads

@@ -14,5 +14,7 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
         Task<AdDto> GetDtoByIdAsync(int adId);
 
         Task<List<AdListDto>> GetAds(Expression<Func<Ad, bool>> predicate);
+
+        bool HavePlans(int adId);
     }
 }

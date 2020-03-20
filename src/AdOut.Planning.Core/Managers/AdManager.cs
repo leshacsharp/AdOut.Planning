@@ -155,6 +155,16 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Ad with id={adId} was not found");
             }
 
+            var adHavePlans = _adRepository.HavePlans(adId);
+            if (adHavePlans)
+            {
+                throw new BadRequestException($"Exist plans that use Ad with id={adId}");
+            }
+
+            var deleteContentTask = _contentStorage.DeleteObjectAsync(ad.Path);
+            var deletePreviewOfContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
+
+            await Task.WhenAll(deleteContentTask, deletePreviewOfContentTask);
             Delete(ad);
         }
     }
