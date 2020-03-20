@@ -19,7 +19,5 @@ namespace AdOut.Planning.Model.Database
         public virtual Ad Ad { get; set; }
 
         public int Order { get; set; }
-
-        public int TimePlayingSec { get; set; }
     }
 }

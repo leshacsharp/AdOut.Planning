@@ -51,40 +51,36 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 Type = p.Type,
                                 StartDateTime = p.StartDateTime,
                                 EndDateTime = p.EndDateTime,
+                                AdsTimePlaying = p.AdsTimePlaying,
 
-                                Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd).Select(s => new ScheduleValidation()
-                                {
-                                    StartTime = s.StartTime,
-                                    EndTime = s.EndTime,
-                                    BreakTime = s.BreakTime,
-                                    DayOfWeek = s.DayOfWeek,
-                                    Date = s.Date
-                                }),
-
-                                PlanAds = p.PlanAds.Select(pa => new PlanAdValidation()
-                                {
-                                    Order = pa.Order,
-                                    TimePlayingSec = pa.TimePlayingSec
-                                })
+                                Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd)
+                                                       .Select(s => new ScheduleValidation()
+                                                       {
+                                                           StartTime = s.StartTime,
+                                                           EndTime = s.EndTime,
+                                                           BreakTime = s.BreakTime,
+                                                           DayOfWeek = s.DayOfWeek,
+                                                           Date = s.Date
+                                                       })   
                             } : null
                         };
 
             var adPointValidations = await query.ToListAsync();
 
             var result = from apv in adPointValidations
-                      group apv by new { apv.Id, apv.Location, apv.StartWorkingTime, apv.EndWorkingTime }
-                      into apvGroup
+                         group apv by new { apv.Id, apv.Location, apv.StartWorkingTime, apv.EndWorkingTime }
+                         into apvGroup
 
-                      select new AdPointValidation()
-                      {
-                          Location = apvGroup.Key.Location,
-                          StartWorkingTime = apvGroup.Key.StartWorkingTime,
-                          EndWorkingTime = apvGroup.Key.EndWorkingTime,
+                         select new AdPointValidation()
+                         {
+                             Location = apvGroup.Key.Location,
+                             StartWorkingTime = apvGroup.Key.StartWorkingTime,
+                             EndWorkingTime = apvGroup.Key.EndWorkingTime,
 
-                          Plans = apvGroup.Where(apv => apv.Plan != null).Select(apv => apv.Plan),
+                             Plans = apvGroup.Where(apv => apv.Plan != null).Select(apv => apv.Plan),
 
-                          DaysOff = apvGroup.Where(apv => apv.DaysOff != null).Select(apv => apv.DaysOff.Value)
-                      };
+                             DaysOff = apvGroup.Where(apv => apv.DaysOff != null).Select(apv => apv.DaysOff.Value)
+                         };
 
             return result.ToList();
         }

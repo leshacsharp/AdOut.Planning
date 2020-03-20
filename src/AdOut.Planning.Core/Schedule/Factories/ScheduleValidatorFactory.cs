@@ -3,7 +3,7 @@ using AdOut.Planning.Model.Interfaces.Schedule;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdOut.Planning.Core.ScheduleValidators.Factories
+namespace AdOut.Planning.Core.Schedule.Factories
 {
     public class ScheduleValidatorFactory : IScheduleValidatorFactory
     {

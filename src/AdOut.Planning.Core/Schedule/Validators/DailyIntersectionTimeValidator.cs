@@ -1,11 +1,11 @@
-﻿using AdOut.Planning.Core.ScheduleValidators.Base;
+﻿using AdOut.Planning.Core.Schedule.Validators.Base;
 using AdOut.Planning.Model.Attributes;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
 using System;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.ScheduleValidators
+namespace AdOut.Planning.Core.Schedule.Validators
 {
     [ValidatorOrder(4)]
     public class DailyIntersectionTimeValidator : BaseScheduleValidator

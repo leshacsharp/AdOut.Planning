@@ -12,8 +12,8 @@ namespace AdOut.Planning.Model.Dto
 
         public DateTime EndDateTime { get; set; }
 
-        public IEnumerable<ScheduleValidation> Schedules { get; set; }
+        public TimeSpan AdsTimePlaying { get; set; }
 
-        public IEnumerable<PlanAdValidation> PlanAds { get; set; }
+        public IEnumerable<ScheduleValidation> Schedules { get; set; }
     }
 }

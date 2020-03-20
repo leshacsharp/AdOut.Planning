@@ -2,7 +2,7 @@
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 
-namespace AdOut.Planning.Core.ScheduleValidators.Base
+namespace AdOut.Planning.Core.Schedule.Validators.Base
 {
     public abstract class BaseScheduleValidator : IScheduleValidator
     {
