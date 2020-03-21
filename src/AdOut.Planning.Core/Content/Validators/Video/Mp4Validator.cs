@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Content.Validators.Video
 {
-    public class Mp4Validator : FFprobeBaseValidator
+    public class Mp4Validator : VideoBaseValidator
     {
         public Mp4Validator(IConfigurationRepository configurationRepository) : 
             base(configurationRepository)
