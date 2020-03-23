@@ -1,5 +1,7 @@
-﻿using AdOut.Planning.Model.Enum;
+﻿using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Enum;
 using System;
+using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Api
 {
@@ -10,5 +12,9 @@ namespace AdOut.Planning.Model.Api
         public DateTime StartDateTime { get; set; }
 
         public DateTime EndDateTime { get; set; }
+
+        public TimeSpan AdsTimePlaying { get; set; }
+
+        public List<ScheduleValidation> Schedules { get; set; }
     }
 }
