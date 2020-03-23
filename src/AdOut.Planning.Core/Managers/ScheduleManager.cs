@@ -55,16 +55,23 @@ namespace AdOut.Planning.Core.Managers
             {
                 foreach (var plan in adPoint.Plans)
                 {
-                    var planAdsPeriods = GenerateTimeLine(plan.Schedules, plan.AdsTimePlaying);
-                    adsPeriods.AddRange(planAdsPeriods);
+                    foreach (var schedule in plan.Schedules)
+                    {
+                        var scheduleAdsPeriods = GenerateTimeLine(schedule, plan.AdsTimePlaying);
+                        adsPeriods.AddRange(scheduleAdsPeriods);
+                    }
                 }
             }
 
-            var tempAdPeriods = GenerateTimeLine(scheduleModel.TempPlan.Schedules, scheduleModel.TempPlan.AdsTimePlaying);
-            adsPeriods.AddRange(tempAdPeriods);
+            foreach (var schedule in scheduleModel.TempPlan.Schedules)
+            {
+                var scheduleAdPeriods = GenerateTimeLine(schedule, scheduleModel.TempPlan.AdsTimePlaying);
+                adsPeriods.AddRange(scheduleAdPeriods);
+            }
 
             validationContext.AdPointValidations = adPointsValidations;
-            validationContext.AdPointAdsPeriods = adsPeriods;
+            validationContext.ExistingAdsPeriods = adsPeriods;
+            validationContext.NewAdsPeriods = GenerateTimeLine(scheduleModel.Schedule, scheduleModel.TempPlan.AdsTimePlaying);
 
             var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
             scheduleValidator.Validate(validationContext);
@@ -184,41 +191,38 @@ namespace AdOut.Planning.Core.Managers
             Update(schedule);
         }
 
-        
+
         //todo: make unit tests
-        private List<AdPeriod> GenerateTimeLine(IEnumerable<ScheduleValidation> schedules, TimeSpan adsTimePlaying)
+        private List<AdPeriod> GenerateTimeLine(ScheduleValidation schedule, TimeSpan adsTimePlaying)
         {
             var adsPeriods = new List<AdPeriod>();
 
-            foreach (var schedule in schedules)
+            AdPeriod currentAdPeriod = null;
+            var adTimeWithBreak = adsTimePlaying + schedule.BreakTime;
+
+            while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
             {
-                AdPeriod currentAdPeriod = null;
-                var adTimeWithBreak = schedule.BreakTime + adsTimePlaying;
-
-                while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
+                var adStartTime = TimeSpan.Zero;
+                if (currentAdPeriod == null)
                 {
-                    var adStartTime = TimeSpan.Zero;
-                    if (currentAdPeriod == null)
-                    {
-                        adStartTime = schedule.StartTime;
-                    }
-                    else
-                    {
-                        adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
-                    }
-
-                    var adEndTime = adStartTime.Add(adsTimePlaying);
-                    var adPeriod = new AdPeriod()
-                    {
-                        StartTime = adStartTime,
-                        EndTime = adEndTime,
-                        Date = schedule.Date,
-                        DayOfWeek = schedule.DayOfWeek
-                    };
-
-                    currentAdPeriod = adPeriod;
-                    adsPeriods.Add(adPeriod);
+                    adStartTime = schedule.StartTime;
                 }
+                else
+                {
+                    adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
+                }
+
+                var adEndTime = adStartTime.Add(adsTimePlaying);
+                var adPeriod = new AdPeriod()
+                {
+                    StartTime = adStartTime,
+                    EndTime = adEndTime,
+                    Date = schedule.Date,
+                    DayOfWeek = schedule.DayOfWeek
+                };
+
+                currentAdPeriod = adPeriod;
+                adsPeriods.Add(adPeriod);
             }
 
             return adsPeriods;

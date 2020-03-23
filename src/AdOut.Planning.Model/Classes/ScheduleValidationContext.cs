@@ -8,13 +8,13 @@ namespace AdOut.Planning.Model.Classes
     {
         public ScheduleValidation Schedule { get; set; }
 
-        public List<AdPeriod> ScheduleAdsPeriods { get; set; }
-
         public PlanValidationModel Plan { get; set; }
 
         public List<AdPointValidation> AdPointValidations { get; set; }
 
-        public List<AdPeriod> AdPointAdsPeriods { get; set; }
+        public List<AdPeriod> NewAdsPeriods { get; set; }
+
+        public List<AdPeriod> ExistingAdsPeriods { get; set; }
 
         public List<string> Errors { get; set; }
 

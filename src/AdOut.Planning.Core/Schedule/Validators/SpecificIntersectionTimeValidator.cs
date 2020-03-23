@@ -22,25 +22,25 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 var schedule = context.Schedule;
                 var scheduleDate = schedule.Date.Value;
 
-                foreach (var apAdPeriod in context.AdPointAdsPeriods)
+                foreach (var eAdPeriod in context.ExistingAdsPeriods)
                 {
-                    if ((apAdPeriod.Date == null && apAdPeriod.DayOfWeek == null) ||  //daily adPeriods
-                         apAdPeriod.DayOfWeek == scheduleDate.DayOfWeek ||            //weekly adPeriods
-                         apAdPeriod.Date == scheduleDate)                             //specific adPeriods
+                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||  //daily adPeriods
+                         eAdPeriod.DayOfWeek == scheduleDate.DayOfWeek ||            //weekly adPeriods
+                         eAdPeriod.Date == scheduleDate)                             //specific adPeriods
                     {
-                        foreach (var sAdPeriod in context.ScheduleAdsPeriods)
+                        foreach (var newAdPeriod in context.NewAdsPeriods)
                         {
-                            if (sAdPeriod.StartTime <= apAdPeriod.StartTime && sAdPeriod.EndTime >= apAdPeriod.StartTime ||  //left intersection
-                                sAdPeriod.StartTime <= apAdPeriod.EndTime && sAdPeriod.EndTime >= apAdPeriod.EndTime ||      //right intersection
-                                sAdPeriod.StartTime >= apAdPeriod.StartTime && sAdPeriod.EndTime <= apAdPeriod.EndTime)      //inner intersection
+                            if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
+                                newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
+                                newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection
                             {
-                                var scheduleTimeMode = $"{scheduleDate.ToShortDateString()}, {scheduleDate.DayOfWeek}, {sAdPeriod.StartTime} - {sAdPeriod.EndTime}";
+                                var scheduleTimeMode = $"{scheduleDate.ToShortDateString()}, {scheduleDate.DayOfWeek}, {newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
 
-                                var apAdPeriodDate = apAdPeriod.Date != null ? apAdPeriod.Date.Value.ToShortDateString() : "not date";
-                                var apAdPeriodDayOfWeek = apAdPeriod.DayOfWeek != null ? apAdPeriod.DayOfWeek.ToString() : "not day of week";
-                                var apAdPeriodTimeMode = $"{apAdPeriodDate}, {apAdPeriodDayOfWeek}, {apAdPeriod.StartTime} - {apAdPeriod.EndTime}";
+                                var eAdPeriodDate = eAdPeriod.Date != null ? eAdPeriod.Date.Value.ToShortDateString() : "not date";
+                                var eAdPeriodDayOfWeek = eAdPeriod.DayOfWeek != null ? eAdPeriod.DayOfWeek.ToString() : "not day of week";
+                                var eAdPeriodTimeMode = $"{eAdPeriodDate}, {eAdPeriodDayOfWeek}, {eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                                var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIntersection_T, scheduleTimeMode, apAdPeriodTimeMode);
+                                var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIntersection_T, scheduleTimeMode, eAdPeriodTimeMode);
                                 context.Errors.Add(validationMessage);
                             }
                         }
