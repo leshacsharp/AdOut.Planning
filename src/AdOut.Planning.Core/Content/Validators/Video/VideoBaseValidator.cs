@@ -6,6 +6,7 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using Alturos.VideoInfo;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 

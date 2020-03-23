@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Classes
 {
     public class ValidationResult<TError>
     {
-        public bool IsValid
+        public bool IsSuccessed
         {
             get
             {

@@ -17,7 +17,6 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Managers
 {
-    //todo: invoke SaveChangesAsync method in CommitProvider in Api's
     public class AdManager : BaseManager<Ad>, IAdManager
     {
         private readonly IAdRepository _adRepository;
@@ -40,6 +39,11 @@ namespace AdOut.Planning.Core.Managers
 
         public Task<ValidationResult<ContentError>> ValidateAsync(IFormFile content)
         {
+            if(content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+
             var extension = Path.GetExtension(content.FileName);
             var isAllowedExtension = AllowedExtensions.Contains(extension);
 
@@ -54,9 +58,37 @@ namespace AdOut.Planning.Core.Managers
             return contentValidator.ValidateAsync(contentStream);
         }
 
-        public Task<AdDto> GetByIdAsync(int adId)
+        public async Task CreateAsync(CreateAdModel createModel)
         {
-            return _adRepository.GetDtoByIdAsync(adId);
+            if (createModel == null)
+            {
+                throw new ArgumentNullException(nameof(createModel));
+            }
+
+            var extension = Path.GetExtension(createModel.Content.FileName);
+            var contentStream = createModel.Content.OpenReadStream();
+
+            var contentHelper = _contentHelperProvider.CreateContentHelper(extension);
+            var thumbnail = contentHelper.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
+
+            var pathForContent = _contentStorage.GenerateFilePath(extension);
+            var pathForThumbnail = _contentStorage.GenerateFilePath(DefaultValues.DefaultThumbnailExtension);
+
+            var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
+            var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);
+            await Task.WhenAll(saveContentTask, saveThumbnailTask);
+
+            var ad = new Ad()
+            {
+                Title = createModel.Title,
+                Path = pathForContent,
+                PreviewPath = pathForThumbnail,
+                AddedDate = DateTime.UtcNow,
+                Status = Model.Enum.AdStatus.OnModeration,
+                ContentType = ContentTypes[extension]
+            };
+
+            Create(ad);
         }
 
         public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel)
@@ -96,39 +128,11 @@ namespace AdOut.Planning.Core.Managers
             return _adRepository.GetAds(filter);
         }
 
-        public async Task CreateAsync(CreateAdModel createModel)
+        public Task<AdDto> GetByIdAsync(int adId)
         {
-            if (createModel == null)
-            {
-                throw new ArgumentNullException(nameof(createModel));
-            }
-
-            var extension = Path.GetExtension(createModel.Content.FileName);
-            var contentStream = createModel.Content.OpenReadStream();
-
-            var contentHelper = _contentHelperProvider.CreateContentHelper(extension);
-            var thumbnail = contentHelper.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
-
-            var pathForContent = _contentStorage.GenerateFilePath(extension);
-            var pathForThumbnail = _contentStorage.GenerateFilePath(DefaultValues.DefaultThumbnailExtension);
-
-            var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
-            var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);
-            await Task.WhenAll(saveContentTask, saveThumbnailTask);
-
-            var ad = new Ad()
-            {
-                Title = createModel.Title,
-                Path = pathForContent,
-                PreviewPath = pathForThumbnail,
-                AddedDate = DateTime.UtcNow,
-                Status = Model.Enum.AdStatus.OnModeration,
-                ContentType = ContentTypes[extension]
-            };
-
-            Create(ad);
+            return _adRepository.GetDtoByIdAsync(adId);
         }
-
+        
         public async Task UpdateAsync(UpdateAdModel updateModel)
         {
             if (updateModel == null)

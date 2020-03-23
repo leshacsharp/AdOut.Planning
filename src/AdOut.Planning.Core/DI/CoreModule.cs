@@ -17,6 +17,7 @@ namespace AdOut.Planning.Core.DI
         public static void AddCoreModule (this IServiceCollection services)
         {
             services.AddScoped<IAdManager, AdManager>();
+            services.AddScoped<IScheduleManager, ScheduleManager>();
 
             var scheduleValidators = Assembly.GetCallingAssembly()
                             .GetTypes()
