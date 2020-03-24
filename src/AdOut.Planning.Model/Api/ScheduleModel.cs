@@ -1,9 +1,11 @@
 ﻿using System;
 
-namespace AdOut.Planning.Model.Dto
+namespace AdOut.Planning.Model.Api
 {
-    public class ScheduleValidation
+    public class ScheduleModel
     {
+        public int PlanId { get; set; }
+
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan EndTime { get; set; }

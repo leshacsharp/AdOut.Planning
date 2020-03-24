@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Database;
+﻿using AdOut.Planning.Model.Api;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
@@ -53,15 +54,15 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 EndDateTime = p.EndDateTime,
                                 AdsTimePlaying = p.AdsTimePlaying,
 
-                                Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd)
-                                                       .Select(s => new ScheduleValidation()
-                                                       {
-                                                           StartTime = s.StartTime,
-                                                           EndTime = s.EndTime,
-                                                           BreakTime = s.BreakTime,
-                                                           DayOfWeek = s.DayOfWeek,
-                                                           Date = s.Date
-                                                       })   
+                                Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd).Select(s => new ScheduleModel()
+                                { 
+                                    PlanId = s.PlanId,
+                                    StartTime = s.StartTime,
+                                    EndTime = s.EndTime,
+                                    BreakTime = s.BreakTime,
+                                    Date = s.Date,
+                                    DayOfWeek = s.DayOfWeek
+                                })        
                             } : null
                         };
 

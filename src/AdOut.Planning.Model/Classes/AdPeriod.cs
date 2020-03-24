@@ -4,6 +4,8 @@ namespace AdOut.Planning.Model.Classes
 {
     public class AdPeriod
     {
+        public int PlanId { get; set; }
+
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan EndTime { get; set; }

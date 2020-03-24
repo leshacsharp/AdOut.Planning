@@ -5,7 +5,9 @@ using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Schedule;
+using AdOut.Planning.Model.Database;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
@@ -42,36 +44,25 @@ namespace AdOut.Planning.Core.Managers
                 throw new ArgumentNullException(nameof(scheduleModel));
             }
 
-            var validationContext = new ScheduleValidationContext()
-            {
-                Schedule = scheduleModel.Schedule,
-                Plan = scheduleModel.TempPlan
-            };
-
-            var adsPeriods = new List<AdPeriod>();
             var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(scheduleModel.AdPointIds, scheduleModel.TempPlan.StartDateTime, scheduleModel.TempPlan.EndDateTime);
-
-            foreach (var adPoint in adPointsValidations)
-            {
-                foreach (var plan in adPoint.Plans)
-                {
-                    foreach (var schedule in plan.Schedules)
-                    {
-                        var scheduleAdsPeriods = GenerateTimeLine(schedule, plan.AdsTimePlaying);
-                        adsPeriods.AddRange(scheduleAdsPeriods);
-                    }
-                }
-            }
+            var existingsAdsPeriods = GetAdPointsAdPeriods(adPointsValidations);
 
             foreach (var schedule in scheduleModel.TempPlan.Schedules)
             {
-                var scheduleAdPeriods = GenerateTimeLine(schedule, scheduleModel.TempPlan.AdsTimePlaying);
-                adsPeriods.AddRange(scheduleAdPeriods);
+                var tempAdPeriods = GetScheduleTimeLine(schedule, scheduleModel.TempPlan.AdsTimePlaying);
+                existingsAdsPeriods.AddRange(tempAdPeriods);
             }
 
-            validationContext.AdPointValidations = adPointsValidations;
-            validationContext.ExistingAdsPeriods = adsPeriods;
-            validationContext.NewAdsPeriods = GenerateTimeLine(scheduleModel.Schedule, scheduleModel.TempPlan.AdsTimePlaying);
+            var newAdsPeriods = GetScheduleTimeLine(scheduleModel.Schedule, scheduleModel.TempPlan.AdsTimePlaying);
+
+            var validationContext = new ScheduleValidationContext()
+            {
+                Schedule = scheduleModel.Schedule,
+                Plan = scheduleModel.TempPlan,
+                AdPointValidations = adPointsValidations,
+                ExistingAdsPeriods = existingsAdsPeriods,
+                NewAdsPeriods = newAdsPeriods
+            };
 
             var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
             scheduleValidator.Validate(validationContext);
@@ -84,52 +75,54 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-        //public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleValidationModel scheduleModel)
-        //{
-        //    if (scheduleModel == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(scheduleModel));
-        //    }
+        public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel)
+        {
+            if (scheduleModel == null)
+            {
+                throw new ArgumentNullException(nameof(scheduleModel));
+            }
 
-        //    var plan = await _planRepository.GetByIdAsync(scheduleModel.PlanId);
-        //    plan.
-        //    if (plan == null)
-        //    {
-        //        throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
-        //    }
+            var plan = await _planRepository.GetByIdAsync(scheduleModel.PlanId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
+            }
+            
+            var adPointsIds = await _planRepository.GetAdPointsIds(plan.Id);
+            var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(adPointsIds.ToArray(), plan.StartDateTime, plan.EndDateTime);
 
-        //    var validationContext = new ScheduleValidationContext()
-        //    {
-        //        Schedule = scheduleModel.Schedule,
-        //        Plan = scheduleModel.TempPlan
-        //    };
+            var existingsAdsPeriods = GetAdPointsAdPeriods(adPointsValidations);
+            var newAdsPeriods = GetScheduleTimeLine(scheduleModel, plan.AdsTimePlaying);
 
-        //    var adsPeriods = new List<AdPeriod>();
-        //    var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(scheduleModel.AdPointIds, scheduleModel.TempPlan.StartDateTime, scheduleModel.TempPlan.EndDateTime);
+            var validationContext = new ScheduleValidationContext()
+            {
+                Schedule = scheduleModel,
+                AdPointValidations = adPointsValidations,
+                ExistingAdsPeriods = existingsAdsPeriods,
+                NewAdsPeriods = newAdsPeriods
+            };
 
-        //    foreach (var adPoint in adPointsValidations)
-        //    {
-        //        foreach (var plan in adPoint.Plans)
-        //        {
-        //            var planAdsPeriods = GenerateTimeLine(plan.Schedules, plan.AdsTimePlaying);
-        //            adsPeriods.AddRange(planAdsPeriods);
-        //        }
-        //    }
+            var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
+            scheduleValidator.Validate(validationContext);
 
+            var validationResult = new ValidationResult<string>()
+            {
+                Errors = validationContext.Errors
+            };
 
-        //    validationContext.AdPointValidations = adPointsValidations;
-        //    validationContext.AdPointAdsPeriods = adsPeriods;
+            return validationResult;
+        }
 
-        //    var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
-        //    scheduleValidator.Validate(validationContext);
+        public async Task<List<AdPeriod>> GetAdPointTimeLine(int adPointId)
+        {
+            var adPeriods = new List<AdPeriod>();
+            var adPointSchedules = await _scheduleRepository.GetByAdPoint(adPointId);
 
-        //    var validationResult = new ValidationResult<string>()
-        //    {
-        //        Errors = validationContext.Errors
-        //    };
-
-        //    return validationResult;
-        //}
+            foreach (var schedule in adPointSchedules)
+            {
+                var a = GetScheduleTimeLine(schedule, );
+            }
+        }
 
         public async Task CreateAsync(CreateScheduleModel createModel)
         {
@@ -192,8 +185,27 @@ namespace AdOut.Planning.Core.Managers
         }
 
 
+        private List<AdPeriod> GetAdPointsAdPeriods(List<AdPointValidation> adPointsValidations)
+        {
+            var adPeriods = new List<AdPeriod>();
+
+            foreach (var adPoint in adPointsValidations)
+            {
+                foreach (var plan in adPoint.Plans)
+                {
+                    foreach (var schedule in plan.Schedules)
+                    {                  
+                        var schdeduleAdsPeriods = GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+                        adPeriods.AddRange(schdeduleAdsPeriods);
+                    }
+                }
+            }
+
+            return adPeriods;
+        }
+
         //todo: make unit tests
-        private List<AdPeriod> GenerateTimeLine(ScheduleValidation schedule, TimeSpan adsTimePlaying)
+        private List<AdPeriod> GetScheduleTimeLine(ScheduleModel schedule, TimeSpan adsTimePlaying)
         {
             var adsPeriods = new List<AdPeriod>();
 
@@ -215,6 +227,7 @@ namespace AdOut.Planning.Core.Managers
                 var adEndTime = adStartTime.Add(adsTimePlaying);
                 var adPeriod = new AdPeriod()
                 {
+                    PlanId = schedule.PlanId,
                     StartTime = adStartTime,
                     EndTime = adEndTime,
                     Date = schedule.Date,
@@ -226,6 +239,6 @@ namespace AdOut.Planning.Core.Managers
             }
 
             return adsPeriods;
-        }
+        }  
     }
 }

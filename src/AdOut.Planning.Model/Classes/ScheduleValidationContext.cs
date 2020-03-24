@@ -6,7 +6,7 @@ namespace AdOut.Planning.Model.Classes
 {
     public class ScheduleValidationContext
     {
-        public ScheduleValidation Schedule { get; set; }
+        public ScheduleModel Schedule { get; set; }
 
         public PlanValidationModel Plan { get; set; }
 

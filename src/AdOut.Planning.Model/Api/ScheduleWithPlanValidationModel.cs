@@ -1,6 +1,4 @@
-﻿using AdOut.Planning.Model.Dto;
-
-namespace AdOut.Planning.Model.Api
+﻿namespace AdOut.Planning.Model.Api
 {
     public class ScheduleWithPlanValidationModel
     {
@@ -8,6 +6,6 @@ namespace AdOut.Planning.Model.Api
 
         public PlanValidationModel TempPlan { get; set; }
 
-        public ScheduleValidation Schedule { get; set; }
+        public ScheduleModel Schedule { get; set; }
     }
 }
