@@ -57,7 +57,7 @@ namespace AdOut.Planning.Core.Managers
             {
                 Schedule = scheduleModel.Schedule,
                 Plan = scheduleModel.Plan,
-                AdPointValidations = adPointsValidations,
+                AdPointsValidations = adPointsValidations,
                 ExistingAdsPeriods = existingsAdsPeriods,
                 NewAdsPeriods = newAdsPeriods
             };
@@ -104,7 +104,7 @@ namespace AdOut.Planning.Core.Managers
             var validationContext = new ScheduleValidationContext()
             {
                 Schedule = scheduleDto,
-                AdPointValidations = adPointsValidations,
+                AdPointsValidations = adPointsValidations,
                 ExistingAdsPeriods = existingsAdsPeriods,
                 NewAdsPeriods = newAdsPeriods
             };
@@ -123,9 +123,9 @@ namespace AdOut.Planning.Core.Managers
         public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var plansTimeLines = new List<PlanTimeLine>();
-            var plans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
+            var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
 
-            foreach (var plan in plans)
+            foreach (var plan in adPointPlans)
             {
                 var planTimeLine = new PlanTimeLine() { PlanId = plan.Id };     
                 foreach (var schedule in plan.Schedules)
@@ -203,7 +203,7 @@ namespace AdOut.Planning.Core.Managers
 
         private List<AdPeriod> GetAdPointsAdsPeriods(List<AdPointValidation> adPointsValidations)
         {
-            var adPeriods = new List<AdPeriod>();
+            var adsPeriods = new List<AdPeriod>();
 
             foreach (var adPoint in adPointsValidations)
             {
@@ -212,12 +212,12 @@ namespace AdOut.Planning.Core.Managers
                     foreach (var schedule in plan.Schedules)
                     {
                         var schdeduleAdsPeriods = GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
-                        adPeriods.AddRange(schdeduleAdsPeriods);
+                        adsPeriods.AddRange(schdeduleAdsPeriods);
                     }
                 }
             }
 
-            return adPeriods;
+            return adsPeriods;
         }
 
         private List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule, TimeSpan adsTimePlaying)

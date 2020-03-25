@@ -15,7 +15,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
 
             var schedule = context.Schedule;
-            foreach (var adPoint in context.AdPointValidations)
+            foreach (var adPoint in context.AdPointsValidations)
             {
                 if(schedule.StartTime < adPoint.StartWorkingTime || schedule.EndTime > adPoint.EndWorkingTime)
                 {

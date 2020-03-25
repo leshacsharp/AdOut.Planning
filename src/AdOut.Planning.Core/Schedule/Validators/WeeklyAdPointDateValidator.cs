@@ -20,7 +20,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
             {
                 var schedulerDayOfWeek = context.Schedule.DayOfWeek.Value;
 
-                foreach (var adPoint in context.AdPointValidations)
+                foreach (var adPoint in context.AdPointsValidations)
                 {
                     var isScheduleDayADayOff = adPoint.DaysOff.Contains(schedulerDayOfWeek);
                     if (isScheduleDayADayOff)

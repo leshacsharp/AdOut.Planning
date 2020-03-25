@@ -15,6 +15,8 @@ namespace AdOut.Planning.DataProvider.DI
 
             services.AddScoped<IAdPointRepository, AdPointRepository>();
             services.AddScoped<IPlanRepository, PlanRepository>();
+            services.AddScoped<IPlanAdPointRepository, PlanAdPointRepository>();
+            services.AddScoped<IPlanAdRepository, PlanAdRepository>();
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IAdRepository, AdRepository>();
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();

@@ -10,7 +10,7 @@ namespace AdOut.Planning.Model.Classes
 
         public PlanValidationModel Plan { get; set; }
 
-        public List<AdPointValidation> AdPointValidations { get; set; }
+        public List<AdPointValidation> AdPointsValidations { get; set; }
 
         public List<AdPeriod> NewAdsPeriods { get; set; }
 

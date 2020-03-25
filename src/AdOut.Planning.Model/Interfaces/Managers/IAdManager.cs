@@ -11,9 +11,9 @@ namespace AdOut.Planning.Model.Interfaces.Managers
     public interface IAdManager : IBaseManager<Ad>
     {
         Task<ValidationResult<ContentError>> ValidateAsync(IFormFile file);
-        Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel);
+        Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel, string userId);
         Task<AdDto> GetByIdAsync(int adId);
-        Task CreateAsync(CreateAdModel createModel);
+        Task CreateAsync(CreateAdModel createModel, string userId);
         Task UpdateAsync(UpdateAdModel updateModel);
         Task DeleteAsync(int adId);
     }

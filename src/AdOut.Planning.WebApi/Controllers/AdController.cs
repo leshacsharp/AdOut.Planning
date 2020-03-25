@@ -37,7 +37,8 @@ namespace AdOut.Planning.WebApi.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            await _adManager.CreateAsync(createModel);
+            //todo: get userId from claims
+            await _adManager.CreateAsync(createModel, null);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -48,7 +49,8 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAds(AdsFilterModel filter)
         {
-            var ads = await _adManager.GetAdsAsync(filter);
+            //todo: get userId from claims
+            var ads = await _adManager.GetAdsAsync(filter, null);
             return Ok(ads);
         }
 

@@ -24,7 +24,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
 
                 foreach (var eAdPeriod in context.ExistingAdsPeriods)
                 {
-                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||  //daily adPeriods
+                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||   //daily adPeriods
                          eAdPeriod.DayOfWeek == scheduleDate.DayOfWeek ||            //weekly adPeriods
                          eAdPeriod.Date == scheduleDate)                             //specific adPeriods
                     {

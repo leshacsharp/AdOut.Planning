@@ -53,12 +53,12 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var contentValidator = _contentValidatorProvider.CreateContentValidator(extension);
-
             var contentStream = content.OpenReadStream();
+
             return contentValidator.ValidateAsync(contentStream);
         }
 
-        public async Task CreateAsync(CreateAdModel createModel)
+        public async Task CreateAsync(CreateAdModel createModel, string userId)
         {
             if (createModel == null)
             {
@@ -76,10 +76,12 @@ namespace AdOut.Planning.Core.Managers
 
             var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
             var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);
+
             await Task.WhenAll(saveContentTask, saveThumbnailTask);
 
             var ad = new Ad()
             {
+                UserId = userId,
                 Title = createModel.Title,
                 Path = pathForContent,
                 PreviewPath = pathForThumbnail,
@@ -91,14 +93,14 @@ namespace AdOut.Planning.Core.Managers
             Create(ad);
         }
 
-        public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel)
+        public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel, string userId)
         {
             if (filterModel == null)
             {
                 throw new ArgumentNullException(nameof(filterModel));
             }
 
-            var filter = PredicateBuilder.New<Ad>(ad => ad.UserId == filterModel.UserId);
+            var filter = PredicateBuilder.New<Ad>(ad => ad.UserId == userId);
 
             if (filterModel.Title != null)
             {
