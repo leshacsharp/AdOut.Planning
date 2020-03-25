@@ -9,6 +9,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
     {
         Task<ValidationResult<string>> ValidateScheduleWithTempPlanAsync(TempScheduleValidationModel scheduleModel);
         Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleValidationModel scheduleModel);
+        Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId);
         Task CreateAsync(CreateScheduleModel createModel);
         Task UpdateAsync(UpdateScheduleModel updateModel);
     }

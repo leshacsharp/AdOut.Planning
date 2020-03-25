@@ -120,6 +120,26 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
+        public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId)
+        {
+            var plansTimeLines= new List<PlanTimeLine>();
+            var plans = await _planRepository.GetByAdPoint(adPointId);
+
+            foreach (var plan in plans)
+            {
+                var planTimeLine = new PlanTimeLine() { PlanId = plan.Id };     
+                foreach (var schedule in plan.Schedules)
+                {
+                    var scheduleAdPeriods = GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+                    planTimeLine.AdsPeriods.AddRange(scheduleAdPeriods);
+                }
+
+                plansTimeLines.Add(planTimeLine);
+            }
+
+            return plansTimeLines;
+        }
+
         public async Task CreateAsync(CreateScheduleModel createModel)
         {
             if (createModel == null) 
