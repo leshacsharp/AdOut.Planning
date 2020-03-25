@@ -2,7 +2,7 @@
 
 namespace AdOut.Planning.Model.Api
 {
-    public class CreateScheduleModel
+    public class ScheduleModel
     {
         public int PlanId { get; set; }
 

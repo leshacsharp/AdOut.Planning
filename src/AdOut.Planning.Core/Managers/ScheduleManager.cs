@@ -73,7 +73,7 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-        public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleValidationModel scheduleModel)
+        public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel)
         {
             if (scheduleModel == null)
             {
@@ -120,10 +120,10 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-        public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId)
+        public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var plansTimeLines= new List<PlanTimeLine>();
-            var plans = await _planRepository.GetByAdPoint(adPointId);
+            var plansTimeLines = new List<PlanTimeLine>();
+            var plans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
 
             foreach (var plan in plans)
             {
@@ -140,7 +140,7 @@ namespace AdOut.Planning.Core.Managers
             return plansTimeLines;
         }
 
-        public async Task CreateAsync(CreateScheduleModel createModel)
+        public async Task CreateAsync(ScheduleModel createModel)
         {
             if (createModel == null) 
             {

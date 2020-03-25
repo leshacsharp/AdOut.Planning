@@ -3,6 +3,7 @@ using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,14 +17,14 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId)
+        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var query = from pap in Context.PlanAdPoints
 
                         join p in Context.Plans on pap.PlanId equals p.Id
                         join s in Context.Schedules on p.Id equals s.PlanId
 
-                        where pap.AdPointId == adPointId
+                        where pap.AdPointId == adPointId && p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
 
                         select new
                         {
@@ -56,15 +57,6 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result.ToList();
         }
 
-        public Task<Plan> GetByIdAsync(int planId)
-        {
-            var query = from p in Context.Plans
-                        where p.Id == planId
-                        select p;
-
-            return query.SingleOrDefaultAsync();
-        }
-
         public Task<List<int>> GetAdPointsIds(int plaId)
         {
             var query = from pap in Context.PlanAdPoints
@@ -72,6 +64,15 @@ namespace AdOut.Planning.DataProvider.Repositories
                         select pap.AdPointId;
 
             return query.ToListAsync();
+        }
+
+        public Task<Plan> GetByIdAsync(int planId)
+        {
+            var query = from p in Context.Plans
+                        where p.Id == planId
+                        select p;
+
+            return query.SingleOrDefaultAsync();
         }
     }
 }
