@@ -1,5 +1,4 @@
-﻿using AdOut.Planning.Model.Api;
-using AdOut.Planning.Model.Enum;
+﻿using AdOut.Planning.Model.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +14,6 @@ namespace AdOut.Planning.Model.Dto
 
         public TimeSpan AdsTimePlaying { get; set; }
 
-        public IEnumerable<ScheduleModel> Schedules { get; set; }
+        public IEnumerable<ScheduleDto> Schedules { get; set; }
     }
 }

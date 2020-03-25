@@ -16,9 +16,44 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId)
+        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId)
         {
-            throw new System.NotImplementedException();
+            var query = from pap in Context.PlanAdPoints
+
+                        join p in Context.Plans on pap.PlanId equals p.Id
+                        join s in Context.Schedules on p.Id equals s.PlanId
+
+                        where pap.AdPointId == adPointId
+
+                        select new
+                        {
+                            p.Id,
+                            p.AdsTimePlaying,
+
+                            Schedule = new ScheduleDto()
+                            {
+                                StartTime = s.StartTime,
+                                EndTime = s.EndTime,
+                                BreakTime = s.BreakTime,
+                                DayOfWeek = s.DayOfWeek,
+                                Date = s.Date
+                            }
+                        };
+
+            var plans = await query.ToListAsync();
+
+            var result = from p in plans
+                         group p by new { p.Id, p.AdsTimePlaying }
+                         into pGroup
+
+                         select new AdPointPlanDto()
+                         {
+                             Id = pGroup.Key.Id,
+                             AdsTimePlaying = pGroup.Key.AdsTimePlaying,
+                             Schedules = pGroup.Select(p => p.Schedule)
+                         };
+
+            return result.ToList();
         }
 
         public Task<Plan> GetByIdAsync(int planId)

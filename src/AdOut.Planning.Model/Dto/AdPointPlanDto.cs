@@ -10,6 +10,6 @@ namespace AdOut.Planning.Model.Dto
 
         public TimeSpan AdsTimePlaying { get; set; }
 
-        public IEnumerable<ScheduleModel> Schedules { get; set; }
+        public IEnumerable<ScheduleDto> Schedules { get; set; }
     }
 }
