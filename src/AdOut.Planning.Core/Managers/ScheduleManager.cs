@@ -160,7 +160,7 @@ namespace AdOut.Planning.Core.Managers
                 BreakTime = createModel.BreakTime,
                 Date = createModel.Date,
                 DayOfWeek = createModel.DayOfWeek,
-                PlanId = plan.Id
+                Plan = plan
             };
 
             Create(schedule);

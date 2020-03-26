@@ -20,18 +20,21 @@ namespace AdOut.Planning.Core.Managers
     public class AdManager : BaseManager<Ad>, IAdManager
     {
         private readonly IAdRepository _adRepository;
+        private readonly IPlanAdRepository _planAdRepository;
         private readonly IContentStorage _contentStorage;
         private readonly IContentValidatorProvider _contentValidatorProvider;
         private readonly IContentHelperProvider _contentHelperProvider;
             
         public AdManager(
             IAdRepository adRepository,
+            IPlanAdRepository planAdRepository,
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
             IContentHelperProvider contentHelperProvider) 
             : base(adRepository)
         {
             _adRepository = adRepository;
+            _planAdRepository = planAdRepository;
             _contentStorage = contentStorage;
             _contentValidatorProvider = contentValidatorProvider;
             _contentHelperProvider = contentHelperProvider;
@@ -161,10 +164,10 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Ad with id={adId} was not found");
             }
 
-            var adHavePlans = _adRepository.HavePlans(adId);
-            if (adHavePlans)
+            var adHasPlans = await _planAdRepository.Read(pa => pa.AdId == adId).AnyAsync();
+            if (adHasPlans)
             {
-                throw new BadRequestException($"Exist plans that use Ad with id={adId}");
+                throw new BadRequestException($"Ad with id={adId} is used in plans");
             }
 
             var deleteContentTask = _contentStorage.DeleteObjectAsync(ad.Path);

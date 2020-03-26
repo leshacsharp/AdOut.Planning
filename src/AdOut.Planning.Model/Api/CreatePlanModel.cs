@@ -20,9 +20,9 @@ namespace AdOut.Planning.Model.Api
 
         public TimeSpan AdsTimePlaying { get; set; }
 
-        public int[] AdPointsIds { get; set; }
+        public IEnumerable<int> AdPointsIds { get; set; }
 
-        public int[] AdsIds { get; set; }
+        public IEnumerable<PlanAdModel> PlanAds { get; set; }
 
         public IEnumerable<ScheduleDto> Schedules { get; set; }
     }
