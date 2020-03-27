@@ -1,7 +1,11 @@
-﻿namespace AdOut.Planning.Model.Interfaces.Schedule
+﻿using AdOut.Planning.Model.Enum;
+
+namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface IScheduleValidatorFactory
     {
-        IScheduleValidator CreateValidator();
+        IScheduleValidator CreateChainOfValidators();
+
+        IScheduleValidator CreateChainOfValidators(ValidatorType type);
     }
 }

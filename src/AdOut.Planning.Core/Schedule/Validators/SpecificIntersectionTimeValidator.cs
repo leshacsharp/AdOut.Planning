@@ -7,7 +7,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorOrder(6)]
+    [ValidatorType(ValidatorType.ScheduleIntersectionTime)]
     public class SpecificIntersectionTimeValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)

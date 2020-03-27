@@ -7,13 +7,15 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorOrder(3)]
+    [ValidatorType(ValidatorType.SchedulePlan)]
     public class SpecificPlanDateValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException(nameof(context));
+            }
         
             if(context.Plan.Type == PlanType.Specific)
             { 
