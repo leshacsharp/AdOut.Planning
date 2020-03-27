@@ -17,14 +17,14 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<AdPointPlanDto>> GetByAdPoints(int[] adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var query = from pap in Context.PlanAdPoints
+            var query = from pap in Context.PlanAdPoints.Where(pap => adPointId.Contains(pap.AdPointId))
 
                         join p in Context.Plans on pap.PlanId equals p.Id
                         join s in Context.Schedules on p.Id equals s.PlanId
 
-                        where pap.AdPointId == adPointId && p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
+                        where p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
 
                         select new
                         {
@@ -55,15 +55,6 @@ namespace AdOut.Planning.DataProvider.Repositories
                          };
 
             return result.ToList();
-        }
-
-        public Task<List<int>> GetAdPointsIds(int plaId)
-        {
-            var query = from pap in Context.PlanAdPoints
-                        where pap.PlanId == plaId
-                        select pap.AdPointId;
-
-            return query.ToListAsync();
         }
 
         public Task<Plan> GetByIdAsync(int planId)

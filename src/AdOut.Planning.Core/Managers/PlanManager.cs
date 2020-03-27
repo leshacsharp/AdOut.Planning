@@ -1,9 +1,14 @@
 ﻿using AdOut.Planning.Model.Api;
+using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
+using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
+using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
@@ -16,13 +21,17 @@ namespace AdOut.Planning.Core.Managers
         private readonly IPlanAdPointRepository _planAdPointRepository;
         private readonly IPlanAdRepository _planAdRepository;
         private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
+        private readonly ITimeLineHelper _timeLineHelper;
 
         public PlanManager(
             IPlanRepository planRepository,
             IAdRepository adRepository,
             IPlanAdPointRepository planAdPointRepository,
             IPlanAdRepository planAdRepository,
-            IScheduleRepository scheduleRepository) 
+            IScheduleRepository scheduleRepository,
+            IScheduleValidatorFactory scheduleValidatorFactory,
+            ITimeLineHelper timeLineHelper) 
             : base(planRepository)
         {
             _planRepository = planRepository;
@@ -30,6 +39,62 @@ namespace AdOut.Planning.Core.Managers
             _planAdPointRepository = planAdPointRepository;
             _planAdRepository = planAdRepository;
             _scheduleRepository = scheduleRepository;
+            _scheduleValidatorFactory = scheduleValidatorFactory;
+            _timeLineHelper = timeLineHelper;
+        }
+
+
+        public async Task<ValidationResult<string>> ValidatePlanExtension(int planId, DateTime newEndDate)
+        {
+            var plan = await _planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);
+            var adPointsPlans = await _planRepository.GetByAdPoints(adPointsIds.ToArray(), plan.EndDateTime, newEndDate);
+
+            var existingAdsPeriods = new List<AdPeriod>();
+            foreach (var apPlan in adPointsPlans)
+            {
+                foreach (var schedule in apPlan.Schedules)
+                {
+                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, apPlan.AdsTimePlaying);
+                    existingAdsPeriods.AddRange(schdeduleAdsPeriods);
+                }
+            }
+
+            var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.ScheduleIntersectionTime);
+            var planSchedules = await _scheduleRepository.GetByPlanAsync(planId);
+
+            var validationContext = new ScheduleValidationContext()
+            {
+                ExistingAdsPeriods = existingAdsPeriods,
+                Plan = new PlanValidation() { Type = plan.Type }
+            };
+
+            foreach (var schedule in planSchedules)
+            {
+                var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+
+                validationContext.Schedule = schedule;
+                validationContext.NewAdsPeriods = scheduleAdsPeriods;
+
+                scheduleTimeIntersectionValidator.Validate(validationContext);
+            }
+
+            var validationResult = new ValidationResult<string>()
+            {
+                Errors = validationContext.Errors
+            };
+
+            return validationResult;
+        }
+
+        public async Task ExtendPlan(int planId, DateTime newEndDate)
+        {
+
         }
 
         public void Create(CreatePlanModel createModel, string userId)
@@ -88,6 +153,24 @@ namespace AdOut.Planning.Core.Managers
 
                 _scheduleRepository.Create(scheduleEntity);
             }
+        }
+
+        public async Task UpdateAsync(UpdatePlanModel updateModel)
+        {
+            if (updateModel == null)
+            {
+                throw new ArgumentNullException(nameof(updateModel));
+            }
+
+            var plan = await _planRepository.GetByIdAsync(updateModel.PlanId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={updateModel.PlanId} was not found");
+            }
+
+            plan.Title = updateModel.Title;
+
+            Update(plan);
         }
 
         public async Task AddAdAsync(int planId, int adId, int order)
