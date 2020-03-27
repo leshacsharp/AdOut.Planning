@@ -6,7 +6,7 @@ namespace AdOut.Planning.Model.Api
     {
         public int[] AdPointIds { get; set; }
 
-        public PlanValidationModel Plan { get; set; }
+        public PlanValidation Plan { get; set; }
 
         public ScheduleDto Schedule { get; set; }
     }

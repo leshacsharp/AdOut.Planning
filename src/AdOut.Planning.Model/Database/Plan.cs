@@ -12,7 +12,7 @@ namespace AdOut.Planning.Model.Database
         [Key]
         public int Id { get; set; }
 
-        //this is foreign key for table "Users" that exists in AdOut.Identity database (another microservice)
+        //this is foreign key for table "Users" that exist in AdOut.Identity database (another microservice)
         [Required]
         public string UserId { get; set; }
 

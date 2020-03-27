@@ -8,7 +8,7 @@ namespace AdOut.Planning.Model.Classes
     {
         public ScheduleDto Schedule { get; set; }
 
-        public PlanValidationModel Plan { get; set; }
+        public PlanValidation Plan { get; set; }
 
         public List<AdPointValidation> AdPointsValidations { get; set; }
 

@@ -2,6 +2,7 @@
 using AdOut.Planning.Core.Content.Storages;
 using AdOut.Planning.Core.Managers;
 using AdOut.Planning.Core.Schedule.Factories;
+using AdOut.Planning.Core.Schedule.Helpers;
 using AdOut.Planning.Core.Schedule.Providers;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Managers;
@@ -33,6 +34,7 @@ namespace AdOut.Planning.Core.DI
 
             services.AddScoped<IScheduleValidatorFactory, ScheduleValidatorFactory>();
             services.AddScoped<IScheduleTimeHelperProvider, ScheduleTimeHelperProvider>();
+            services.AddScoped<ITimeLineHelper, TimeLineHelper>();
 
             services.AddScoped<IDirectoryDistributor, EmptyDirectoryDistributor>();
             services.AddScoped<IContentStorage, LocalStorage>();

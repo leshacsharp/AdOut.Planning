@@ -16,23 +16,29 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IPlanRepository _planRepository;
+        private readonly IPlanAdPointRepository _planAdPointRepository;
         private readonly IAdPointRepository _adPointRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
+        private readonly ITimeLineHelper _timeLineHelper;
 
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
+            IPlanAdPointRepository planAdPointRepository,
             IAdPointRepository adPointRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
-            IScheduleTimeHelperProvider scheduleTimeHelperProvider)
+            IScheduleTimeHelperProvider scheduleTimeHelperProvider,
+            ITimeLineHelper timeLineHelper)
             : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
+            _planAdPointRepository = planAdPointRepository;
             _adPointRepository = adPointRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
+            _timeLineHelper = timeLineHelper;
         }
 
         public async Task<ValidationResult<string>> ValidateScheduleWithTempPlanAsync(TempScheduleValidationModel scheduleModel)
@@ -47,11 +53,11 @@ namespace AdOut.Planning.Core.Managers
 
             foreach (var schedule in scheduleModel.Plan.Schedules)
             {
-                var tempAdPeriods = GetScheduleTimeLine(schedule, scheduleModel.Plan.AdsTimePlaying);
+                var tempAdPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, scheduleModel.Plan.AdsTimePlaying);
                 existingsAdsPeriods.AddRange(tempAdPeriods);
             }
 
-            var newAdsPeriods = GetScheduleTimeLine(scheduleModel.Schedule, scheduleModel.Plan.AdsTimePlaying);
+            var newAdsPeriods = _timeLineHelper.GetScheduleTimeLine(scheduleModel.Schedule, scheduleModel.Plan.AdsTimePlaying);
 
             var validationContext = new ScheduleValidationContext()
             {
@@ -62,7 +68,7 @@ namespace AdOut.Planning.Core.Managers
                 NewAdsPeriods = newAdsPeriods
             };
 
-            var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
+            var scheduleValidator = _scheduleValidatorFactory.CreateChainOfValidators();
             scheduleValidator.Validate(validationContext);
 
             var validationResult = new ValidationResult<string>()
@@ -95,21 +101,28 @@ namespace AdOut.Planning.Core.Managers
                 Date = scheduleModel.Date
             };
             
-            var adPointsIds = await _planRepository.GetAdPointsIds(plan.Id);
+            var adPointsIds = await _planAdPointRepository.GetAdPointsIds(plan.Id);
             var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(adPointsIds.ToArray(), plan.StartDateTime, plan.EndDateTime);
 
             var existingsAdsPeriods = GetAdPointsAdsPeriods(adPointsValidations);
-            var newAdsPeriods = GetScheduleTimeLine(scheduleDto, plan.AdsTimePlaying);
+            var newAdsPeriods = _timeLineHelper.GetScheduleTimeLine(scheduleDto, plan.AdsTimePlaying);
 
             var validationContext = new ScheduleValidationContext()
             {
                 Schedule = scheduleDto,
                 AdPointsValidations = adPointsValidations,
                 ExistingAdsPeriods = existingsAdsPeriods,
-                NewAdsPeriods = newAdsPeriods
+                NewAdsPeriods = newAdsPeriods,
+                Plan = new PlanValidation()
+                {
+                    Type = plan.Type,
+                    StartDateTime = plan.StartDateTime,
+                    EndDateTime = plan.EndDateTime,
+                    AdsTimePlaying = plan.AdsTimePlaying
+                }
             };
 
-            var scheduleValidator = _scheduleValidatorFactory.CreateValidator();
+            var scheduleValidator = _scheduleValidatorFactory.CreateChainOfValidators();
             scheduleValidator.Validate(validationContext);
 
             var validationResult = new ValidationResult<string>()
@@ -123,14 +136,14 @@ namespace AdOut.Planning.Core.Managers
         public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var plansTimeLines = new List<PlanTimeLine>();
-            var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
+            var adPointPlans = await _planRepository.GetByAdPoints(new int[] { adPointId }, dateFrom, dateTo);
 
             foreach (var plan in adPointPlans)
             {
                 var planTimeLine = new PlanTimeLine() { PlanId = plan.Id };     
                 foreach (var schedule in plan.Schedules)
                 {
-                    var scheduleAdPeriods = GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+                    var scheduleAdPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
                     planTimeLine.AdsPeriods.AddRange(scheduleAdPeriods);
                 }
 
@@ -211,7 +224,7 @@ namespace AdOut.Planning.Core.Managers
                 {
                     foreach (var schedule in plan.Schedules)
                     {
-                        var schdeduleAdsPeriods = GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+                        var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
                         adsPeriods.AddRange(schdeduleAdsPeriods);
                     }
                 }
@@ -219,40 +232,5 @@ namespace AdOut.Planning.Core.Managers
 
             return adsPeriods;
         }
-
-        private List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule, TimeSpan adsTimePlaying)
-        {
-            var adsPeriods = new List<AdPeriod>();
-
-            AdPeriod currentAdPeriod = null;
-            var adTimeWithBreak = adsTimePlaying + schedule.BreakTime;
-
-            while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
-            {
-                var adStartTime = TimeSpan.Zero;
-                if (currentAdPeriod == null)
-                {
-                    adStartTime = schedule.StartTime;
-                }
-                else
-                {
-                    adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
-                }
-
-                var adEndTime = adStartTime.Add(adsTimePlaying);
-                var adPeriod = new AdPeriod()
-                {
-                    StartTime = adStartTime,
-                    EndTime = adEndTime,
-                    Date = schedule.Date,
-                    DayOfWeek = schedule.DayOfWeek
-                };
-
-                currentAdPeriod = adPeriod;
-                adsPeriods.Add(adPeriod);
-            }
-
-            return adsPeriods;
-        }  
     }
 }
