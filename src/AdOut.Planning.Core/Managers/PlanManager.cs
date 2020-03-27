@@ -125,16 +125,29 @@ namespace AdOut.Planning.Core.Managers
             var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
             if (planAd == null)
             {
-                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+                throw new ObjectNotFoundException($"PlanAd with id=(planId={planId},adId={adId}) was not found");
             }
          
-            var countPlanAds = await _planAdRepository.Read(pa => pa.PlanId == planId).CountAsync();
-            if (countPlanAds == 1)
+            var planAdsCount = await _planAdRepository.Read(pa => pa.PlanId == planId).CountAsync();
+            if (planAdsCount == 1)
             {
                 throw new BadRequestException($"Plan cannot exist without ads. Plan with id={planId} has one ad");
             }
 
             _planAdRepository.Delete(planAd);
+        }
+
+        public async Task UpdateAdAsync(int planId, int adId, int order)
+        {
+            var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
+            if (planAd == null)
+            {
+                throw new ObjectNotFoundException($"Plan Ad with id=(planId={planId},adId={adId}) was not found");
+            }
+
+            planAd.Order = order;
+
+            _planAdRepository.Update(planAd);
         }
     }
 }

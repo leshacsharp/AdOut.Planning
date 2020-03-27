@@ -11,5 +11,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
         Task AddAdAsync(int planId, int adId, int order);
 
         Task DeleteAdAsync(int planId, int adId);
+
+        Task UpdateAdAsync(int planId, int adId, int order);
     }
 }
