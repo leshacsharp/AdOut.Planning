@@ -10,5 +10,6 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
     {
         Task<List<AdPointPlanDto>> GetByAdPoints(int[] adPointId, DateTime dateFrom, DateTime dateTo);
         Task<Plan> GetByIdAsync(int planId);
+        Task<PlanDto> GetDtoByIdAsync(int planId);
     }
 }

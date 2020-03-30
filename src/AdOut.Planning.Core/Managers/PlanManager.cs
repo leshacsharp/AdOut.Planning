@@ -43,60 +43,6 @@ namespace AdOut.Planning.Core.Managers
             _timeLineHelper = timeLineHelper;
         }
 
-
-        public async Task<ValidationResult<string>> ValidatePlanExtension(int planId, DateTime newEndDate)
-        {
-            var plan = await _planRepository.GetByIdAsync(planId);
-            if (plan == null)
-            {
-                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
-            }
-
-            var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);
-            var adPointsPlans = await _planRepository.GetByAdPoints(adPointsIds.ToArray(), plan.EndDateTime, newEndDate);
-
-            var existingAdsPeriods = new List<AdPeriod>();
-            foreach (var apPlan in adPointsPlans)
-            {
-                foreach (var schedule in apPlan.Schedules)
-                {
-                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, apPlan.AdsTimePlaying);
-                    existingAdsPeriods.AddRange(schdeduleAdsPeriods);
-                }
-            }
-
-            var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.ScheduleIntersectionTime);
-            var planSchedules = await _scheduleRepository.GetByPlanAsync(planId);
-
-            var validationContext = new ScheduleValidationContext()
-            {
-                ExistingAdsPeriods = existingAdsPeriods,
-                Plan = new PlanValidation() { Type = plan.Type }
-            };
-
-            foreach (var schedule in planSchedules)
-            {
-                var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
-
-                validationContext.Schedule = schedule;
-                validationContext.NewAdsPeriods = scheduleAdsPeriods;
-
-                scheduleTimeIntersectionValidator.Validate(validationContext);
-            }
-
-            var validationResult = new ValidationResult<string>()
-            {
-                Errors = validationContext.Errors
-            };
-
-            return validationResult;
-        }
-
-        public async Task ExtendPlan(int planId, DateTime newEndDate)
-        {
-
-        }
-
         public void Create(CreatePlanModel createModel, string userId)
         {
             if (createModel == null)
@@ -169,6 +115,75 @@ namespace AdOut.Planning.Core.Managers
             }
 
             plan.Title = updateModel.Title;
+
+            Update(plan);
+        }
+
+        public Task<PlanDto> GetByIdAsync(int planId)
+        {
+            return _planRepository.GetDtoByIdAsync(planId);
+        }
+
+        public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate)
+        {
+            var plan = await _planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            var validationResult = new ValidationResult<string>();
+
+            if (plan.EndDateTime >= newEndDate)
+            {
+                validationResult.Errors.Add($"New end date can't be less or equal than current end date");
+            }
+
+            var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);
+            var adPointsPlans = await _planRepository.GetByAdPoints(adPointsIds.ToArray(), plan.EndDateTime, newEndDate);
+
+            var existingAdsPeriods = new List<AdPeriod>();
+            foreach (var apPlan in adPointsPlans)
+            {
+                foreach (var schedule in apPlan.Schedules)
+                {
+                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, apPlan.AdsTimePlaying);
+                    existingAdsPeriods.AddRange(schdeduleAdsPeriods);
+                }
+            }
+
+            var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.ScheduleIntersectionTime);
+            var planSchedules = await _scheduleRepository.GetByPlanAsync(planId);
+
+            var validationContext = new ScheduleValidationContext()
+            {
+                ExistingAdsPeriods = existingAdsPeriods,
+                Plan = new PlanValidation() { Type = plan.Type }
+            };
+
+            foreach (var schedule in planSchedules)
+            {
+                var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+
+                validationContext.Schedule = schedule;
+                validationContext.NewAdsPeriods = scheduleAdsPeriods;
+
+                scheduleTimeIntersectionValidator.Validate(validationContext);
+            }
+
+            validationResult.Errors.AddRange(validationContext.Errors);
+            return validationResult;
+        }
+
+        public async Task ExtendPlanAsync(int planId, DateTime newEndDate)
+        {
+            var plan = await _planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            plan.EndDateTime = newEndDate;
 
             Update(plan);
         }

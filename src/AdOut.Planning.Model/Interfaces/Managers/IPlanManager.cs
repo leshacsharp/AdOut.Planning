@@ -1,6 +1,7 @@
 ﻿using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
+using AdOut.Planning.Model.Dto;
 using System;
 using System.Threading.Tasks;
 
@@ -12,9 +13,11 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 
         Task UpdateAsync(UpdatePlanModel updateModel);
 
-        Task<ValidationResult<string>> ValidatePlanExtension(int planId, DateTime newEndDate);
+        Task<PlanDto> GetByIdAsync(int planId);
 
-        Task ExtendPlan(int planId, DateTime newEndDate);
+        Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate);
+
+        Task ExtendPlanAsync(int planId, DateTime newEndDate);
 
         Task AddAdAsync(int planId, int adId, int order);
 

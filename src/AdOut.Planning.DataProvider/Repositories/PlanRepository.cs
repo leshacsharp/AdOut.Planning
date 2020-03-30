@@ -57,6 +57,73 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result.ToList();
         }
 
+        public async Task<PlanDto> GetDtoByIdAsync(int planId)
+        {
+            var query = from p in Context.Plans
+
+                        join s in Context.Schedules on p.Id equals s.PlanId into sJoin
+                        from s in sJoin.DefaultIfEmpty()
+
+                        join pa in Context.PlanAds on p.Id equals pa.PlanId into paJoin
+                        from pa in paJoin.DefaultIfEmpty()
+
+                        join a in Context.Ads on pa.AdId equals a.Id into aJoin
+                        from a in aJoin.DefaultIfEmpty()
+
+                        where p.Id == planId
+
+                        select new
+                        {
+                            p.Id,
+                            p.Title,
+                            p.Type,
+                            p.Status,
+                            p.StartDateTime,
+                            p.EndDateTime,
+                            p.AdsTimePlaying,
+
+                            Schedule = s != null ? new ScheduleDto()
+                            {
+                                StartTime = s.StartTime,
+                                EndTime = s.EndTime,
+                                BreakTime = s.BreakTime,
+                                Date = s.Date,
+                                DayOfWeek = s.DayOfWeek
+                            } : null,
+
+                            Ad = a != null ? new AdListDto()
+                            {
+                                Id = a.Id,
+                                Title = a.Title,
+                                Status = a.Status,
+                                ContentType = a.ContentType,
+                                PreviewPath = a.PreviewPath
+                            } : null
+                        };
+
+            var plans = await query.ToListAsync();
+
+            var result = from p in plans
+                         group p by p.Id
+                         into pGroup
+
+                         let plan = pGroup.SingleOrDefault()
+                         select new PlanDto()
+                         {
+                             Title = plan.Title,
+                             Type = plan.Type,
+                             Status = plan.Status,
+                             StartDateTime = plan.StartDateTime,
+                             EndDateTime = plan.EndDateTime,
+                             AdsTimePlaying = plan.AdsTimePlaying,
+
+                             Schedules = pGroup.Where(p => p.Schedule != null).Select(p => p.Schedule),
+                             Ads = pGroup.Where(p => p.Ad != null).Select(p => p.Ad)
+                         };
+
+            return result.SingleOrDefault();
+        }
+
         public Task<Plan> GetByIdAsync(int planId)
         {
             var query = from p in Context.Plans
@@ -64,6 +131,6 @@ namespace AdOut.Planning.DataProvider.Repositories
                         select p;
 
             return query.SingleOrDefaultAsync();
-        }
+        } 
     }
 }

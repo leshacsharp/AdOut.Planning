@@ -20,9 +20,9 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 
             var timeOfOneAdShowWithBreak = plan.AdsTimePlaying + schedule.BreakTime;
 
-            var timePeriodOfShowingAdsByPlan = GetTimeOfExecutingPlan(plan, schedule);
+            var timeOfExecutingPlan = GetTimeOfExecutingPlan(plan, schedule);
 
-            var countOfShowingAds = timePeriodOfShowingAdsByPlan / timeOfOneAdShowWithBreak;
+            var countOfShowingAds = timeOfExecutingPlan / timeOfOneAdShowWithBreak;
             var timeOfShowingAds = countOfShowingAds * plan.AdsTimePlaying;
 
             return timeOfShowingAds;

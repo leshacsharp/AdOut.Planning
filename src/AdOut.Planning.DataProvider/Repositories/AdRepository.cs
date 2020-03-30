@@ -1,6 +1,5 @@
 ﻿using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
-using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -72,23 +71,29 @@ namespace AdOut.Planning.DataProvider.Repositories
                             a.AddedDate,
                             a.ConfirmationDate,
 
-                            PlanId = p != null ? p.Id : (int?)null,
-                            PlanTitle = p != null ? p.Title : null,
-                            PlanStatus = p != null ? p.Status : PlanStatus.Off,
+                            Plan = p != null ? new AdPlanDto()
+                            {
+                                Id = p.Id,
+                                Title = p.Title,
+                                Status = p.Status
+                            } : null,
 
-                            AdPointId = ap != null ? ap.Id : (int?)null,
-                            AdPointLocation = ap != null ? ap.Location : null
+                            AdPoint = ap != null ? new AdAdPointDto()
+                            {
+                                Id = ap.Id,
+                                Location = ap.Location
+                            } : null
                         };
 
             var ads = await query.ToListAsync();
 
             var result = from a in ads
-                         group a by a.Id into aGroup
+                         group a by a.Id
+                         into aGroup
 
-                         let ad = aGroup.FirstOrDefault()
+                         let ad = aGroup.SingleOrDefault()
                          select new AdDto()
                          {
-                             Id = aGroup.Key,
                              Title = ad.Title,
                              Path = ad.Path,
                              ContentType = ad.ContentType,
@@ -96,18 +101,8 @@ namespace AdOut.Planning.DataProvider.Repositories
                              AddedDate = ad.AddedDate,
                              ConfirmationDate = ad.ConfirmationDate,
 
-                             Plans = aGroup.Where(a => a.PlanId != null).Select(a => new AdPlanDto()
-                             {
-                                 Id = (int)a.PlanId,
-                                 Status = a.PlanStatus,
-                                 Title = a.PlanTitle
-                             }),
-
-                             AdPoints = aGroup.Where(a => a.AdPointId != null).Select(a => new AdAdPointDto()
-                             {
-                                 Id = (int)a.AdPointId,
-                                 Location = a.AdPointLocation
-                             })
+                             Plans = aGroup.Where(a => a.Plan != null).Select(a => a.Plan),
+                             AdPoints = aGroup.Where(a => a.AdPoint != null).Select(a => a.AdPoint)                      
                          };
 
             return result.SingleOrDefault();
