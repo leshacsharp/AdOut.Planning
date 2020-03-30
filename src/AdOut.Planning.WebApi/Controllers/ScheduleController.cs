@@ -26,7 +26,7 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpPost]
         [Route("validate-temp")]
-        [ProducesResponseType(typeof(ValidationResult<string>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationResult<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ValidateWithTempPlan(TempScheduleValidationModel validationModel)
         {
             var validationResult = await _scheduleManager.ValidateScheduleWithTempPlanAsync(validationModel);   

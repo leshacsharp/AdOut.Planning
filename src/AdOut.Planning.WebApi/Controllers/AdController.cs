@@ -46,7 +46,7 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpGet]
         [Route("ads")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<AdListDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAds(AdsFilterModel filter)
         {
             //todo: get userId from claims
@@ -55,7 +55,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("ad/{id}")]
+        [Route("{id}")]
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAd(int id)
         {
