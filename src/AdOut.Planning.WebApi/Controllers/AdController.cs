@@ -3,6 +3,7 @@ using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
+using AdOut.Planning.WebApi.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -37,8 +38,9 @@ namespace AdOut.Planning.WebApi.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            //todo: get userId from claims
-            await _adManager.CreateAsync(createModel, null);
+            var userId = User.GetUserId();
+
+            await _adManager.CreateAsync(createModel, userId);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -47,10 +49,10 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpGet]
         [Route("ads")]
         [ProducesResponseType(typeof(List<AdListDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAds(AdsFilterModel filter)
+        public async Task<IActionResult> GetAds([FromQuery]AdsFilterModel filter)
         {
-            //todo: get userId from claims
-            var ads = await _adManager.GetAdsAsync(filter, null);
+            var userId = User.GetUserId();
+            var ads = await _adManager.GetAdsAsync(filter, userId);
             return Ok(ads);
         }
 

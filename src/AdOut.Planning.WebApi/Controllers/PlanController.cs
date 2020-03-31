@@ -2,6 +2,7 @@
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
+using AdOut.Planning.WebApi.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -56,8 +57,9 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> CreatePlan(CreatePlanModel createModel)
         {
-            //todo: add userId
-            _planManager.Create(createModel, null);
+            var userId = User.GetUserId();
+
+            _planManager.Create(createModel, userId);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
