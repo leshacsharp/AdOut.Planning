@@ -1,4 +1,5 @@
 ﻿using AdOut.Planning.Model.Interfaces.Context;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.DataProvider.Context
@@ -11,9 +12,9 @@ namespace AdOut.Planning.DataProvider.Context
             _context = context;
         }
 
-        public Task SaveChangesAsync()
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return _context.SaveChangesAsync();
+            return _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

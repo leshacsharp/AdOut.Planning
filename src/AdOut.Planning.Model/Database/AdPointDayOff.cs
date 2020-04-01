@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
-    [Table("AdPointDaysOff")]
+    [Table("AdPointDayOff")]
     public class AdPointDayOff
     {
         [ForeignKey(nameof(AdPoint))]

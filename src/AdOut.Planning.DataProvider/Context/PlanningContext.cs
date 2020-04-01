@@ -13,13 +13,21 @@ namespace AdOut.Planning.DataProvider.Context
         }
 
         public DbSet<Ad> Ads { get; set; }
+
         public DbSet<Plan> Plans { get; set; }
+
         public DbSet<Schedule> Schedules { get; set; }
+
         public DbSet<AdPoint> AdPoints { get; set; }
+
         public DbSet<PlanAd> PlanAds { get; set; }
+
         public DbSet<PlanAdPoint> PlanAdPoints { get; set; }
+
         public DbSet<DayOff> DaysOff { get; set; }
+
         public DbSet<AdPointDayOff> AdPointDaysOff { get; set; }
+
         public DbSet<Configuration> Configurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
