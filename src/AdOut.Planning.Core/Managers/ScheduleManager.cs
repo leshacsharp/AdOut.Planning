@@ -197,11 +197,11 @@ namespace AdOut.Planning.Core.Managers
 
             var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(plan, schedule);
 
-            schedule.StartTime = updateModel.StartTime;
-            schedule.EndTime = updateModel.EndTime;
-            schedule.BreakTime = updateModel.BreakTime;
-            schedule.DayOfWeek = updateModel.DayOfWeek;
-            schedule.Date = updateModel.Date;
+            schedule.StartTime = updateModel.Data.StartTime;
+            schedule.EndTime = updateModel.Data.EndTime;
+            schedule.BreakTime = updateModel.Data.BreakTime;
+            schedule.DayOfWeek = updateModel.Data.DayOfWeek;
+            schedule.Date = updateModel.Data.Date;
 
             var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(plan, schedule);
 

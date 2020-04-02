@@ -66,6 +66,12 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(UpdateScheduleModel updateModel)
         {
+            var validationResult = await _scheduleManager.ValidateScheduleAsync(updateModel.Data);
+            if (!validationResult.IsSuccessed)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             await _scheduleManager.UpdateAsync(updateModel);
             await _commitProvider.SaveChangesAsync();
 
