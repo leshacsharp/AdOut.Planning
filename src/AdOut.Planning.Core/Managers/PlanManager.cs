@@ -119,6 +119,17 @@ namespace AdOut.Planning.Core.Managers
             Update(plan);
         }
 
+        public async Task DeleteAsync(int planId)
+        {
+            var plan = await _planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            Delete(plan);
+        }
+
         public Task<PlanDto> GetByIdAsync(int planId)
         {
             return _planRepository.GetDtoByIdAsync(planId);
@@ -137,6 +148,7 @@ namespace AdOut.Planning.Core.Managers
             if (plan.EndDateTime >= newEndDate)
             {
                 validationResult.Errors.Add($"New end date can't be less or equal than current end date");
+                return validationResult;
             }
 
             var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);

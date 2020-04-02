@@ -164,8 +164,8 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Ad with id={adId} was not found");
             }
 
-            var adHasPlans = await _planAdRepository.Read(pa => pa.AdId == adId).AnyAsync();
-            if (adHasPlans)
+            var havePlans = await _planAdRepository.Read(pa => pa.AdId == adId).AnyAsync();
+            if (havePlans)
             {
                 throw new BadRequestException($"Ad with id={adId} is used in plans");
             }

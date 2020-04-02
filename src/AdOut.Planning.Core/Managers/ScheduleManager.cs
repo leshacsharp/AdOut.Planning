@@ -213,7 +213,6 @@ namespace AdOut.Planning.Core.Managers
             Update(schedule);
         }
 
-
         private List<AdPeriod> GetAdPointsAdsPeriods(List<AdPointValidation> adPointsValidations)
         {
             var adsPeriods = new List<AdPeriod>();

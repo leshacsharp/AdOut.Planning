@@ -65,6 +65,17 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
+        [HttpDelete]
+        [Route("delete")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> CreatePlan(int id)
+        {
+            await _planManager.DeleteAsync(id);
+            await _commitProvider.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         [HttpPut]
         [Route("update")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

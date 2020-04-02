@@ -13,6 +13,8 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 
         Task UpdateAsync(UpdatePlanModel updateModel);
 
+        Task DeleteAsync(int planId);
+
         Task<PlanDto> GetByIdAsync(int planId);
 
         Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate);
