@@ -26,11 +26,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<PlanAdPoint> GetByIdAsync(int planId, int adPointId)
         {
-            var query = from pap in Context.PlanAdPoints
-                        where pap.PlanId == planId && pap.AdPointId == adPointId
-                        select pap;
-
-            return query.SingleOrDefaultAsync();
+            return Context.PlanAdPoints.SingleOrDefaultAsync(pap => pap.PlanId == planId && pap.AdPointId == adPointId);
         }
     }
 }

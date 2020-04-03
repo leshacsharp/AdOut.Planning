@@ -1,5 +1,4 @@
-﻿using AdOut.Planning.Model.Api;
-using AdOut.Planning.Model.Dto;
+﻿using AdOut.Planning.Model.Dto;
 using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Classes
@@ -8,7 +7,7 @@ namespace AdOut.Planning.Model.Classes
     {
         public ScheduleDto Schedule { get; set; }
 
-        public PlanValidation Plan { get; set; }
+        public SchedulePlan Plan { get; set; }
 
         public List<AdPointValidation> AdPointsValidations { get; set; }
 

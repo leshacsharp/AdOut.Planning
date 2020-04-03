@@ -24,15 +24,6 @@ namespace AdOut.Planning.WebApi.Controllers
             _commitProvider = commitProvider;
         }
 
-        [HttpPost]
-        [Route("validate-temp")]
-        [ProducesResponseType(typeof(ValidationResult<string>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ValidateWithTempPlan(TempScheduleValidationModel validationModel)
-        {
-            var validationResult = await _scheduleManager.ValidateScheduleWithTempPlanAsync(validationModel);   
-            return Ok(validationResult);
-        }
-
         [HttpGet]
         [Route("plans-timelines")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -66,7 +57,17 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(UpdateScheduleModel updateModel)
         {
-            var validationResult = await _scheduleManager.ValidateScheduleAsync(updateModel.Data);
+            var scheduleModel = new ScheduleModel()
+            {
+                PlanId = updateModel.PlanId,
+                StartTime = updateModel.StartTime,
+                EndTime = updateModel.EndTime,
+                BreakTime = updateModel.BreakTime,
+                Date = updateModel.Date,
+                DayOfWeek = updateModel.DayOfWeek
+            };
+
+            var validationResult = await _scheduleManager.ValidateScheduleAsync(scheduleModel);
             if (!validationResult.IsSuccessed)
             {
                 return BadRequest(validationResult.Errors);

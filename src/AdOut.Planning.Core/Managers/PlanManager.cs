@@ -9,7 +9,6 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Managers
@@ -17,33 +16,30 @@ namespace AdOut.Planning.Core.Managers
     public class PlanManager : BaseManager<Plan>, IPlanManager
     {
         private readonly IPlanRepository _planRepository;
-        private readonly IAdRepository _adRepository;
+        private readonly IAdPointRepository _adPointRepository; 
         private readonly IPlanAdPointRepository _planAdPointRepository;
-        private readonly IPlanAdRepository _planAdRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly ITimeLineHelper _timeLineHelper;
 
         public PlanManager(
             IPlanRepository planRepository,
-            IAdRepository adRepository,
+            IAdPointRepository adPointRepository,
             IPlanAdPointRepository planAdPointRepository,
-            IPlanAdRepository planAdRepository,
             IScheduleRepository scheduleRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
             ITimeLineHelper timeLineHelper) 
             : base(planRepository)
         {
             _planRepository = planRepository;
-            _adRepository = adRepository;
+            _adPointRepository = adPointRepository;
             _planAdPointRepository = planAdPointRepository;
-            _planAdRepository = planAdRepository;
             _scheduleRepository = scheduleRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _timeLineHelper = timeLineHelper;
         }
 
-        public void Create(CreatePlanModel createModel, string userId)
+        public async Task CreateAsync(CreatePlanModel createModel, string userId)
         {
             if (createModel == null)
             {
@@ -64,40 +60,19 @@ namespace AdOut.Planning.Core.Managers
 
             foreach (var adPointId in createModel.AdPointsIds)
             {
+                var adPoint = await _adPointRepository.GetByIdAsync(adPointId);
+                if (adPoint == null)
+                {
+                    throw new ObjectNotFoundException($"AdPoint with id={adPointId} was not found");
+                }
+
                 var planAdPoint = new PlanAdPoint()
                 {
-                    AdPointId = adPointId,
+                    AdPoint = adPoint,
                     Plan = plan
                 };
 
                 _planAdPointRepository.Create(planAdPoint);
-            }
-
-            foreach (var planAd in createModel.PlanAds)
-            {
-                var planAdEntity = new PlanAd()
-                {
-                    AdId = planAd.AdId,
-                    Order = planAd.Order,
-                    Plan = plan
-                };
-
-                _planAdRepository.Create(planAdEntity);
-            }
-
-            foreach (var scheduleDto in createModel.Schedules)
-            {
-                var scheduleEntity = new Model.Database.Schedule()
-                {
-                    StartTime = scheduleDto.StartTime,
-                    EndTime = scheduleDto.EndTime,
-                    BreakTime = scheduleDto.BreakTime,
-                    Date = scheduleDto.Date,
-                    DayOfWeek = scheduleDto.DayOfWeek,
-                    Plan = plan
-                };
-
-                _scheduleRepository.Create(scheduleEntity);
             }
         }
 
@@ -170,7 +145,7 @@ namespace AdOut.Planning.Core.Managers
             var validationContext = new ScheduleValidationContext()
             {
                 ExistingAdsPeriods = existingAdsPeriods,
-                Plan = new PlanValidation() { Type = plan.Type }
+                Plan = new SchedulePlan() { Type = plan.Type }
             };
 
             foreach (var schedule in planSchedules)
@@ -198,66 +173,6 @@ namespace AdOut.Planning.Core.Managers
             plan.EndDateTime = newEndDate;
 
             Update(plan);
-        }
-
-        public async Task AddAdAsync(int planId, int adId, int order)
-        {
-            var plan = await _planRepository.GetByIdAsync(planId);
-            if (plan == null)
-            {
-                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
-            }
-
-            var ad = await _adRepository.GetByIdAsync(adId);
-            if (ad == null)
-            {
-                throw new ObjectNotFoundException($"Ad with id={adId} was not found");
-            }
-
-            var planHasAdWithSameOrder = await _planAdRepository.Read(pa => pa.PlanId == planId && pa.Order == order).AnyAsync();
-            if (planHasAdWithSameOrder)
-            {
-                throw new BadRequestException($"Plan with id={planId} has ad with order={order}");
-            }
-
-            var planAd = new PlanAd()
-            {
-                Plan = plan,
-                Ad = ad,
-                Order = order
-            };
-
-            _planAdRepository.Create(planAd);
-        }
-
-        public async Task DeleteAdAsync(int planId, int adId)
-        {
-            var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
-            if (planAd == null)
-            {
-                throw new ObjectNotFoundException($"PlanAd with id=(planId={planId},adId={adId}) was not found");
-            }
-         
-            var planAdsCount = await _planAdRepository.Read(pa => pa.PlanId == planId).CountAsync();
-            if (planAdsCount == 1)
-            {
-                throw new BadRequestException($"Plan cannot exist without ads. Plan with id={planId} has one ad");
-            }
-
-            _planAdRepository.Delete(planAd);
-        }
-
-        public async Task UpdateAdAsync(int planId, int adId, int order)
-        {
-            var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
-            if (planAd == null)
-            {
-                throw new ObjectNotFoundException($"Plan Ad with id=(planId={planId},adId={adId}) was not found");
-            }
-
-            planAd.Order = order;
-
-            _planAdRepository.Update(planAd);
         }
     }
 }

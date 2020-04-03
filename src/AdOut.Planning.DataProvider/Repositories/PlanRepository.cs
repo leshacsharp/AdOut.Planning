@@ -126,11 +126,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<Plan> GetByIdAsync(int planId)
         {
-            var query = from p in Context.Plans
-                        where p.Id == planId
-                        select p;
-
-            return query.SingleOrDefaultAsync();
+            return Context.Plans.SingleOrDefaultAsync(p => p.Id == planId);
         } 
     }
 }

@@ -34,11 +34,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<Schedule> GetByIdAsync(int scheduleId)
         {
-            var query = from s in Context.Schedules
-                        where s.Id == scheduleId
-                        select s;
-
-            return query.SingleOrDefaultAsync();
+            return Context.Schedules.SingleOrDefaultAsync(p => p.Id == scheduleId);
         }      
     }
 }

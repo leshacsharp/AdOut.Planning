@@ -8,7 +8,6 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IScheduleManager : IBaseManager<Database.Schedule>
     {
-        Task<ValidationResult<string>> ValidateScheduleWithTempPlanAsync(TempScheduleValidationModel scheduleModel);
         Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel);
         Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo);
         Task CreateAsync(ScheduleModel createModel);

@@ -59,9 +59,15 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAd(int id)
         {
             var ad = await _adManager.GetByIdAsync(id);
+            if (ad == null)
+            {
+                return NotFound();
+            }
+
             return Ok(ad);
         }
 

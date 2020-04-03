@@ -15,13 +15,16 @@ namespace AdOut.Planning.WebApi.Controllers
     public class PlanController : ControllerBase
     {
         private readonly IPlanManager _planManager;
+        private readonly IPlanAdManager _planAdManager;
         private readonly ICommitProvider _commitProvider;
 
         public PlanController(
             IPlanManager planManager,
+            IPlanAdManager planAdManager,
             ICommitProvider commitProvider)
         {
             _planManager = planManager;
+            _planAdManager = planAdManager;
             _commitProvider = commitProvider;
         }
 
@@ -46,9 +49,15 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(PlanDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPlan(int id)
         {
             var plan = await _planManager.GetByIdAsync(id);
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
             return Ok(plan);
         }
 
@@ -59,7 +68,7 @@ namespace AdOut.Planning.WebApi.Controllers
         {
             var userId = User.GetUserId();
 
-            _planManager.Create(createModel, userId);
+            await _planManager.CreateAsync(createModel, userId);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -93,7 +102,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAdToPlan(int planId, int adId, int order)
         {
-            await _planManager.AddAdAsync(planId, adId, order);
+            await _planAdManager.AddAdToPlanAsync(planId, adId, order);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -105,7 +114,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAdFromPlan(int planId, int adId)
         {
-            await _planManager.DeleteAdAsync(planId, adId);
+            await _planAdManager.DeleteAdFromPlanAsync(planId, adId);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -114,10 +123,9 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpPut]
         [Route("update-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateAdInPlan(int planId, int adId, int order)
         {
-            await _planManager.UpdateAdAsync(planId, adId, order);
+            await _planAdManager.UpdateAdInPlanAsync(planId, adId, order);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();

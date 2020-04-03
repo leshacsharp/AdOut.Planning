@@ -36,11 +36,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<Ad> GetByIdAsync(int adId)
         {
-            var query = from a in Context.Ads
-                        where a.Id == adId
-                        select a;
-
-            return query.SingleOrDefaultAsync();
+            return Context.Ads.SingleOrDefaultAsync(ad => ad.Id == adId);
         }
 
         public async Task<AdDto> GetDtoByIdAsync(int adId)

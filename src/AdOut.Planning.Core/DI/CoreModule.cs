@@ -20,6 +20,7 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IAdManager, AdManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IPlanManager, PlanManager>();
+            services.AddScoped<IPlanAdManager, PlanAdManager>();
 
             var scheduleValidators = Assembly.GetCallingAssembly()
                             .GetTypes()
