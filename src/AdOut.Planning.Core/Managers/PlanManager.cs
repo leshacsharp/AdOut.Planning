@@ -139,7 +139,7 @@ namespace AdOut.Planning.Core.Managers
                 }
             }
 
-            var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.ScheduleIntersectionTime);
+            var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.IntersectionTime);
             var planSchedules = await _scheduleRepository.GetByPlanAsync(planId);
 
             var validationContext = new ScheduleValidationContext()

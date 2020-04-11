@@ -7,7 +7,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorType(ValidatorType.SchedulePlan)]
+    [ValidatorType(ValidatorType.Plan)]
     public class SpecificPlanDateValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)
@@ -16,8 +16,8 @@ namespace AdOut.Planning.Core.Schedule.Validators
             {
                 throw new ArgumentNullException(nameof(context));
             }
-        
-            if(context.Plan.Type == PlanType.Specific)
+
+            if (context.Plan.Type == PlanType.Specific)
             { 
                 var schedule = context.Schedule;
                 if (schedule.Date < context.Plan.StartDateTime || schedule.Date > context.Plan.EndDateTime)

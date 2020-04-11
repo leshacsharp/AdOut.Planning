@@ -2,8 +2,8 @@
 {
     public enum ValidatorType
     {
-        ScheduleIntersectionTime = 0,
-        SchedulePlan = 1,
-        ScheduleAdPoint = 2
+        AdPoint = 0,
+        Plan = 1,
+        IntersectionTime = 2
     }
 }

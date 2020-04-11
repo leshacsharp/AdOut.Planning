@@ -23,11 +23,15 @@ namespace AdOut.Planning.Core.Content.Validators.Video
         public async Task<ValidationResult<ContentError>> ValidateAsync(Stream content)
         {
             if (content == null)
-                throw new ArgumentNullException();
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
 
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
+            {
                 throw new ArgumentException(ContentValidationMessages.NotCorrectFormat, nameof(content));
+            }
 
             var validationResult = new ValidationResult<ContentError>();
  
@@ -81,7 +85,9 @@ namespace AdOut.Planning.Core.Content.Validators.Video
             var dimensionParts = minVideoDimensionConfig.Split('x', StringSplitOptions.RemoveEmptyEntries);
 
             if (dimensionParts.Length != 2)
+            {
                 throw new ConfigurationException("Invalid video dimesion config");
+            }
 
             var minVideoWidth = int.Parse(dimensionParts[0]);
             var minVideoHeight = int.Parse(dimensionParts[1]);

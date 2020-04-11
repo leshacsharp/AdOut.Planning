@@ -7,7 +7,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorType(ValidatorType.ScheduleIntersectionTime)]
+    [ValidatorType(ValidatorType.IntersectionTime)]
     class WeeklyIntersectionTimeValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)
@@ -22,7 +22,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 var schedule = context.Schedule;
                 foreach (var eAdPeriod in context.ExistingAdsPeriods)
                 {
-                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||  //daily adPeriods
+                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||   //daily adPeriods
                          eAdPeriod.Date?.DayOfWeek == schedule.DayOfWeek ||          //specific adPeriods
                          eAdPeriod.DayOfWeek == schedule.DayOfWeek)                  //weekly adPeriods
                     {

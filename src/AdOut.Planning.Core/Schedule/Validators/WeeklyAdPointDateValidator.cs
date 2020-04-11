@@ -8,7 +8,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorType(ValidatorType.ScheduleAdPoint)]
+    [ValidatorType(ValidatorType.AdPoint)]
     public class WeeklyAdPointDateValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)
@@ -20,14 +20,14 @@ namespace AdOut.Planning.Core.Schedule.Validators
 
             if (context.Plan.Type == PlanType.Weekly)
             {
-                var schedulerDayOfWeek = context.Schedule.DayOfWeek.Value;
+                var scheduleDayOfWeek = context.Schedule.DayOfWeek.Value;
 
                 foreach (var adPoint in context.AdPointsValidations)
                 {
-                    var isScheduleDayADayOff = adPoint.DaysOff.Contains(schedulerDayOfWeek);
+                    var isScheduleDayADayOff = adPoint.DaysOff.Contains(scheduleDayOfWeek);
                     if (isScheduleDayADayOff)
                     {
-                        var validationMessage = string.Format(ScheduleValidationMessages.ScheduleDayIsADayOff_T, schedulerDayOfWeek, adPoint.Location);
+                        var validationMessage = string.Format(ScheduleValidationMessages.ScheduleDayIsADayOff_T, scheduleDayOfWeek, adPoint.Location);
                         context.Errors.Add(validationMessage);
                     }
                 }

@@ -8,7 +8,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
 {
-    [ValidatorType(ValidatorType.ScheduleAdPoint)]
+    [ValidatorType(ValidatorType.AdPoint)]
     public class SpecificAdPointDateValidator : BaseScheduleValidator
     {
         public override void Validate(ScheduleValidationContext context)

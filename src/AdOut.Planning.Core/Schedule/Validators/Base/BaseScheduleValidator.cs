@@ -11,7 +11,9 @@ namespace AdOut.Planning.Core.Schedule.Validators.Base
         public void SetNextValidator(IScheduleValidator validator)
         {
             if (validator == null)
+            {
                 throw new ArgumentNullException(nameof(validator));
+            }
 
             _nextValidator = validator;
         }

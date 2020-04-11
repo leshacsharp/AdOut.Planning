@@ -21,11 +21,15 @@ namespace AdOut.Planning.Core.Content.Validators.Image
         public async Task<ValidationResult<ContentError>> ValidateAsync(Stream content)
         {
             if (content == null)
+            {
                 throw new ArgumentNullException(nameof(content));
+            }
 
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
+            {
                 throw new ArgumentException(ContentValidationMessages.NotCorrectFormat, nameof(content));
+            }
 
             var validationResult = new ValidationResult<ContentError>();
 
@@ -67,7 +71,9 @@ namespace AdOut.Planning.Core.Content.Validators.Image
             var dimensionParts = minImageDimensionConfig.Split('x', StringSplitOptions.RemoveEmptyEntries);
 
             if (dimensionParts.Length != 2)
+            {
                 throw new ConfigurationException("Invalid image dimesion config");
+            }
 
             var minImageWidth = int.Parse(dimensionParts[0]);
             var minImageHeight = int.Parse(dimensionParts[1]);
