@@ -179,7 +179,7 @@ namespace AdOut.Planning.Core.Managers
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
-                throw new BadRequestException(ScheduleValidationMessages.ScheduleTimeIsIncreased);
+                throw new BadRequestException(ValidationMessages.Schedule.TimeIsIncreased);
             }
 
             Update(schedule);

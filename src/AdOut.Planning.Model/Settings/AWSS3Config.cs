@@ -1,4 +1,4 @@
-﻿namespace AdOut.Planning.Core.Settings
+﻿namespace AdOut.Planning.Model.Settings
 {
     public class AWSS3Config
     {

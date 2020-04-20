@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.Model", "AdOut.Planning.Model\AdOut.Planning.Model.csproj", "{3710DD22-6BAA-47DA-A897-B80BB29FC150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.Model", "AdOut.Planning.Model\AdOut.Planning.Model.csproj", "{3710DD22-6BAA-47DA-A897-B80BB29FC150}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.DataProvider", "AdOut.Planning.DataProvider\AdOut.Planning.DataProvider.csproj", "{3333E76A-3BD3-4514-BD4D-DCC85B25BABE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.DataProvider", "AdOut.Planning.DataProvider\AdOut.Planning.DataProvider.csproj", "{3333E76A-3BD3-4514-BD4D-DCC85B25BABE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.Core", "AdOut.Planning.Core\AdOut.Planning.Core.csproj", "{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.Core", "AdOut.Planning.Core\AdOut.Planning.Core.csproj", "{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.Common", "AdOut.Planning.Common\AdOut.Planning.Common.csproj", "{507E2C4A-780F-47E0-AAFD-A40044377963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.Common", "AdOut.Planning.Common\AdOut.Planning.Common.csproj", "{507E2C4A-780F-47E0-AAFD-A40044377963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.WebApi", "AdOut.Planning.WebApi\AdOut.Planning.WebApi.csproj", "{E238654C-AE27-49EA-88DE-772E78365BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.WebApi", "AdOut.Planning.WebApi\AdOut.Planning.WebApi.csproj", "{E238654C-AE27-49EA-88DE-772E78365BCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.EventBroker", "AdOut.Planning.EventBroker\AdOut.Planning.EventBroker.csproj", "{F4AC3328-08F7-4851-BB2A-8414C661E35E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4AC3328-08F7-4851-BB2A-8414C661E35E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4AC3328-08F7-4851-BB2A-8414C661E35E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4AC3328-08F7-4851-BB2A-8414C661E35E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4AC3328-08F7-4851-BB2A-8414C661E35E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

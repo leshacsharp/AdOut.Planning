@@ -1,6 +1,6 @@
 ﻿using AdOut.Planning.Common.Helpers;
-using AdOut.Planning.Core.Settings;
 using AdOut.Planning.Model.Interfaces.Content;
+using AdOut.Planning.Model.Settings;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
