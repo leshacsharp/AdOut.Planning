@@ -6,22 +6,25 @@ namespace AdOut.Planning.Model
     public static class Constants
     {
         //_T - template
-        public static class ScheduleValidationMessages
+        public static class ValidationMessages
         {
-            public const string ScheduleDayIsADayOff_T = "Schedule day of week ({0}) is a day off for Ad Point by {1} location";
-            public const string ScheduleDateIsADayOff_T = "Schedule date ({0}) is a day off for Ad Point({1})";
-            public const string ScheduleTimeIsNotAllowed_T = "Schedule time ({0}) is not allowed for AdPoint({1}) time mode({2})";
-            public const string ScheduleTimeIntersection_T = "Your schedule time ({0}) intersect schedule time ({1})";
-            public const string ScheduleDateOutOfBounds_T = "Schedule date({0}) is out of plan bounds({1})";
-            public const string ScheduleTimeIsIncreased = "Ads showing time increased compared to previos schedule state, you cannot increase it";
-        }
-        
-        public static class ContentValidationMessages
-        {
-            public const string NotCorrectFormat = "Format is not correct";
-            public const string NotCorrectSize = "Size is not correct";
-            public const string NotCorrectDimension = "Dimension is not correct";
-            public const string NotCorrectDuration = "Duration is not correct";
+            public static class Schedule
+            {
+                public const string DayIsADayOff_T = "Schedule day of week ({0}) is a day off for Ad Point by {1} location";
+                public const string DateIsADayOff_T = "Schedule date ({0}) is a day off for Ad Point({1})";
+                public const string TimeIsNotAllowed_T = "Schedule time ({0}) is not allowed for AdPoint({1}) time mode({2})";
+                public const string TimeIntersection_T = "Your schedule time ({0}) intersect schedule time ({1})";
+                public const string DateOutOfBounds_T = "Schedule date({0}) is out of plan bounds({1})";
+                public const string TimeIsIncreased = "Ads showing time increased compared to previos schedule state, you cannot increase it";
+            }
+
+            public static class Content
+            {
+                public const string NotCorrectFormat = "Format is not correct";
+                public const string NotCorrectSize = "Size is not correct";
+                public const string NotCorrectDimension = "Dimension is not correct";
+                public const string NotCorrectDuration = "Duration is not correct";
+            }
         }
 
         public static class ContentExtensions

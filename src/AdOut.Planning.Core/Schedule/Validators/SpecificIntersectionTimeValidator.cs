@@ -40,7 +40,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                                 var eAdPeriodDayOfWeek = eAdPeriod.DayOfWeek != null ? eAdPeriod.DayOfWeek.ToString() : "not day of week";
                                 var eAdPeriodTimeMode = $"{eAdPeriodDate}, {eAdPeriodDayOfWeek}, {eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                                var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIntersection_T, scheduleTimeMode, eAdPeriodTimeMode);
+                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, scheduleTimeMode, eAdPeriodTimeMode);
                                 context.Errors.Add(validationMessage);
                             }
                         }

@@ -28,7 +28,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
             {
-                throw new ArgumentException(ContentValidationMessages.NotCorrectFormat, nameof(content));
+                throw new ArgumentException(ValidationMessages.Content.NotCorrectFormat, nameof(content));
             }
 
             var validationResult = new ValidationResult<ContentError>();
@@ -43,7 +43,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
                 var dimensionError = new ContentError()
                 {
                     Code = ContentErrorCode.Dimension,
-                    Description = ContentValidationMessages.NotCorrectDimension
+                    Description = ValidationMessages.Content.NotCorrectDimension
                 };
 
                 validationResult.Errors.Add(dimensionError);
@@ -54,7 +54,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
                 var sizeError = new ContentError()
                 {
                     Code = ContentErrorCode.Size,
-                    Description = ContentValidationMessages.NotCorrectSize
+                    Description = ValidationMessages.Content.NotCorrectSize
                 };
 
                 validationResult.Errors.Add(sizeError);

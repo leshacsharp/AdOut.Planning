@@ -25,7 +25,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                     var schedulerTimeMode = $"{schedule.StartTime} - {schedule.EndTime}";
                     var adPointTimeMode = $"{adPoint.StartWorkingTime} - {adPoint.EndWorkingTime}";
 
-                    var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIsNotAllowed_T, schedulerTimeMode, adPoint.Location, adPointTimeMode);
+                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeIsNotAllowed_T, schedulerTimeMode, adPoint.Location, adPointTimeMode);
                     context.Errors.Add(validationMessage);
                 }
             }

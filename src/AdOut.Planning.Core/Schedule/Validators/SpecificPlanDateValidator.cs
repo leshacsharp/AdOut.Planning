@@ -25,7 +25,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                     var scheduleDate = schedule.Date.Value.ToShortDateString();
                     var planBounds = $"{context.Plan.StartDateTime.ToShortDateString()} - {context.Plan.EndDateTime.ToShortDateString()}";
 
-                    var validationMessage = string.Format(ScheduleValidationMessages.ScheduleDateOutOfBounds_T, scheduleDate, planBounds);
+                    var validationMessage = string.Format(ValidationMessages.Schedule.DateOutOfBounds_T, scheduleDate, planBounds);
                     context.Errors.Add(validationMessage);
                 }
             }

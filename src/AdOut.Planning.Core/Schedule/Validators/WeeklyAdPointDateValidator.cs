@@ -27,7 +27,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                     var isScheduleDayADayOff = adPoint.DaysOff.Contains(scheduleDayOfWeek);
                     if (isScheduleDayADayOff)
                     {
-                        var validationMessage = string.Format(ScheduleValidationMessages.ScheduleDayIsADayOff_T, scheduleDayOfWeek, adPoint.Location);
+                        var validationMessage = string.Format(ValidationMessages.Schedule.DayIsADayOff_T, scheduleDayOfWeek, adPoint.Location);
                         context.Errors.Add(validationMessage);
                     }
                 }

@@ -30,7 +30,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                             var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
                             var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                            var validationMessage = string.Format(ScheduleValidationMessages.ScheduleTimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode);
+                            var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode);
                             context.Errors.Add(validationMessage);
                         }
                     }
