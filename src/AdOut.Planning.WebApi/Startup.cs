@@ -60,7 +60,7 @@ namespace AdOut.Planning.WebApi
             services.AddEventBrokerModule();
 
             services.Configure<AWSS3Config>(Configuration.GetSection(nameof(AWSS3Config)));
-            services.Configure<RabbitConnection>(Configuration.GetSection(nameof(RabbitConnection)));
+            services.Configure<RabbitConfig>(Configuration.GetSection(nameof(RabbitConfig)));
 
             services.AddSwaggerGen(setup =>
             {
@@ -68,7 +68,7 @@ namespace AdOut.Planning.WebApi
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBroker eventBroker)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBroker eventBroker, IEventBinder eventBinder)
         {
             if (env.IsDevelopment())
             {
@@ -97,6 +97,8 @@ namespace AdOut.Planning.WebApi
             var modelAssembly = typeof(Constants).Assembly;
             var eventTypes = modelAssembly.GetTypes().Where(t => t.BaseType == typeof(IntegrationEvent));
             eventBroker.Configure(eventTypes);
+
+            eventBinder.Bind();
         }
     }
 }

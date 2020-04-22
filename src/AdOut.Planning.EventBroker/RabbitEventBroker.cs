@@ -1,82 +1,65 @@
-﻿using AdOut.Planning.Model.Events;
+﻿using AdOut.Planning.Common;
+using AdOut.Planning.Model.Events;
 using AdOut.Planning.Model.Interfaces.Infrastructure;
-using AdOut.Planning.Model.Settings;
-using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace AdOut.Planning.EventBroker
 {
-    public class RabbitEventBroker : IEventBroker, IDisposable
+    public class RabbitEventBroker : IEventBroker
     {
         private readonly IEventBrokerHelper _eventBrokerHelper;
-        private readonly IConnection _connection;
+        private readonly IConnectionManager _connectionManager;
 
         public RabbitEventBroker(
             IEventBrokerHelper eventBrokerHelper,
-            IOptions<RabbitConnection> connectionOptions)
+            IConnectionManager connectionManager
+         )
         {
             _eventBrokerHelper = eventBrokerHelper;
-
-            var connectionFactory = new ConnectionFactory()
-            {
-                UserName = connectionOptions.Value.UserName,
-                Password = connectionOptions.Value.Password,
-                VirtualHost = connectionOptions.Value.VirtualHost,
-                HostName = connectionOptions.Value.HostName
-            };
-
-            _connection = connectionFactory.CreateConnection();
+            _connectionManager = connectionManager;
         }
 
         public void Publish(IntegrationEvent integrationEvent)
-        {    
-            using (var channel = _connection.CreateModel())
-            {
-                var eventJson = JsonConvert.SerializeObject(integrationEvent, integrationEvent.GetType(), new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
+        {
+            var eventJson = JsonConvert.SerializeObject(integrationEvent, new TypeInfoConverter(integrationEvent.GetType()));
+            var messageBody = Encoding.UTF8.GetBytes(eventJson);
 
-                var messageBody = Encoding.UTF8.GetBytes(eventJson);
-                var exchange = _eventBrokerHelper.GetExchangeName(integrationEvent.GetType());
-                var routingKey = _eventBrokerHelper.GetQueueName(integrationEvent.GetType());
+            var exchange = _eventBrokerHelper.GetExchangeName(integrationEvent.GetType());
+            var routingKey = _eventBrokerHelper.GetQueueName(integrationEvent.GetType());
 
-                channel.BasicPublish(exchange, routingKey, null, messageBody);
-            }
+            var channel = _connectionManager.GetPublisherChannel();
+            channel.BasicPublish(exchange, routingKey, null, messageBody);
+
+            _connectionManager.ReturnPublisherChannel(channel);
         }
 
-        public void Subscribe<TEvent>(IBasicConsumer eventHandler) where TEvent : IntegrationEvent
-        {         
-            using (var channel = _connection.CreateModel())
-            {
-                var queue = _eventBrokerHelper.GetQueueName(typeof(TEvent));
-                channel.BasicConsume(queue, true, eventHandler);
-            }
+        public void Subscribe(Type eventType, IBasicConsumer eventHandler)
+        {
+            var queue = _eventBrokerHelper.GetQueueName(eventType);
+
+            var channel = _connectionManager.GetConsumerChannel();
+            channel.BasicConsume(queue, true, eventHandler); 
         }
 
         public void Configure(IEnumerable<Type> eventTypes)
         {
-            using (var channel = _connection.CreateModel())
+            var channel = _connectionManager.GetPublisherChannel();
+
+            foreach (var eventType in eventTypes)
             {
-                foreach (var eventType in eventTypes)
-                {
-                    var exchange = _eventBrokerHelper.GetExchangeName(eventType);
-                    var queue = _eventBrokerHelper.GetQueueName(eventType);
+                var exchange = _eventBrokerHelper.GetExchangeName(eventType);
+                var queue = _eventBrokerHelper.GetQueueName(eventType);
 
-                    channel.ExchangeDeclare(exchange, ExchangeType.Fanout);
-                    channel.QueueDeclare(queue, true, false, true, null);
-                    channel.QueueBind(queue, exchange, queue, null);
-                }
+                channel.ExchangeDeclare(exchange, ExchangeType.Fanout);
+                channel.QueueDeclare(queue, true, false, false, null);
+                channel.QueueBind(queue, exchange, queue, null);
             }
-        }
 
-        public void Dispose()
-        {
-            _connection.Close();
-        }  
+            _connectionManager.ReturnPublisherChannel(channel);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace AdOut.Planning.Model.Interfaces.Infrastructure
     public interface IEventBroker
     {
         void Publish(IntegrationEvent integrationEvent);
-        void Subscribe<TEvent>(IBasicConsumer eventHandler) where TEvent : IntegrationEvent;
+        void Subscribe(Type eventType, IBasicConsumer eventHandler);
         void Configure(IEnumerable<Type> eventTypes);
     }
 }
