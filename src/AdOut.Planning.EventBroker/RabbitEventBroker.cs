@@ -11,16 +11,15 @@ namespace AdOut.Planning.EventBroker
 {
     public class RabbitEventBroker : IEventBroker
     {
+        private readonly IChannelManager _channelManager;
         private readonly IEventBrokerHelper _eventBrokerHelper;
-        private readonly IConnectionManager _connectionManager;
 
         public RabbitEventBroker(
-            IEventBrokerHelper eventBrokerHelper,
-            IConnectionManager connectionManager
-         )
+            IChannelManager channelManager,
+            IEventBrokerHelper eventBrokerHelper)
         {
+            _channelManager = channelManager;
             _eventBrokerHelper = eventBrokerHelper;
-            _connectionManager = connectionManager;
         }
 
         public void Publish(IntegrationEvent integrationEvent)
@@ -31,23 +30,23 @@ namespace AdOut.Planning.EventBroker
             var exchange = _eventBrokerHelper.GetExchangeName(integrationEvent.GetType());
             var routingKey = _eventBrokerHelper.GetQueueName(integrationEvent.GetType());
 
-            var channel = _connectionManager.GetPublisherChannel();
+            var channel = _channelManager.GetPublisherChannel();
             channel.BasicPublish(exchange, routingKey, null, messageBody);
 
-            _connectionManager.ReturnPublisherChannel(channel);
+            _channelManager.ReturnPublisherChannel(channel);
         }
 
         public void Subscribe(Type eventType, IBasicConsumer eventHandler)
         {
             var queue = _eventBrokerHelper.GetQueueName(eventType);
 
-            var channel = _connectionManager.GetConsumerChannel();
-            channel.BasicConsume(queue, true, eventHandler); 
+            var channel = _channelManager.GetConsumerChannel();
+            channel.BasicConsume(queue, true, eventHandler);
         }
 
         public void Configure(IEnumerable<Type> eventTypes)
         {
-            var channel = _connectionManager.GetPublisherChannel();
+            var channel = _channelManager.GetPublisherChannel();
 
             foreach (var eventType in eventTypes)
             {
@@ -59,7 +58,7 @@ namespace AdOut.Planning.EventBroker
                 channel.QueueBind(queue, exchange, queue, null);
             }
 
-            _connectionManager.ReturnPublisherChannel(channel);
+            _channelManager.ReturnPublisherChannel(channel);
         }
     }
 }

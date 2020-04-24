@@ -1,5 +1,6 @@
 ﻿using AdOut.Planning.Model.Interfaces.Infrastructure;
 using AdOut.Planning.Model.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.EventBroker
 {
-    public class RabbitConnectionManager : IConnectionManager, IDisposable
+    public class RabbitChannelManager : IChannelManager, IDisposable
     {
         private readonly IConnection _connection;      
         private readonly Queue<IModel> _sharedChannels;
@@ -15,20 +16,18 @@ namespace AdOut.Planning.EventBroker
         private readonly object _syncEnqueue = new object();
         private readonly int _maxChannelsInPool;
 
-        public RabbitConnectionManager(IOptions<RabbitConfig> config)
+        public RabbitChannelManager(
+            IServiceScopeFactory serviceScopeFactory,
+            IOptions<RabbitConfig> config)
         {
-            var connectionFactory = new ConnectionFactory()
+            using (var scope = serviceScopeFactory.CreateScope())
             {
-                DispatchConsumersAsync = true,
-                UserName = config.Value.UserName,
-                Password = config.Value.Password,
-                VirtualHost = config.Value.VirtualHost,
-                HostName = config.Value.HostName
-            };
+                var connectionProvider = scope.ServiceProvider.GetRequiredService<IConnectionProvider>();
+                _connection = connectionProvider.CreateConnection();
+            }
 
-            _connection = connectionFactory.CreateConnection();
             _sharedChannels = new Queue<IModel>();
-            _maxChannelsInPool = config.Value.ChannelsPool;
+            _maxChannelsInPool = config.Value.MaxChannelsInPool;
         }
 
         public IModel GetConsumerChannel()
@@ -71,7 +70,7 @@ namespace AdOut.Planning.EventBroker
 
         public void Dispose()
         {
-            _connection.Close(); 
+            _connection.Close();
         }
     }
 }

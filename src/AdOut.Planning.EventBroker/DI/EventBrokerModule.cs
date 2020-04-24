@@ -7,8 +7,9 @@ namespace AdOut.Planning.EventBroker.DI
     {
         public static void AddEventBrokerModule(this IServiceCollection services)
         {
-            services.AddSingleton<IConnectionManager, RabbitConnectionManager>();
+            services.AddSingleton<IChannelManager, RabbitChannelManager>();
             services.AddScoped<IEventBroker, RabbitEventBroker>();
+            services.AddScoped<IConnectionProvider, RabbitConnectionProvider>();
             services.AddScoped<IEventBrokerHelper, EventBrokerHelper>();
             services.AddScoped<IEventBinder, EventBinder>();
         }
