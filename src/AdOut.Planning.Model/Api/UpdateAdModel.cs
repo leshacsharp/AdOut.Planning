@@ -7,6 +7,7 @@ namespace AdOut.Planning.Model.Api
         public int AdId { get; set; }
 
         [Required]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; }
     }
 }

@@ -29,14 +29,15 @@ namespace AdOut.Planning.Core.Content.Storages
             _awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
         }
 
-        public string GenerateFilePath(string fileExtension)
+        public string GenerateFilePath(string filePath)
         {
-            if (fileExtension == null)
+            if (filePath == null)
             {
-                throw new ArgumentNullException(fileExtension);
+                throw new ArgumentNullException(filePath);
             }
 
             var directory = _directorySeparator.GetDirectory();
+            var fileExtension = Path.GetExtension(filePath);
             var fileName = FileHelper.GetRandomFileName();
             var fullPath = $"{directory}/{fileName}{fileExtension}";
 

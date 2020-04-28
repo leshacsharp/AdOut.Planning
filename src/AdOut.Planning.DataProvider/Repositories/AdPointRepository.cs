@@ -50,14 +50,12 @@ namespace AdOut.Planning.DataProvider.Repositories
                             ap.EndWorkingTime,
 
                             DaysOff = d != null ? d.DayOfWeek : (DayOfWeek?)null,
-
                             Plan = p != null ? new PlanValidation()
                             {
                                 Type = p.Type,
                                 StartDateTime = p.StartDateTime,
                                 EndDateTime = p.EndDateTime,
                                 AdsTimePlaying = p.AdsTimePlaying,
-
                                 Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd).Select(s => new ScheduleDto()
                                 { 
                                     StartTime = s.StartTime,
@@ -82,7 +80,6 @@ namespace AdOut.Planning.DataProvider.Repositories
                              EndWorkingTime = apvGroup.Key.EndWorkingTime,
 
                              Plans = apvGroup.Where(apv => apv.Plan != null).Select(apv => apv.Plan),
-
                              DaysOff = apvGroup.Where(apv => apv.DaysOff != null).Select(apv => apv.DaysOff.Value)
                          };
 

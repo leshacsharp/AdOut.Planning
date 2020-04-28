@@ -70,6 +70,12 @@ namespace AdOut.Planning.DataProvider.Repositories
                         join a in Context.Ads on pa.AdId equals a.Id into aJoin
                         from a in aJoin.DefaultIfEmpty()
 
+                        join pap in Context.PlanAdPoints on p.Id equals pap.PlanId into papJoin
+                        from pap in papJoin.DefaultIfEmpty()
+
+                        join ap in Context.AdPoints on pap.AdPointId equals ap.Id into apJoin
+                        from ap in apJoin.DefaultIfEmpty()
+
                         where p.Id == planId
 
                         select new
@@ -98,30 +104,33 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 Status = a.Status,
                                 ContentType = a.ContentType,
                                 PreviewPath = a.PreviewPath
+                            } : null,
+
+                            AdPoint = ap != null ? new AdPointDto()
+                            {
+                                Id = ap.Id,
+                                Location = ap.Location
                             } : null
                         };
 
-            var plans = await query.ToListAsync();
+            var planItems = await query.ToListAsync();
+            var plan = planItems.SingleOrDefault();
 
-            var result = from p in plans
-                         group p by p.Id
-                         into pGroup
+            var result = plan != null ? new PlanDto()
+            {
+                Title = plan.Title,
+                Type = plan.Type,
+                Status = plan.Status,
+                StartDateTime = plan.StartDateTime,
+                EndDateTime = plan.EndDateTime,
+                AdsTimePlaying = plan.AdsTimePlaying,
 
-                         let plan = pGroup.SingleOrDefault()
-                         select new PlanDto()
-                         {
-                             Title = plan.Title,
-                             Type = plan.Type,
-                             Status = plan.Status,
-                             StartDateTime = plan.StartDateTime,
-                             EndDateTime = plan.EndDateTime,
-                             AdsTimePlaying = plan.AdsTimePlaying,
+                Schedules = planItems.Where(p => p.Schedule != null).Select(p => p.Schedule),
+                Ads = planItems.Where(p => p.Ad != null).Select(p => p.Ad),
+                AdPoints = planItems.Where(p => p.AdPoint != null).Select(p => p.AdPoint)
+            } : null;
 
-                             Schedules = pGroup.Where(p => p.Schedule != null).Select(p => p.Schedule),
-                             Ads = pGroup.Where(p => p.Ad != null).Select(p => p.Ad)
-                         };
-
-            return result.SingleOrDefault();
+            return result;
         }
 
         public Task<Plan> GetByIdAsync(int planId)

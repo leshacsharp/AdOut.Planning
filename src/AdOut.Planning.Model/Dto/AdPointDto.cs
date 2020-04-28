@@ -1,6 +1,6 @@
 ﻿namespace AdOut.Planning.Model.Dto
 {
-    public class AdAdPointDto
+    public class AdPointDto
     {
         public int Id { get; set; }
         public string Location { get; set; }

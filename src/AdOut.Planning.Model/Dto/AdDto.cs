@@ -19,6 +19,6 @@ namespace AdOut.Planning.Model.Dto
         public DateTime? ConfirmationDate { get; set; }
 
         public IEnumerable<AdPlanDto> Plans { get; set; }
-        public IEnumerable<AdAdPointDto> AdPoints { get; set; }
+        public IEnumerable<AdPointDto> AdPoints { get; set; }
     }
 }

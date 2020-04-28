@@ -74,34 +74,30 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 Status = p.Status
                             } : null,
 
-                            AdPoint = ap != null ? new AdAdPointDto()
+                            AdPoint = ap != null ? new AdPointDto()
                             {
                                 Id = ap.Id,
                                 Location = ap.Location
                             } : null
                         };
 
-            var ads = await query.ToListAsync();
+            var adItems = await query.ToListAsync();
+            var ad = adItems.SingleOrDefault();
 
-            var result = from a in ads
-                         group a by a.Id
-                         into aGroup
+            var result = ad != null ? new AdDto()
+            {
+                Title = ad.Title,
+                Path = ad.Path,
+                ContentType = ad.ContentType,
+                Status = ad.Status,
+                AddedDate = ad.AddedDate,
+                ConfirmationDate = ad.ConfirmationDate,
 
-                         let ad = aGroup.SingleOrDefault()
-                         select new AdDto()
-                         {
-                             Title = ad.Title,
-                             Path = ad.Path,
-                             ContentType = ad.ContentType,
-                             Status = ad.Status,
-                             AddedDate = ad.AddedDate,
-                             ConfirmationDate = ad.ConfirmationDate,
+                Plans = adItems.Where(a => a.Plan != null).Select(a => a.Plan),
+                AdPoints = adItems.Where(a => a.AdPoint != null).Select(a => a.AdPoint)
+            } : null;
 
-                             Plans = aGroup.Where(a => a.Plan != null).Select(a => a.Plan),
-                             AdPoints = aGroup.Where(a => a.AdPoint != null).Select(a => a.AdPoint)                      
-                         };
-
-            return result.SingleOrDefault();
+            return result;
         }
     }
 }

@@ -132,11 +132,6 @@ namespace AdOut.Planning.Core.Managers
 
             return _adRepository.GetAds(filter);
         }
-
-        public Task<AdDto> GetByIdAsync(int adId)
-        {
-            return _adRepository.GetDtoByIdAsync(adId);
-        }
         
         public async Task UpdateAsync(UpdateAdModel updateModel)
         {
@@ -171,10 +166,15 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var deleteContentTask = _contentStorage.DeleteObjectAsync(ad.Path);
-            var deletePreviewOfContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
+            var deletePreviewContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
 
-            await Task.WhenAll(deleteContentTask, deletePreviewOfContentTask);
+            await Task.WhenAll(deleteContentTask, deletePreviewContentTask);
             Delete(ad);
+        }
+
+        public Task<AdDto> GetByIdAsync(int adId)
+        {
+            return _adRepository.GetDtoByIdAsync(adId);
         }
     }
 }

@@ -10,6 +10,6 @@ namespace AdOut.Planning.Model.Api
         public string Title { get; set; }
 
         [Required]
-        public IFormFile Content { get; set; }
+        public IFormFile Content { get; set; } 
     }
 }

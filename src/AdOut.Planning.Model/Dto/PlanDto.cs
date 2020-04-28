@@ -21,5 +21,7 @@ namespace AdOut.Planning.Model.Dto
         public IEnumerable<ScheduleDto> Schedules { get; set; }
 
         public IEnumerable<AdListDto> Ads { get; set; }
+
+        public IEnumerable<AdPointDto> AdPoints { get; set; }
     }
 }
