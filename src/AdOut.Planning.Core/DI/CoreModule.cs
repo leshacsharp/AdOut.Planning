@@ -42,7 +42,8 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IContentHelperProvider, ContentHelperProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();
 
-            services.AddScoped<IBasicConsumer, AdPointCreatedConsumer>();
+            services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();
+            services.AddSingleton<IBasicConsumer, AdPointDeletedConsumer>();
         }
     }
 }

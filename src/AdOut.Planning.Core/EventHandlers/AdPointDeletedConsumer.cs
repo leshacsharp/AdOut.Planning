@@ -1,37 +1,37 @@
 ﻿using AdOut.Planning.Core.EventHandlers.Base;
-using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Events;
+using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
-using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.EventHandlers
 {
-    public class AdPointCreatedConsumer : BaseConsumer<AdPointCreatedEvent>
+    public class AdPointDeletedConsumer : BaseConsumer<AdPointDeletedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        public AdPointCreatedConsumer(IServiceScopeFactory serviceScopeFactory)
+        public AdPointDeletedConsumer(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        protected override Task HandleAsync(AdPointCreatedEvent deliveredEvent)
+        protected override async Task HandleAsync(AdPointDeletedEvent deliveredEvent)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
                 var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
 
-                var mapperCfg = new MapperConfiguration(cfg => cfg.CreateMap(deliveredEvent.GetType(), typeof(AdPoint)));
-                var mapper = new Mapper(mapperCfg);
+                var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.AdPointId);
+                if (adPoint == null)
+                {
+                    throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.AdPointId} was not found (EventId={deliveredEvent.EventId})");
+                }
 
-                var adPoint = mapper.Map<AdPoint>(deliveredEvent);
-                adPointRepository.Create(adPoint);
-
-                return commitProvider.SaveChangesAsync();
-            }     
+                adPointRepository.Delete(adPoint);
+                await commitProvider.SaveChangesAsync();
+            }
         }
     }
 }
