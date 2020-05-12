@@ -81,6 +81,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                         select new
                         {
                             p.Id,
+                            p.UserId,
                             p.Title,
                             p.Type,
                             p.Status,
@@ -119,6 +120,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             var result = plan != null ? new PlanDto()
             {
                 Title = plan.Title,
+                UserId = plan.UserId,
                 Type = plan.Type,
                 Status = plan.Status,
                 StartDateTime = plan.StartDateTime,

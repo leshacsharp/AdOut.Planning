@@ -6,6 +6,8 @@ namespace AdOut.Planning.Model.Dto
 {
     public class AdDto
     {
+        public string UserId { get; set; }
+
         public string Title { get; set; }
 
         public ContentType ContentType { get; set; }

@@ -6,8 +6,11 @@ using AdOut.Planning.Model;
 using AdOut.Planning.Model.Events;
 using AdOut.Planning.Model.Interfaces.Infrastructure;
 using AdOut.Planning.Model.Settings;
+using AdOut.Planning.WebApi.Auth;
+using AdOut.Planning.WebApi.DI;
 using AdOut.Planning.WebApi.Filters;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -52,12 +55,18 @@ namespace AdOut.Planning.WebApi
                         options.RoleClaimType = "role";
                     });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ResourcePolicy", policy => policy.AddRequirements(new SameUserRequirement()));    
+            });
+
             services.AddDbContext<PlanningContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
 
             services.AddDataProviderModule();
             services.AddCoreModule();
             services.AddEventBrokerModule();
+            services.AddWebApiModule();
 
             services.Configure<AWSS3Config>(Configuration.GetSection(nameof(AWSS3Config)));
             services.Configure<RabbitConfig>(Configuration.GetSection(nameof(RabbitConfig)));
@@ -90,8 +99,8 @@ namespace AdOut.Planning.WebApi
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers()
-                         .RequireAuthorization();
+                endpoints.MapControllers();
+                        // .RequireAuthorization(); //!!!!
             });
 
             var modelAssembly = typeof(Constants).Assembly;

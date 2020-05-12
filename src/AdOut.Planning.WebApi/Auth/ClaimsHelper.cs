@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace AdOut.Planning.WebApi.Claims
+namespace AdOut.Planning.WebApi.Auth
 {
     public static class ClaimsHelper
     {

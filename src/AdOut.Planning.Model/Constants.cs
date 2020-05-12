@@ -105,5 +105,10 @@ namespace AdOut.Planning.Model
             public const int DefaultSecForVideoThumbnail = 2;
             public const string DefaultThumbnailExtension = ContentExtensions.PNG;
         }
+
+        public static class AuthPolicies
+        {
+            public const string ResourcePolicy = "ResourcePolicy";
+        }
     }
 }

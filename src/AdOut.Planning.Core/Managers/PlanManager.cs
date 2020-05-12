@@ -105,9 +105,14 @@ namespace AdOut.Planning.Core.Managers
             Delete(plan);
         }
 
-        public Task<PlanDto> GetByIdAsync(int planId)
+        public Task<PlanDto> GetDtoByIdAsync(int planId)
         {
             return _planRepository.GetDtoByIdAsync(planId);
+        }
+
+        public Task<Plan> GetByIdAsync(int planId)
+        {
+            return _planRepository.GetByIdAsync(planId);
         }
 
         public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate)

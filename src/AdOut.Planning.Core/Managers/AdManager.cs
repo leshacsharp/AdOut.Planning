@@ -172,9 +172,14 @@ namespace AdOut.Planning.Core.Managers
             Delete(ad);
         }
 
-        public Task<AdDto> GetByIdAsync(int adId)
+        public Task<AdDto> GetDtoByIdAsync(int adId)
         {
             return _adRepository.GetDtoByIdAsync(adId);
+        }
+
+        public Task<Ad> GetByIdAsync(int adId)
+        {
+            return _adRepository.GetByIdAsync(adId);
         }
     }
 }

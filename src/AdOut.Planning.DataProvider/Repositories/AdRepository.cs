@@ -60,6 +60,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                         select new
                         {
                             a.Id,
+                            a.UserId,
                             a.Title,
                             a.Path,
                             a.ContentType,
@@ -86,6 +87,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
             var result = ad != null ? new AdDto()
             {
+                UserId = ad.UserId,
                 Title = ad.Title,
                 Path = ad.Path,
                 ContentType = ad.ContentType,

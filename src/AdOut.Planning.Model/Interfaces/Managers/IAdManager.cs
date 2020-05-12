@@ -14,7 +14,8 @@ namespace AdOut.Planning.Model.Interfaces.Managers
         Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel, string userId);
         Task CreateAsync(CreateAdModel createModel, string userId);
         Task UpdateAsync(UpdateAdModel updateModel);
-        Task<AdDto> GetByIdAsync(int adId);
         Task DeleteAsync(int adId);
+        Task<AdDto> GetDtoByIdAsync(int adId);
+        Task<Ad> GetByIdAsync(int adId);
     }
 }

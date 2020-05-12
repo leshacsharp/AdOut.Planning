@@ -1,13 +1,16 @@
 ﻿using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
-using AdOut.Planning.WebApi.Claims;
+using AdOut.Planning.WebApi.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
@@ -17,13 +20,16 @@ namespace AdOut.Planning.WebApi.Controllers
     {
         private readonly IAdManager _adManager;
         private readonly ICommitProvider _commitProvider;
+        private readonly IAuthorizationService _authorizationService;
 
         public AdController(
             IAdManager adManager,
-            ICommitProvider commitProvider)
+            ICommitProvider commitProvider,
+            IAuthorizationService authorizationService)
         {
             _adManager = adManager;
             _commitProvider = commitProvider;
+            _authorizationService = authorizationService;
         }
 
         [HttpPost]
@@ -46,6 +52,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
+        
         [HttpGet]
         [Route("ads")]
         [ProducesResponseType(typeof(List<AdListDto>), StatusCodes.Status200OK)]
@@ -59,13 +66,20 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAd(int id)
         {
-            var ad = await _adManager.GetByIdAsync(id);
+            var ad = await _adManager.GetDtoByIdAsync(id);
             if (ad == null)
             {
                 return NotFound();
+            }
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
             }
 
             return Ok(ad);
@@ -76,6 +90,8 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update(UpdateAdModel updateModel)
         {
+            await CheckUserPermissionsForResourceAsync(updateModel.AdId);
+
             await _adManager.UpdateAsync(updateModel);
             await _commitProvider.SaveChangesAsync();
 
@@ -88,10 +104,23 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)
         {
+            await CheckUserPermissionsForResourceAsync(id);
+
             await _adManager.DeleteAsync(id);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private async Task CheckUserPermissionsForResourceAsync(int adId)
+        {  
+            var ad = await _adManager.GetByIdAsync(adId);
+            var authResult = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
+
+            if (!authResult.Succeeded)
+            {
+                throw new ForbiddenException();
+            }
         }
     }
 }
