@@ -1,6 +1,5 @@
 ﻿using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
-using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Alturos.VideoInfo;
@@ -35,13 +34,11 @@ namespace AdOut.Planning.Core.Content.Validators.Video
 
             var validationResult = new ValidationResult<ContentError>();
  
-            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
-            var isCorrectSizeTask = IsCorrectSizeAsync(content);
-            var isCorrectDurationTask = IsCorrectDurationAsync(content);
+            var isCorrectDimension = await IsCorrectDimensionAsync(content);
+            var isCorrectSize = await IsCorrectSizeAsync(content);
+            var isCorrectDuration = await IsCorrectDurationAsync(content);
 
-            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask, isCorrectDurationTask);
-
-            if (!isCorrectDimensionTask.Result)
+            if (!isCorrectDimension)
             {
                 var dimensionError = new ContentError()
                 {
@@ -52,7 +49,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(dimensionError);
             }
 
-            if (!isCorrectSizeTask.Result)
+            if (!isCorrectSize)
             {
                 var sizeError = new ContentError()
                 {
@@ -63,7 +60,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(sizeError);
             }
 
-            if (!isCorrectDurationTask.Result)
+            if (!isCorrectDuration)
             {
                 var durationError = new ContentError()
                 {
@@ -81,16 +78,11 @@ namespace AdOut.Planning.Core.Content.Validators.Video
 
         protected virtual async Task<bool> IsCorrectDimensionAsync(Stream content)
         {
-            var minVideoDimensionConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoDimension);
-            var dimensionParts = minVideoDimensionConfig.Split('x', StringSplitOptions.RemoveEmptyEntries);
+            var minVideoWidthCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoWidth);
+            var minVideoHeightCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoHeight);
 
-            if (dimensionParts.Length != 2)
-            {
-                throw new ConfigurationException("Invalid video dimesion config");
-            }
-
-            var minVideoWidth = int.Parse(dimensionParts[0]);
-            var minVideoHeight = int.Parse(dimensionParts[1]);
+            var minVideoWidth = int.Parse(minVideoWidthCfg);
+            var minVideoHeight = int.Parse(minVideoHeightCfg);
 
             var videoInfo = await GetVideoInfoAsync(content);
             return videoInfo.Width >= minVideoWidth && videoInfo.Height >= minVideoHeight;
@@ -98,22 +90,20 @@ namespace AdOut.Planning.Core.Content.Validators.Video
 
         protected virtual async Task<bool> IsCorrectSizeAsync(Stream content)
         {
-            var maxVideoSizeConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxVideoSize);
-            var maxVideoSizeMb = int.Parse(maxVideoSizeConfig);
+            var maxVideoSizeCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxVideoSizeKb);
+            var maxVideoSizeKb = int.Parse(maxVideoSizeCfg);
 
-            var imageSizeMb = content.Length / ContentSizes.Mb;
-            return imageSizeMb <= maxVideoSizeMb;
+            var imageSizeKb = content.Length / ContentSizes.Kb;
+            return imageSizeKb <= maxVideoSizeKb;
         }
 
         protected virtual async Task<bool> IsCorrectDurationAsync(Stream content)
         {
-            var minVideoDurationMinConfigTask = _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoDuration);
-            var maxVideoDurationConfigTask = _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxVideoDuration);
+            var minVideoDurationCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoDuration);
+            var maxVideoDurationCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxVideoDuration);
 
-            await Task.WhenAll(minVideoDurationMinConfigTask, maxVideoDurationConfigTask);
-
-            var minVideoDurationSec = int.Parse(minVideoDurationMinConfigTask.Result);
-            var maxVideoDurationSec = int.Parse(maxVideoDurationConfigTask.Result);
+            var minVideoDurationSec = int.Parse(minVideoDurationCfg);
+            var maxVideoDurationSec = int.Parse(maxVideoDurationCfg);
 
             var videoInfo = await GetVideoInfoAsync(content);
             var videoDurationSec = videoInfo.Duration;

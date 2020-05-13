@@ -1,6 +1,5 @@
 ﻿using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
-using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
@@ -33,12 +32,10 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
             var validationResult = new ValidationResult<ContentError>();
 
-            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
-            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+            var isCorrectDimension = await IsCorrectDimensionAsync(content);
+            var isCorrectSize = await IsCorrectSizeAsync(content);
 
-            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask);
-
-            if (!isCorrectDimensionTask.Result)
+            if (!isCorrectDimension)
             {
                 var dimensionError = new ContentError()
                 {
@@ -48,8 +45,8 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
                 validationResult.Errors.Add(dimensionError);
             }
-
-            if (!isCorrectSizeTask.Result)
+     
+            if (!isCorrectSize)
             {
                 var sizeError = new ContentError()
                 {
@@ -67,16 +64,11 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
         protected virtual async Task<bool> IsCorrectDimensionAsync(Stream content)
         {
-            var minImageDimensionConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageDimension);
-            var dimensionParts = minImageDimensionConfig.Split('x', StringSplitOptions.RemoveEmptyEntries);
+            var minImageWidthCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageWidth);
+            var minImageHeightCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageHeight);
 
-            if (dimensionParts.Length != 2)
-            {
-                throw new ConfigurationException("Invalid image dimesion config");
-            }
-
-            var minImageWidth = int.Parse(dimensionParts[0]);
-            var minImageHeight = int.Parse(dimensionParts[1]);
+            var minImageWidth = int.Parse(minImageWidthCfg);
+            var minImageHeight = int.Parse(minImageHeightCfg);
 
             using (var image = System.Drawing.Image.FromStream(content))
             {
@@ -86,11 +78,11 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
         protected virtual async Task<bool> IsCorrectSizeAsync(Stream content)
         {
-            var maxImageSizeConfig = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxImageSize);
-            var maxImageSizeMb = int.Parse(maxImageSizeConfig);
+            var maxImageSizeCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxImageSizeKb);
+            var maxImageSizeKb = int.Parse(maxImageSizeCfg);
 
-            var imageSizeMb = content.Length / ContentSizes.Mb;
-            return imageSizeMb <= maxImageSizeMb;
+            var imageSizeKb = content.Length / ContentSizes.Kb;
+            return imageSizeKb <= maxImageSizeKb;
         }
     }
 }

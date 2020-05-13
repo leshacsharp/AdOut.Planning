@@ -90,10 +90,12 @@ namespace AdOut.Planning.Model
 
         public static class ConfigurationsTypes
         {
-            public const string MinImageDimension = "MinImageDimension";
-            public const string MinVideoDimension = "MinVideoDimension";
-            public const string MaxImageSize = "MaxImageSizeMb";
-            public const string MaxVideoSize = "MaxVideoSizeMb";
+            public const string MinImageWidth = "MinImageWidth";
+            public const string MinImageHeight = "MinImageHeight";
+            public const string MinVideoWidth = "MinVideoWidth";
+            public const string MinVideoHeight = "MinVideoHeight";
+            public const string MaxImageSizeKb = "MaxImageSizeKb";
+            public const string MaxVideoSizeKb = "MaxVideoSizeKb";
             public const string MaxVideoDuration = "MaxVideoDurationSec";
             public const string MinVideoDuration = "MinVideoDurationSec";
         }
