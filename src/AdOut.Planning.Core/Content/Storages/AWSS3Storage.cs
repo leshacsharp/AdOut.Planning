@@ -26,9 +26,11 @@ namespace AdOut.Planning.Core.Content.Storages
             var awsCredentials = new BasicAWSCredentials(_awsConfig.AccessKey, _awsConfig.SecretKey);
             var regionEndpoint = RegionEndpoint.GetBySystemName(_awsConfig.RegionEndpointName);
 
+            //todo: move IAmazonS3 to the DI container
             _awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
         }
 
+        //todo: maybe need to make 'private' method
         public string GenerateFilePath(string filePath)
         {
             if (filePath == null)

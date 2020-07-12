@@ -22,7 +22,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             var query = from pap in Context.PlanAdPoints.Where(pap => adPointId.Contains(pap.AdPointId))
 
                         join p in Context.Plans on pap.PlanId equals p.Id
-                        join s in Context.Schedules on p.Id equals s.PlanId
+                        join s in Context.Schedules on p.Id equals s.PlanId //todo: need to make left join
 
                         where p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
 

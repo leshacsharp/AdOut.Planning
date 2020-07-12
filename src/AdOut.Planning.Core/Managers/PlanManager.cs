@@ -58,6 +58,7 @@ namespace AdOut.Planning.Core.Managers
 
             Create(plan);
 
+            //todo: don't check adPointId
             foreach (var adPointId in createModel.AdPointsIds)
             {
                 var adPoint = await _adPointRepository.GetByIdAsync(adPointId);
@@ -131,6 +132,7 @@ namespace AdOut.Planning.Core.Managers
                 return validationResult;
             }
 
+            //todo: maybe need to convert these lines to one
             var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);
             var adPointsPlans = await _planRepository.GetByAdPoints(adPointsIds.ToArray(), plan.EndDateTime, newEndDate);
 
@@ -153,6 +155,7 @@ namespace AdOut.Planning.Core.Managers
                 Plan = new SchedulePlan() { Type = plan.Type }
             };
 
+            //todo: add scheduleAdsPeriods to the validationContext.NewAdsPeriods and after that we able to start Validate 
             foreach (var schedule in planSchedules)
             {
                 var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);

@@ -55,6 +55,7 @@ namespace AdOut.Planning.Core.Managers
                 throw new BadRequestException($"{extension} extension is not allowed");
             }
 
+            //todo: mb abstract factory
             var contentValidator = _contentValidatorProvider.CreateContentValidator(extension);
             var contentStream = content.OpenReadStream();
 

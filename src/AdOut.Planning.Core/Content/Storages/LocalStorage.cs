@@ -14,6 +14,7 @@ namespace AdOut.Planning.Core.Content.Storages
             _directorySeparator = directorySeparator;
         }
 
+        //todo: maybe need to make 'private' method
         public string GenerateFilePath(string fileExtension)
         {
             if (fileExtension == null)

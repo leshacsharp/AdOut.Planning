@@ -24,6 +24,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
                 throw new ArgumentNullException(nameof(content));
             }
 
+            //todo: is exception and await needed in this place?
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
             {
@@ -32,11 +33,14 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
             var validationResult = new ValidationResult<ContentError>();
 
-            var isCorrectDimension = await IsCorrectDimensionAsync(content);
-            var isCorrectSize = await IsCorrectSizeAsync(content);
+            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
+            var isCorrectSizeTask = IsCorrectSizeAsync(content);
 
-            if (!isCorrectDimension)
+            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask);
+
+            if (!isCorrectDimensionTask.Result)
             {
+                //todo: Is 'Code' needed?
                 var dimensionError = new ContentError()
                 {
                     Code = ContentErrorCode.Dimension,
@@ -46,8 +50,9 @@ namespace AdOut.Planning.Core.Content.Validators.Image
                 validationResult.Errors.Add(dimensionError);
             }
      
-            if (!isCorrectSize)
+            if (!isCorrectSizeTask.Result)
             {
+                //todo: Is 'Code' needed?
                 var sizeError = new ContentError()
                 {
                     Code = ContentErrorCode.Size,

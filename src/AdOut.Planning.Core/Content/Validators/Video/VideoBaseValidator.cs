@@ -26,6 +26,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 throw new ArgumentNullException(nameof(content));
             }
 
+            //todo: is exception and await needed in this place?
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
             {
@@ -33,13 +34,16 @@ namespace AdOut.Planning.Core.Content.Validators.Video
             }
 
             var validationResult = new ValidationResult<ContentError>();
- 
-            var isCorrectDimension = await IsCorrectDimensionAsync(content);
-            var isCorrectSize = await IsCorrectSizeAsync(content);
-            var isCorrectDuration = await IsCorrectDurationAsync(content);
+            
+            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
+            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+            var isCorrectDurationTask = IsCorrectDurationAsync(content);
 
-            if (!isCorrectDimension)
+            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask, isCorrectDurationTask);
+
+            if (!isCorrectDimensionTask.Result)
             {
+                //todo: Is 'Code' needed?
                 var dimensionError = new ContentError()
                 {
                     Code = ContentErrorCode.Dimension,
@@ -49,8 +53,9 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(dimensionError);
             }
 
-            if (!isCorrectSize)
+            if (!isCorrectSizeTask.Result)
             {
+                //todo: Is 'Code' needed?
                 var sizeError = new ContentError()
                 {
                     Code = ContentErrorCode.Size,
@@ -60,7 +65,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(sizeError);
             }
 
-            if (!isCorrectDuration)
+            if (!isCorrectDurationTask.Result)
             {
                 var durationError = new ContentError()
                 {

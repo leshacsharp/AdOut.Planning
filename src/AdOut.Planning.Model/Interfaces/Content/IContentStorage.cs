@@ -8,6 +8,8 @@ namespace AdOut.Planning.Model.Interfaces.Content
         Task CreateObjectAsync(Stream content, string filePath);
         Task DeleteObjectAsync(string filePath);
         Task<Stream> GetObjectAsync(string filePath);
+
+        //todo: maybe need to make 'private' method
         string GenerateFilePath(string filePath);
     }
 }

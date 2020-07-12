@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Classes
 {
+    //todo: need to think about steps of creating plans and schedules (order)
     public class ScheduleValidationContext
     {
         public ScheduleDto Schedule { get; set; }

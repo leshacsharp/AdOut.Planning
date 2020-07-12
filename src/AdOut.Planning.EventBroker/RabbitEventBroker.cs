@@ -44,6 +44,7 @@ namespace AdOut.Planning.EventBroker
             channel.BasicConsume(queue, true, eventHandler);
         }
 
+        //todo: move 'eventTypes' to the logic of method
         public void Configure(IEnumerable<Type> eventTypes)
         {
             var channel = _channelManager.GetPublisherChannel();

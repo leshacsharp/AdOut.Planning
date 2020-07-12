@@ -22,6 +22,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return Context.AdPoints.SingleOrDefaultAsync(ap => ap.Id == adPointId);
         }
 
+        //todo: think about sense of List<AdPointValidation> (the list contains same plans and schedules!!!)
         public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(int[] adPointIds, DateTime planStart, DateTime planEnd)
         {
             var query = from ap in Context.AdPoints.Where(ap => adPointIds.Contains(ap.Id))
@@ -38,6 +39,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                         join d in Context.DaysOff on apd.DayOffId equals d.Id into daysOffJoin
                         from d in daysOffJoin.DefaultIfEmpty()
 
+                        //todo: wtf!? must be one condition 
                         where p.StartDateTime <= planStart && p.EndDateTime >= planStart ||
                               p.StartDateTime <= planEnd && p.EndDateTime >= planEnd ||
                               p.StartDateTime >= planStart && p.EndDateTime <= planEnd
@@ -56,6 +58,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 StartDateTime = p.StartDateTime,
                                 EndDateTime = p.EndDateTime,
                                 AdsTimePlaying = p.AdsTimePlaying,
+
                                 Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd).Select(s => new ScheduleDto()
                                 { 
                                     StartTime = s.StartTime,
@@ -85,6 +88,5 @@ namespace AdOut.Planning.DataProvider.Repositories
 
             return result.ToList();
         }
- 
     }
 }

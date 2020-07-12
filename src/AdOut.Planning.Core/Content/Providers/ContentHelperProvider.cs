@@ -6,8 +6,9 @@ using System;
 
 namespace AdOut.Planning.Core.Content.Providers
 {
+    //todo: create abstract factory with IContentValidatorProvider
     public class ContentHelperProvider : IContentHelperProvider
-    {
+    { 
         public IContentHelper CreateContentHelper(string contentExtension)
         {
             if (contentExtension == null)
@@ -15,6 +16,7 @@ namespace AdOut.Planning.Core.Content.Providers
                 throw new ArgumentNullException(nameof(contentExtension));
             }
 
+            //todo: refactoring
             if(!Constants.ContentTypes.ContainsKey(contentExtension))
             {
                 throw new NotSupportedException($"Extension={contentExtension} is not supported");

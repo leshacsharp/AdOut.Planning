@@ -53,6 +53,7 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
+            //todo: ScheduleModel and ScheduleDto are same (need to do something with that)
             var scheduleDto = new ScheduleDto()
             {
                 StartTime = scheduleModel.StartTime,
@@ -62,7 +63,9 @@ namespace AdOut.Planning.Core.Managers
                 Date = scheduleModel.Date
             };
             
+            //todo: maybe need to invoke 'Read' method (for resuable methods no)
             var adPointsIds = await _planAdPointRepository.GetAdPointsIds(plan.Id);
+            ////todo: think about sense of List<AdPointValidation> (the list contains same plans and schedules!!!)
             var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(adPointsIds.ToArray(), plan.StartDateTime, plan.EndDateTime);
 
             var existingsAdsPeriods = new List<AdPeriod>();

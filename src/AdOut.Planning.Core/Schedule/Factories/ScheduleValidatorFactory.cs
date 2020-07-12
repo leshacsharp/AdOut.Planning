@@ -33,6 +33,7 @@ namespace AdOut.Planning.Core.Schedule.Factories
             return chainOfValidators;
         }
 
+        //todo: add 'All' value to the ValidatorType and delete the second method of factory
         public IScheduleValidator CreateChainOfValidators(ValidatorType type)
         {
             var specificValidators = _validators.Where(v =>
