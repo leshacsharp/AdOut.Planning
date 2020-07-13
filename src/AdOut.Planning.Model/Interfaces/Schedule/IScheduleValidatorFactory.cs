@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface IScheduleValidatorFactory
     {
-        IScheduleValidator CreateChainOfValidators();
+        IScheduleValidator CreateChainOfAllValidators();
 
         IScheduleValidator CreateChainOfValidators(ValidatorType type);
     }

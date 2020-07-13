@@ -32,9 +32,30 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
 
+        //todo: need to think about AdsTimePlaying and BreakTime (i would like to see these properties in single entity)
+        public Task<AdScheduleTime> GetScheduleInfo(int scheduleId)
+        {
+            var query = from s in Context.Schedules
+                        join p in Context.Plans on s.PlanId equals p.Id
+                        where s.Id == scheduleId
+                        select new AdScheduleTime()
+                        {
+                            PlanStartDateTime = p.StartDateTime,
+                            PlanEndDateTime = p.EndDateTime,
+                            ScheduleStartTime = s.StartTime,
+                            ScheduleEndTime = s.EndTime,
+                            ScheduleDayOfWeek = s.DayOfWeek,
+                            ScheduleDate = s.Date,
+                            AdPlayTime = p.AdsTimePlaying,
+                            AdBreakTime = s.BreakTime
+                        };
+
+            return query.SingleOrDefaultAsync();
+        }
+
         public Task<Schedule> GetByIdAsync(int scheduleId)
         {
             return Context.Schedules.SingleOrDefaultAsync(p => p.Id == scheduleId);
-        }      
+        }
     }
 }

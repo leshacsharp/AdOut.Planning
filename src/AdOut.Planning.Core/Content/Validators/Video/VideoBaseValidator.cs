@@ -35,13 +35,11 @@ namespace AdOut.Planning.Core.Content.Validators.Video
 
             var validationResult = new ValidationResult<ContentError>();
             
-            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
-            var isCorrectSizeTask = IsCorrectSizeAsync(content);
-            var isCorrectDurationTask = IsCorrectDurationAsync(content);
+            var isCorrectDimension = await IsCorrectDimensionAsync(content);
+            var isCorrectSize = await IsCorrectSizeAsync(content);
+            var isCorrectDuration = await IsCorrectDurationAsync(content);
 
-            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask, isCorrectDurationTask);
-
-            if (!isCorrectDimensionTask.Result)
+            if (!isCorrectDimension)
             {
                 //todo: Is 'Code' needed?
                 var dimensionError = new ContentError()
@@ -53,7 +51,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(dimensionError);
             }
 
-            if (!isCorrectSizeTask.Result)
+            if (!isCorrectSize)
             {
                 //todo: Is 'Code' needed?
                 var sizeError = new ContentError()
@@ -65,7 +63,7 @@ namespace AdOut.Planning.Core.Content.Validators.Video
                 validationResult.Errors.Add(sizeError);
             }
 
-            if (!isCorrectDurationTask.Result)
+            if (!isCorrectDuration)
             {
                 var durationError = new ContentError()
                 {

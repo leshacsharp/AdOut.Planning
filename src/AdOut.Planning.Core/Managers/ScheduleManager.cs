@@ -1,5 +1,6 @@
 ﻿using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
@@ -97,7 +98,7 @@ namespace AdOut.Planning.Core.Managers
                 }
             };
 
-            var scheduleValidator = _scheduleValidatorFactory.CreateChainOfValidators();
+            var scheduleValidator = _scheduleValidatorFactory.CreateChainOfAllValidators();
             scheduleValidator.Validate(validationContext);
 
             var validationResult = new ValidationResult<string>()
@@ -154,6 +155,7 @@ namespace AdOut.Planning.Core.Managers
             Create(schedule);
         }
 
+        //todo: improve queries
         public async Task UpdateAsync(UpdateScheduleModel updateModel)
         {
             if (updateModel == null)
@@ -168,9 +170,10 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var plan = await _planRepository.GetByIdAsync(schedule.PlanId);
+            var adScheduleTimeBeforeUpdating = MapPlanAndScheduleToTimeInfo(plan, schedule);
+            
             var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(plan.Type);
-
-            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(plan, schedule);
+            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(adScheduleTimeBeforeUpdating);
 
             schedule.StartTime = updateModel.StartTime;
             schedule.EndTime = updateModel.EndTime;
@@ -178,7 +181,8 @@ namespace AdOut.Planning.Core.Managers
             schedule.DayOfWeek = updateModel.DayOfWeek;
             schedule.Date = updateModel.Date;
 
-            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(plan, schedule);
+            var adScheduleTimeAfterUpdating = MapPlanAndScheduleToTimeInfo(plan, schedule);
+            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(adScheduleTimeAfterUpdating);
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
@@ -186,6 +190,21 @@ namespace AdOut.Planning.Core.Managers
             }
 
             Update(schedule);
+        }
+
+        private AdScheduleTime MapPlanAndScheduleToTimeInfo(Plan plan, Model.Database.Schedule schedule)
+        {
+            return new AdScheduleTime()
+            {
+                PlanStartDateTime = plan.StartDateTime,
+                PlanEndDateTime = plan.EndDateTime,
+                ScheduleStartTime = schedule.StartTime,
+                ScheduleEndTime = schedule.EndTime,
+                ScheduleDayOfWeek = schedule.DayOfWeek,
+                ScheduleDate = schedule.Date,
+                AdPlayTime = plan.AdsTimePlaying,
+                AdBreakTime = schedule.BreakTime
+            };
         }
     }
 }

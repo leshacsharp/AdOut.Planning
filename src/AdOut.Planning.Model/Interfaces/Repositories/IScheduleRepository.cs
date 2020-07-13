@@ -7,6 +7,7 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
     public interface IScheduleRepository : IBaseRepository<Database.Schedule>
     {
         Task<List<ScheduleDto>> GetByPlanAsync(int planId);
-        Task<Database.Schedule> GetByIdAsync(int scheduleId);   
+        Task<Database.Schedule> GetByIdAsync(int scheduleId);
+        Task<AdScheduleTime> GetScheduleInfo(int scheduleId);
     }
 }

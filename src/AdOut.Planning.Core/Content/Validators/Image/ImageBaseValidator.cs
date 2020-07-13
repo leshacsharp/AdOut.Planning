@@ -33,12 +33,10 @@ namespace AdOut.Planning.Core.Content.Validators.Image
 
             var validationResult = new ValidationResult<ContentError>();
 
-            var isCorrectDimensionTask = IsCorrectDimensionAsync(content);
-            var isCorrectSizeTask = IsCorrectSizeAsync(content);
+            var isCorrectDimension = await IsCorrectDimensionAsync(content);
+            var isCorrectSize = await IsCorrectSizeAsync(content);
 
-            await Task.WhenAll(isCorrectDimensionTask, isCorrectSizeTask);
-
-            if (!isCorrectDimensionTask.Result)
+            if (!isCorrectDimension)
             {
                 //todo: Is 'Code' needed?
                 var dimensionError = new ContentError()
@@ -50,7 +48,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
                 validationResult.Errors.Add(dimensionError);
             }
      
-            if (!isCorrectSizeTask.Result)
+            if (!isCorrectSize)
             {
                 //todo: Is 'Code' needed?
                 var sizeError = new ContentError()

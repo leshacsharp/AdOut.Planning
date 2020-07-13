@@ -1,15 +1,15 @@
-﻿using AdOut.Planning.Model.Database;
+﻿using AdOut.Planning.Model.Classes;
 using System;
 
 namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class WeeklyScheduleTimeHelper : BaseScheduleTimeHelper
     {
-        protected override TimeSpan GetTimeOfExecutingPlan(Plan plan, Model.Database.Schedule schedule)
+        protected override TimeSpan GetTimeOfExecutingPlan(AdScheduleTime timeInfo)
         {
-            var daysOfExecutionPlan = GetCountOfWeekDay(plan.StartDateTime, plan.EndDateTime, schedule.DayOfWeek.Value);
+            var daysOfExecutionPlan = GetCountOfWeekDay(timeInfo.PlanStartDateTime, timeInfo.PlanEndDateTime, timeInfo.ScheduleDayOfWeek.Value);
 
-            var timeOfExecutingPlanByDay = schedule.EndTime - schedule.StartTime;
+            var timeOfExecutingPlanByDay = timeInfo.ScheduleEndTime - timeInfo.ScheduleStartTime;
             var timeOfExecutingPlan = daysOfExecutionPlan * timeOfExecutingPlanByDay;
 
             return timeOfExecutingPlan;
