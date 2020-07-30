@@ -7,7 +7,6 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Content.Providers
 {
-    //todo: create abstract factory with IContentContentProvider
     public class ContentValidatorProvider : IContentValidatorProvider
     {
         private readonly IConfigurationRepository _configurationRepository;
@@ -18,9 +17,10 @@ namespace AdOut.Planning.Core.Content.Providers
 
         public IContentValidator CreateContentValidator(string contentExtension)
         {
-            //todo: refactoring
             if (contentExtension == null)
+            {
                 throw new ArgumentNullException(nameof(contentExtension));
+            }
 
             return contentExtension switch
             {

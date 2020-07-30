@@ -12,8 +12,6 @@ namespace AdOut.Planning.Model.Dto
 
         public DateTime EndDateTime { get; set; }
 
-        public TimeSpan AdsTimePlaying { get; set; }
-
         public IEnumerable<ScheduleDto> Schedules { get; set; }
     }
 }

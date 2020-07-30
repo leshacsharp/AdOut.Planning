@@ -1,11 +1,6 @@
-﻿using AdOut.Planning.Common.Helpers;
-using AdOut.Planning.Model.Interfaces.Content;
-using AdOut.Planning.Model.Settings;
-using Amazon;
-using Amazon.Runtime;
+﻿using AdOut.Planning.Model.Interfaces.Content;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,36 +9,13 @@ namespace AdOut.Planning.Core.Content.Storages
 {
     public class AWSS3Storage : IContentStorage
     {
-        private readonly IDirectoryDistributor _directorySeparator;
         private readonly IAmazonS3 _awsClient;
-        private readonly AWSS3Config _awsConfig;
+        private readonly string _bucketName;
 
-        public AWSS3Storage(IDirectoryDistributor directorySeparator, IOptions<AWSS3Config> awsConfig)
+        public AWSS3Storage(IAmazonS3 awsClient, string bucketName)
         {
-            _directorySeparator = directorySeparator;
-            _awsConfig = awsConfig.Value;
-
-            var awsCredentials = new BasicAWSCredentials(_awsConfig.AccessKey, _awsConfig.SecretKey);
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_awsConfig.RegionEndpointName);
-
-            //todo: move IAmazonS3 to the DI container
-            _awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
-        }
-
-        //todo: maybe need to make 'private' method
-        public string GenerateFilePath(string filePath)
-        {
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(filePath);
-            }
-
-            var directory = _directorySeparator.GetDirectory();
-            var fileExtension = Path.GetExtension(filePath);
-            var fileName = FileHelper.GetRandomFileName();
-            var fullPath = $"{directory}/{fileName}{fileExtension}";
-
-            return fullPath;
+            _awsClient = awsClient;
+            _bucketName = bucketName;
         }
 
         public Task CreateObjectAsync(Stream content, string filePath)
@@ -60,7 +32,7 @@ namespace AdOut.Planning.Core.Content.Storages
 
             var putRequest = new PutObjectRequest
             {
-                BucketName = _awsConfig.BucketName,
+                BucketName = _bucketName,
                 Key = filePath,
                 InputStream = content
             };
@@ -78,7 +50,7 @@ namespace AdOut.Planning.Core.Content.Storages
 
             var deleteRequest = new DeleteObjectRequest
             {
-                BucketName = _awsConfig.BucketName,
+                BucketName = _bucketName,
                 Key = filePath,
             };
 
@@ -95,7 +67,7 @@ namespace AdOut.Planning.Core.Content.Storages
 
             var getRequest = new GetObjectRequest
             {
-                BucketName = _awsConfig.BucketName,
+                BucketName = _bucketName,
                 Key = filePath,
             };
 

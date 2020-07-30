@@ -22,16 +22,10 @@ namespace AdOut.Planning.DataProvider.Repositories
             return Context.AdPoints.SingleOrDefaultAsync(ap => ap.Id == adPointId);
         }
 
-        //todo: think about sense of List<AdPointValidation> (the list contains same plans and schedules!!!)
-        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(int[] adPointIds, DateTime planStart, DateTime planEnd)
-        {
-            var query = from ap in Context.AdPoints.Where(ap => adPointIds.Contains(ap.Id))
-
-                        join pap in Context.PlanAdPoints on ap.Id equals pap.AdPointId into planAdPointsJoin
-                        from pap in planAdPointsJoin.DefaultIfEmpty()
-
-                        join p in Context.Plans on pap.PlanId equals p.Id into plansJoin
-                        from p in plansJoin.DefaultIfEmpty()
+        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(int adPointsPlanId, DateTime planStart, DateTime planEnd)
+        {              
+            var query = from pap in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)
+                        join ap in Context.AdPoints on pap.AdPointId equals ap.Id
 
                         join apd in Context.AdPointDaysOff on ap.Id equals apd.AdPointId into adPointDaysOffJoin
                         from apd in adPointDaysOffJoin.DefaultIfEmpty()
@@ -39,10 +33,13 @@ namespace AdOut.Planning.DataProvider.Repositories
                         join d in Context.DaysOff on apd.DayOffId equals d.Id into daysOffJoin
                         from d in daysOffJoin.DefaultIfEmpty()
 
-                        //todo: wtf!? must be one condition 
-                        where p.StartDateTime <= planStart && p.EndDateTime >= planStart ||
-                              p.StartDateTime <= planEnd && p.EndDateTime >= planEnd ||
-                              p.StartDateTime >= planStart && p.EndDateTime <= planEnd
+                        join pap2 in Context.PlanAdPoints on ap.Id equals pap2.AdPointId into pap2Join
+                        from pap2 in pap2Join.DefaultIfEmpty()
+
+                        join p in Context.Plans on pap2.PlanId equals p.Id into plansJoin
+                        from p in plansJoin.DefaultIfEmpty()
+
+                        where p.StartDateTime >= planStart && p.EndDateTime <= planEnd
 
                         select new
                         {
@@ -52,22 +49,16 @@ namespace AdOut.Planning.DataProvider.Repositories
                             ap.EndWorkingTime,
 
                             DaysOff = d != null ? d.DayOfWeek : (DayOfWeek?)null,
-                            Plan = p != null ? new PlanValidation()
-                            {
-                                Type = p.Type,
-                                StartDateTime = p.StartDateTime,
-                                EndDateTime = p.EndDateTime,
-                                AdsTimePlaying = p.AdsTimePlaying,
-
-                                Schedules = p.Schedules.Where(s => s.Date == null || s.Date <= planEnd).Select(s => new ScheduleDto()
-                                { 
-                                    StartTime = s.StartTime,
-                                    EndTime = s.EndTime,
-                                    BreakTime = s.BreakTime,
-                                    Date = s.Date,
-                                    DayOfWeek = s.DayOfWeek
-                                })        
-                            } : null
+                            Schedules = p != null ? p.Schedules.Where(s => s.Date == null || s.Date <= planEnd)
+                                                               .Select(s => new ScheduleDto()
+                                                               {
+                                                                   StartTime = s.StartTime,
+                                                                   EndTime = s.EndTime,
+                                                                   BreakTime = s.BreakTime,
+                                                                   PlayTime = s.PlayTime,
+                                                                   Date = s.Date,
+                                                                   DayOfWeek = s.DayOfWeek
+                                                               }) : null
                         };
 
             var adPointValidations = await query.ToListAsync();
@@ -82,7 +73,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                              StartWorkingTime = apvGroup.Key.StartWorkingTime,
                              EndWorkingTime = apvGroup.Key.EndWorkingTime,
 
-                             Plans = apvGroup.Where(apv => apv.Plan != null).Select(apv => apv.Plan),
+                             Schedules = apvGroup.Where(apv => apv.Schedules != null).SelectMany(apv => apv.Schedules),
                              DaysOff = apvGroup.Where(apv => apv.DaysOff != null).Select(apv => apv.DaysOff.Value)
                          };
 

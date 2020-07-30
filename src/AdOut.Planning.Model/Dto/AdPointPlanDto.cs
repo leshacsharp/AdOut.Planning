@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
@@ -7,7 +6,7 @@ namespace AdOut.Planning.Model.Dto
     {
         public int Id { get; set; }
 
-        public TimeSpan AdsTimePlaying { get; set; }
+        public string Title { get; set; }
 
         public IEnumerable<ScheduleDto> Schedules { get; set; }
     }

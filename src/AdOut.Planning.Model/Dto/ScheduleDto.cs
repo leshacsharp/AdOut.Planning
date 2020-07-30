@@ -10,6 +10,8 @@ namespace AdOut.Planning.Model.Dto
 
         public TimeSpan BreakTime { get; set; }
 
+        public TimeSpan PlayTime { get; set; }
+
         public DayOfWeek? DayOfWeek { get; set; }
 
         public DateTime? Date { get; set; }

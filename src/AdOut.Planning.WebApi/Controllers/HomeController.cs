@@ -15,10 +15,11 @@ namespace AdOut.Planning.WebApi.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IPlanManager _planManager;
+        private readonly IConfigurationRepository _configurationRepository;
 
-        public HomeController(IPlanManager p)
+        public HomeController(IPlanManager p, IConfigurationRepository configurationRepository)
         {
-
+            _configurationRepository = configurationRepository;
             _planManager = p;
         }
 
@@ -31,7 +32,7 @@ namespace AdOut.Planning.WebApi.Controllers
         //}
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             return Ok("Hello world and AdOut.Planning, good luck (-:");
         }

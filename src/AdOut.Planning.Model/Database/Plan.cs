@@ -28,8 +28,6 @@ namespace AdOut.Planning.Model.Database
 
         public DateTime EndDateTime { get; set; }
 
-        public TimeSpan AdsTimePlaying { get; set; }
-
         public virtual ICollection<Schedule> Schedules { get; set; }
 
         public virtual ICollection<PlanAd> PlanAds { get; set; }

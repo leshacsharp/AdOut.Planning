@@ -11,7 +11,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
     {
         Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate);
 
-        Task CreateAsync(CreatePlanModel createModel, string userId);
+        void Create(CreatePlanModel createModel, string userId);
 
         Task UpdateAsync(UpdatePlanModel updateModel);
 

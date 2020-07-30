@@ -19,24 +19,27 @@ namespace AdOut.Planning.Core.Schedule.Validators
 
             if (context.Plan.Type == PlanType.Daily)
             {
-                foreach (var eAdPeriod in context.ExistingAdsPeriods)
+                foreach (var adPoint in context.AdPoints)
                 {
-                    foreach (var newAdPeriod in context.NewAdsPeriods)
+                    foreach (var eAdPeriod in adPoint.AdPeriods)
                     {
-                        if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
-                            newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
-                            newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection   
+                        foreach (var newAdPeriod in context.NewAdsPeriods)
                         {
-                            var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
-                            var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
+                            if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
+                                newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
+                                newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection   
+                            {
+                                var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
+                                var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                            var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode);
-                            context.Errors.Add(validationMessage);
+                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
+                                context.Errors.Add(validationMessage);
+                            }
                         }
                     }
                 }
             }
-            
+  
             _nextValidator?.Validate(context);
         }
     }

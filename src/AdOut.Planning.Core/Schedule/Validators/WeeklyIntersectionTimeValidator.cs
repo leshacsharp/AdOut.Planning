@@ -19,26 +19,27 @@ namespace AdOut.Planning.Core.Schedule.Validators
 
             if (context.Plan.Type == PlanType.Weekly)
             {
-                var schedule = context.Schedule;
-                foreach (var eAdPeriod in context.ExistingAdsPeriods)
+                foreach (var adPoint in context.AdPoints)
                 {
-                    if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||   //daily adPeriods
-                         eAdPeriod.Date?.DayOfWeek == schedule.DayOfWeek ||          //specific adPeriods
-                         eAdPeriod.DayOfWeek == schedule.DayOfWeek)                  //weekly adPeriods
+                    foreach (var eAdPeriod in adPoint.AdPeriods)
                     {
-                        foreach (var newAdPeriod in context.NewAdsPeriods)
+                        //choosing existed adPeriods for needed days (for example, we have new schedule for Monday and therefore we need to take adPeriods that are daily or provide Monday)
+                        if ((eAdPeriod.Date == null && eAdPeriod.DayOfWeek == null) ||   //daily adPeriods
+                             eAdPeriod.Date?.DayOfWeek == context.Schedule.DayOfWeek ||  //specific adPeriods
+                             eAdPeriod.DayOfWeek == context.Schedule.DayOfWeek)          //weekly adPeriods
                         {
-                            if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
-                                newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
-                                newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection
+                            foreach (var newAdPeriod in context.NewAdsPeriods)
                             {
-                                var newAdPeriodTimeMode = $"{newAdPeriod.DayOfWeek.Value}, {newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
+                                if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
+                                    newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
+                                    newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection
+                                {
+                                    var newAdPeriodTimeMode = $"{newAdPeriod.DayOfWeek.Value}, {newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
+                                    var eAdPeriodTimeMode = $"{eAdPeriod.DayOfWeek}, {eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                                var eAdPeriodDayOfWeek = eAdPeriod.DayOfWeek != null ? eAdPeriod.DayOfWeek.ToString() : "not day of week";
-                                var eAdPeriodTimeMode = $"{eAdPeriodDayOfWeek}, {eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
-
-                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, newAdPeriodTimeMode, eAdPeriodTimeMode);
-                                context.Errors.Add(validationMessage);
+                                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, newAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
+                                    context.Errors.Add(validationMessage);
+                                }
                             }
                         }
                     }

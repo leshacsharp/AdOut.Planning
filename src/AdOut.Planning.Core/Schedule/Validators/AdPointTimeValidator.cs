@@ -18,7 +18,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
             }
 
             var schedule = context.Schedule;
-            foreach (var adPoint in context.AdPointsValidations)
+            foreach (var adPoint in context.AdPoints)
             {
                 if(schedule.StartTime < adPoint.StartWorkingTime || schedule.EndTime > adPoint.EndWorkingTime)
                 {

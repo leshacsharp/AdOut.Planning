@@ -9,6 +9,7 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Managers
@@ -39,7 +40,7 @@ namespace AdOut.Planning.Core.Managers
             _timeLineHelper = timeLineHelper;
         }
 
-        public async Task CreateAsync(CreatePlanModel createModel, string userId)
+        public void Create(CreatePlanModel createModel, string userId)
         {
             if (createModel == null)
             {
@@ -52,24 +53,16 @@ namespace AdOut.Planning.Core.Managers
                 Title = createModel.Title,
                 Type = createModel.Type,
                 StartDateTime = createModel.StartDateTime,
-                EndDateTime = createModel.EndDateTime,
-                AdsTimePlaying = createModel.AdsTimePlaying
+                EndDateTime = createModel.EndDateTime
             };
 
             Create(plan);
 
-            //todo: don't check adPointId
             foreach (var adPointId in createModel.AdPointsIds)
             {
-                var adPoint = await _adPointRepository.GetByIdAsync(adPointId);
-                if (adPoint == null)
-                {
-                    throw new ObjectNotFoundException($"AdPoint with id={adPointId} was not found");
-                }
-
                 var planAdPoint = new PlanAdPoint()
                 {
-                    AdPoint = adPoint,
+                    AdPointId = adPointId,
                     Plan = plan
                 };
 
@@ -132,18 +125,26 @@ namespace AdOut.Planning.Core.Managers
                 return validationResult;
             }
 
-            //todo: maybe need to convert these lines to one
-            var adPointsIds = await _planAdPointRepository.GetAdPointsIds(planId);
-            var adPointsPlans = await _planRepository.GetByAdPoints(adPointsIds.ToArray(), plan.EndDateTime, newEndDate);
+            var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(planId, plan.EndDateTime, newEndDate);
+            var adPointTimes = new List<AdPointTime>();
 
-            var existingAdsPeriods = new List<AdPeriod>();
-            foreach (var apPlan in adPointsPlans)
+            foreach (var adPoint in adPointsValidations)
             {
-                foreach (var schedule in apPlan.Schedules)
+                var adPointTime = new AdPointTime()
                 {
-                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, apPlan.AdsTimePlaying);
-                    existingAdsPeriods.AddRange(schdeduleAdsPeriods);
+                    Location = adPoint.Location,
+                    StartWorkingTime = adPoint.StartWorkingTime,
+                    EndWorkingTime = adPoint.EndWorkingTime,
+                    DaysOff = adPoint.DaysOff.ToList()
+                };
+
+                foreach (var schedule in adPoint.Schedules)
+                {
+                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule);
+                    adPointTime.AdPeriods.AddRange(schdeduleAdsPeriods);
                 }
+
+                adPointTimes.Add(adPointTime);
             }
 
             var scheduleTimeIntersectionValidator = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.IntersectionTime);
@@ -151,14 +152,13 @@ namespace AdOut.Planning.Core.Managers
 
             var validationContext = new ScheduleValidationContext()
             {
-                ExistingAdsPeriods = existingAdsPeriods,
+                AdPoints = adPointTimes,
                 Plan = new SchedulePlan() { Type = plan.Type }
             };
 
-            //todo: add scheduleAdsPeriods to the validationContext.NewAdsPeriods and after that we able to start Validate 
             foreach (var schedule in planSchedules)
             {
-                var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule, plan.AdsTimePlaying);
+                var scheduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule);
 
                 validationContext.Schedule = schedule;
                 validationContext.NewAdsPeriods = scheduleAdsPeriods;

@@ -10,6 +10,6 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
     {
         Task<AdPoint> GetByIdAsync(int adPointId);
 
-        Task<List<AdPointValidation>> GetAdPointsValidationAsync(int[] adPointIds, DateTime planStart, DateTime planEnd);
+        Task<List<AdPointValidation>> GetAdPointsValidationAsync(int adPointsPlanId, DateTime planStart, DateTime planEnd);
     }
 }

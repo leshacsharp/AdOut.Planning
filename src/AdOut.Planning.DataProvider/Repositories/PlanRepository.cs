@@ -17,41 +17,42 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoints(int[] adPointId, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var query = from pap in Context.PlanAdPoints.Where(pap => adPointId.Contains(pap.AdPointId))
+            var query = from pap in Context.PlanAdPoints
 
                         join p in Context.Plans on pap.PlanId equals p.Id
-                        join s in Context.Schedules on p.Id equals s.PlanId //todo: need to make left join
+                        join s in Context.Schedules on p.Id equals s.PlanId into sJoin
+                        from s in sJoin.DefaultIfEmpty()
 
-                        where p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
+                        where pap.AdPointId == adPointId && p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
 
                         select new
                         {
                             p.Id,
-                            p.AdsTimePlaying,
-
-                            Schedule = new ScheduleDto()
+                            p.Title,
+                            Schedule = s != null ? new ScheduleDto()
                             {
                                 StartTime = s.StartTime,
                                 EndTime = s.EndTime,
                                 BreakTime = s.BreakTime,
+                                PlayTime = s.PlayTime,
                                 DayOfWeek = s.DayOfWeek,
                                 Date = s.Date
-                            }
+                            } : null
                         };
 
             var plans = await query.ToListAsync();
 
             var result = from p in plans
-                         group p by new { p.Id, p.AdsTimePlaying }
+                         group p by new { p.Id, p.Title }
                          into pGroup
 
                          select new AdPointPlanDto()
                          {
                              Id = pGroup.Key.Id,
-                             AdsTimePlaying = pGroup.Key.AdsTimePlaying,
-                             Schedules = pGroup.Select(p => p.Schedule)
+                             Title = pGroup.Key.Title,
+                             Schedules = pGroup.Where(p => p.Schedule != null).Select(p => p.Schedule)
                          };
 
             return result.ToList();
@@ -87,13 +88,13 @@ namespace AdOut.Planning.DataProvider.Repositories
                             p.Status,
                             p.StartDateTime,
                             p.EndDateTime,
-                            p.AdsTimePlaying,
 
                             Schedule = s != null ? new ScheduleDto()
                             {
                                 StartTime = s.StartTime,
                                 EndTime = s.EndTime,
                                 BreakTime = s.BreakTime,
+                                PlayTime = s.PlayTime,
                                 Date = s.Date,
                                 DayOfWeek = s.DayOfWeek
                             } : null,
@@ -125,7 +126,6 @@ namespace AdOut.Planning.DataProvider.Repositories
                 Status = plan.Status,
                 StartDateTime = plan.StartDateTime,
                 EndDateTime = plan.EndDateTime,
-                AdsTimePlaying = plan.AdsTimePlaying,
 
                 Schedules = planItems.Where(p => p.Schedule != null).Select(p => p.Schedule),
                 Ads = planItems.Where(p => p.Ad != null).Select(p => p.Ad),

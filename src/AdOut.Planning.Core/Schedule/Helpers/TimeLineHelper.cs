@@ -8,12 +8,12 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class TimeLineHelper : ITimeLineHelper
     {
-        public List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule, TimeSpan adsTimePlaying)
+        public List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule)
         {
             var adsPeriods = new List<AdPeriod>();
 
             AdPeriod currentAdPeriod = null;
-            var adTimeWithBreak = adsTimePlaying + schedule.BreakTime;
+            var adTimeWithBreak = schedule.PlayTime + schedule.BreakTime;
 
             while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
             {
@@ -27,7 +27,7 @@ namespace AdOut.Planning.Core.Schedule.Helpers
                     adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
                 }
 
-                var adEndTime = adStartTime.Add(adsTimePlaying);
+                var adEndTime = adStartTime.Add(schedule.PlayTime);
                 var adPeriod = new AdPeriod()
                 {
                     StartTime = adStartTime,

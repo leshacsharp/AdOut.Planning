@@ -22,6 +22,8 @@ namespace AdOut.Planning.Model.Database
 
         public TimeSpan BreakTime { get; set; }
 
+        public TimeSpan PlayTime { get; set; }
+
         public DayOfWeek? DayOfWeek { get; set; }
 
         public DateTime? Date { get; set; }

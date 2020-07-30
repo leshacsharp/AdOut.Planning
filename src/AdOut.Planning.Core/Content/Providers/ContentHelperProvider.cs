@@ -6,7 +6,6 @@ using System;
 
 namespace AdOut.Planning.Core.Content.Providers
 {
-    //todo: create abstract factory with IContentValidatorProvider
     public class ContentHelperProvider : IContentHelperProvider
     { 
         public IContentHelper CreateContentHelper(string contentExtension)
@@ -16,18 +15,16 @@ namespace AdOut.Planning.Core.Content.Providers
                 throw new ArgumentNullException(nameof(contentExtension));
             }
 
-            //todo: refactoring
-            if(!Constants.ContentTypes.ContainsKey(contentExtension))
+            if (!Constants.ContentTypes.TryGetValue(contentExtension, out ContentType contentType))
             {
                 throw new NotSupportedException($"Extension={contentExtension} is not supported");
             }
-
-            var contentType = Constants.ContentTypes[contentExtension];
 
             return contentType switch
             {
                 ContentType.Image => new ImageHelper(),
                 ContentType.Video => new VideoHelper(),
+                _ =>  throw new ArgumentException("Invalid enum value")
             };
         }
     }

@@ -65,7 +65,7 @@ namespace AdOut.Planning.WebApi
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
 
             services.AddDataProviderModule();
-            services.AddCoreModule();
+            services.AddCoreModule(Configuration);
             services.AddEventBrokerModule();
             services.AddWebApiModule();
 
@@ -107,8 +107,11 @@ namespace AdOut.Planning.WebApi
             var modelAssembly = typeof(Constants).Assembly;
             var eventTypes = modelAssembly.GetTypes().Where(t => t.BaseType == typeof(IntegrationEvent));
             eventBroker.Configure(eventTypes);
-
             eventBinder.Bind();
+
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<PlanningContext>();
+            context.Database.Migrate();
         }
     }
 }

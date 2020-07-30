@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Dto;
+﻿using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

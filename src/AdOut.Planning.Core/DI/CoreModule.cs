@@ -8,6 +8,11 @@ using AdOut.Planning.Core.Schedule.Providers;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Schedule;
+using AdOut.Planning.Model.Settings;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System.Linq;
@@ -17,7 +22,7 @@ namespace AdOut.Planning.Core.DI
 {
     public static class CoreModule
     {
-        public static void AddCoreModule (this IServiceCollection services)
+        public static void AddCoreModule (this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAdManager, AdManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();
@@ -37,7 +42,15 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IScheduleTimeHelperProvider, ScheduleTimeHelperProvider>();
             services.AddScoped<ITimeLineHelper, TimeLineHelper>();
 
-            services.AddScoped<IDirectoryDistributor, EmptyDirectoryDistributor>();
+            var awsConfig = new AWSS3Config();
+            configuration.Bind(nameof(AWSS3Config), awsConfig);
+
+            var awsCredentials = new BasicAWSCredentials(awsConfig.AccessKey, awsConfig.SecretKey);
+            var regionEndpoint = RegionEndpoint.GetBySystemName(awsConfig.RegionEndpointName);
+            var awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
+
+            //todo: uncomment in Production
+            //services.AddScoped<IContentStorage>(p => new AWSS3Storage(awsClient, awsConfig.BucketName));
             services.AddScoped<IContentStorage, LocalStorage>();
             services.AddScoped<IContentHelperProvider, ContentHelperProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();

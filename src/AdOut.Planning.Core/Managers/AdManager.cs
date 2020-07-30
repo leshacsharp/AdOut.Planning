@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Api;
+﻿using AdOut.Planning.Common.Helpers;
+using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
@@ -75,8 +76,8 @@ namespace AdOut.Planning.Core.Managers
             var contentHelper = _contentHelperProvider.CreateContentHelper(extension);
             var thumbnail = contentHelper.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
 
-            var pathForContent = _contentStorage.GenerateFilePath(extension);
-            var pathForThumbnail = _contentStorage.GenerateFilePath(DefaultValues.DefaultThumbnailExtension);
+            var pathForContent = PathHelper.GeneratePath(extension, Model.Enum.DirectoryPath.None);
+            var pathForThumbnail = PathHelper.GeneratePath(DefaultValues.DefaultThumbnailExtension, Model.Enum.DirectoryPath.None);
 
             var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
             var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);

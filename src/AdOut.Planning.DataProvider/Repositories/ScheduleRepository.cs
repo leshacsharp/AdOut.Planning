@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Classes;
 
 namespace AdOut.Planning.DataProvider.Repositories
 {
@@ -25,14 +26,14 @@ namespace AdOut.Planning.DataProvider.Repositories
                             StartTime = s.StartTime,
                             EndTime = s.EndTime,
                             BreakTime = s.BreakTime,
+                            PlayTime = s.PlayTime,
                             Date = s.Date,
                             DayOfWeek = s.DayOfWeek
                         };
 
             return query.ToListAsync();
         }
-
-        //todo: need to think about AdsTimePlaying and BreakTime (i would like to see these properties in single entity)
+  
         public Task<AdScheduleTime> GetScheduleInfo(int scheduleId)
         {
             var query = from s in Context.Schedules
@@ -46,7 +47,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                             ScheduleEndTime = s.EndTime,
                             ScheduleDayOfWeek = s.DayOfWeek,
                             ScheduleDate = s.Date,
-                            AdPlayTime = p.AdsTimePlaying,
+                            AdPlayTime = s.PlayTime,
                             AdBreakTime = s.BreakTime
                         };
 

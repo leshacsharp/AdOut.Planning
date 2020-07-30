@@ -79,7 +79,7 @@ namespace AdOut.Planning.WebApi.Controllers
         {
             var userId = User.GetUserId();
 
-            await _planManager.CreateAsync(createModel, userId);
+            _planManager.Create(createModel, userId);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();

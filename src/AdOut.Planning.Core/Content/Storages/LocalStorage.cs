@@ -1,5 +1,4 @@
-﻿using AdOut.Planning.Common.Helpers;
-using AdOut.Planning.Model.Interfaces.Content;
+﻿using AdOut.Planning.Model.Interfaces.Content;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,28 +7,6 @@ namespace AdOut.Planning.Core.Content.Storages
 {
     public class LocalStorage : IContentStorage
     {
-        private readonly IDirectoryDistributor _directorySeparator;
-        public LocalStorage(IDirectoryDistributor directorySeparator)
-        {
-            _directorySeparator = directorySeparator;
-        }
-
-        //todo: maybe need to make 'private' method
-        public string GenerateFilePath(string fileExtension)
-        {
-            if (fileExtension == null)
-            {
-                throw new ArgumentNullException(nameof(fileExtension));
-            }
-
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var subDirectory = _directorySeparator.GetDirectory();
-            var fileName = FileHelper.GetRandomFileName();
-            var fullPath = $"{baseDirectory}/{subDirectory}/{fileName}{fileExtension}";
-
-            return fullPath;
-        }
-
         public Task CreateObjectAsync(Stream content, string filePath)
         {
             if (content == null)
