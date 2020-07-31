@@ -1,5 +1,6 @@
 ﻿using AdOut.Planning.Model.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@ namespace AdOut.Planning.Model.Interfaces.Context
         DbSet<AdPointDayOff> AdPointDaysOff { get; set; }
 
         DbSet<Configuration> Configurations { get; set; }
+
+        ChangeTracker ChangeTracker { get; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
 
