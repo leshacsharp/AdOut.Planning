@@ -42,15 +42,15 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IScheduleTimeHelperProvider, ScheduleTimeHelperProvider>();
             services.AddScoped<ITimeLineHelper, TimeLineHelper>();
 
-            var awsConfig = new AWSS3Config();
-            configuration.Bind(nameof(AWSS3Config), awsConfig);
-
-            var awsCredentials = new BasicAWSCredentials(awsConfig.AccessKey, awsConfig.SecretKey);
-            var regionEndpoint = RegionEndpoint.GetBySystemName(awsConfig.RegionEndpointName);
-            var awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
-
             //todo: uncomment in Production
+            //var awsConfig = new AWSS3Config();
+            //configuration.Bind(nameof(AWSS3Config), awsConfig);
+            //var awsCredentials = new BasicAWSCredentials(awsConfig.AccessKey, awsConfig.SecretKey);
+            //var regionEndpoint = RegionEndpoint.GetBySystemName(awsConfig.RegionEndpointName);
+            //var awsClient = new AmazonS3Client(awsCredentials, regionEndpoint);
+
             //services.AddScoped<IContentStorage>(p => new AWSS3Storage(awsClient, awsConfig.BucketName));
+
             services.AddScoped<IContentStorage, LocalStorage>();
             services.AddScoped<IContentHelperProvider, ContentHelperProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();

@@ -2,8 +2,6 @@ using AdOut.Planning.Core.DI;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.DataProvider.DI;
 using AdOut.Planning.EventBroker.DI;
-using AdOut.Planning.Model;
-using AdOut.Planning.Model.Events;
 using AdOut.Planning.Model.Interfaces.Infrastructure;
 using AdOut.Planning.Model.Settings;
 using AdOut.Planning.WebApi.Auth;
@@ -104,9 +102,7 @@ namespace AdOut.Planning.WebApi
                         // .RequireAuthorization(); //!!!!
             });
 
-            var modelAssembly = typeof(Constants).Assembly;
-            var eventTypes = modelAssembly.GetTypes().Where(t => t.BaseType == typeof(IntegrationEvent));
-            eventBroker.Configure(eventTypes);
+            eventBroker.Configure();
             eventBinder.Bind();
 
             using var scope = app.ApplicationServices.CreateScope();

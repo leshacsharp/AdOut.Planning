@@ -114,7 +114,6 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-
         public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
@@ -161,7 +160,6 @@ namespace AdOut.Planning.Core.Managers
             Create(schedule);
         }
 
-        //todo: improve queries
         public async Task UpdateAsync(UpdateScheduleModel updateModel)
         {
             if (updateModel == null)

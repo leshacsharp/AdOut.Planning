@@ -6,7 +6,6 @@ namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface ITimeLineHelper
     {
-        //todo: need to think about arguments (simple arguments will be better)
         List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule);
     }
 }

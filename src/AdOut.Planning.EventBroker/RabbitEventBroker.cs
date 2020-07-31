@@ -1,10 +1,11 @@
 ﻿using AdOut.Planning.Common;
+using AdOut.Planning.Model;
 using AdOut.Planning.Model.Events;
 using AdOut.Planning.Model.Interfaces.Infrastructure;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AdOut.Planning.EventBroker
@@ -44,10 +45,12 @@ namespace AdOut.Planning.EventBroker
             channel.BasicConsume(queue, true, eventHandler);
         }
 
-        //todo: move 'eventTypes' to the logic of method
-        public void Configure(IEnumerable<Type> eventTypes)
+        public void Configure()
         {
             var channel = _channelManager.GetPublisherChannel();
+
+            var modelAssembly = typeof(Constants).Assembly;
+            var eventTypes = modelAssembly.GetTypes().Where(t => t.BaseType == typeof(IntegrationEvent));
 
             foreach (var eventType in eventTypes)
             {

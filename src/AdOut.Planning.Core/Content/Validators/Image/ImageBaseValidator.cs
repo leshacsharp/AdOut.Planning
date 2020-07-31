@@ -1,5 +1,4 @@
 ﻿using AdOut.Planning.Model.Classes;
-using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
@@ -17,47 +16,31 @@ namespace AdOut.Planning.Core.Content.Validators.Image
             _configurationRepository = configurationRepository;
         }
 
-        public async Task<ValidationResult<ContentError>> ValidateAsync(Stream content)
+        public async Task<ValidationResult<string>> ValidateAsync(Stream content)
         {
             if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
 
-            //todo: is exception and await needed in this place?
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
             {
-                throw new ArgumentException(ValidationMessages.Content.NotCorrectFormat, nameof(content));
+                //throwing a exception because the validators can't validate a content with invalid structure
+                throw new ArgumentException(ValidationMessages.Content.InvalidFormat, nameof(content));
             }
 
-            var validationResult = new ValidationResult<ContentError>();
-
+            var validationResult = new ValidationResult<string>();
             var isCorrectDimension = await IsCorrectDimensionAsync(content);
             var isCorrectSize = await IsCorrectSizeAsync(content);
 
             if (!isCorrectDimension)
             {
-                //todo: Is 'Code' needed?
-                var dimensionError = new ContentError()
-                {
-                    Code = ContentErrorCode.Dimension,
-                    Description = ValidationMessages.Content.NotCorrectDimension
-                };
-
-                validationResult.Errors.Add(dimensionError);
+                validationResult.Errors.Add(ValidationMessages.Content.NotCorrectDimension);
             }
-     
             if (!isCorrectSize)
             {
-                //todo: Is 'Code' needed?
-                var sizeError = new ContentError()
-                {
-                    Code = ContentErrorCode.Size,
-                    Description = ValidationMessages.Content.NotCorrectSize
-                };
-
-                validationResult.Errors.Add(sizeError);
+                validationResult.Errors.Add(ValidationMessages.Content.NotCorrectSize);
             }
 
             return validationResult;
@@ -73,10 +56,8 @@ namespace AdOut.Planning.Core.Content.Validators.Image
             var minImageWidth = int.Parse(minImageWidthCfg);
             var minImageHeight = int.Parse(minImageHeightCfg);
 
-            using (var image = System.Drawing.Image.FromStream(content))
-            {
-                return image.Width >= minImageWidth && image.Height >= minImageHeight;
-            }
+            using var image = System.Drawing.Image.FromStream(content);
+            return image.Width >= minImageWidth && image.Height >= minImageHeight;
         }
 
         protected virtual async Task<bool> IsCorrectSizeAsync(Stream content)

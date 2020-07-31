@@ -41,7 +41,7 @@ namespace AdOut.Planning.Core.Managers
             _contentHelperProvider = contentHelperProvider;
         }
 
-        public Task<ValidationResult<ContentError>> ValidateAsync(IFormFile content)
+        public Task<ValidationResult<string>> ValidateAsync(IFormFile content)
         {
             if(content == null)
             {
@@ -56,7 +56,6 @@ namespace AdOut.Planning.Core.Managers
                 throw new BadRequestException($"{extension} extension is not allowed");
             }
 
-            //todo: mb abstract factory
             var contentValidator = _contentValidatorProvider.CreateContentValidator(extension);
             var contentStream = content.OpenReadStream();
 

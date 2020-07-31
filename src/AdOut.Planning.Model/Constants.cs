@@ -20,7 +20,7 @@ namespace AdOut.Planning.Model
 
             public static class Content
             {
-                public const string NotCorrectFormat = "Format is not correct";
+                public const string InvalidFormat = "Format is invalid";
                 public const string NotCorrectSize = "Size is not correct";
                 public const string NotCorrectDimension = "Dimension is not correct";
                 public const string NotCorrectDuration = "Duration is not correct";

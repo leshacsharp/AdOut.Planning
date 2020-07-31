@@ -6,6 +6,6 @@ namespace AdOut.Planning.Model.Interfaces.Content
 {
     public interface IContentValidator
     {
-        Task<ValidationResult<ContentError>> ValidateAsync(Stream content);
+        Task<ValidationResult<string>> ValidateAsync(Stream content);
     }
 }

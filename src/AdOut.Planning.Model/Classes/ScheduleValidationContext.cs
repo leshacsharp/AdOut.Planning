@@ -14,10 +14,6 @@ namespace AdOut.Planning.Model.Classes
 
         public List<AdPeriod> NewAdsPeriods { get; set; }
 
-        //public List<AdPointValidation> AdPointsValidations { get; set; }
-
-        //public List<AdPeriod> ExistingAdsPeriods { get; set; }
-
         public List<string> Errors { get; set; }
 
         public ScheduleValidationContext()
