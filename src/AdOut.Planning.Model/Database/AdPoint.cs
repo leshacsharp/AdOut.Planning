@@ -10,11 +10,6 @@ namespace AdOut.Planning.Model.Database
     [Table("AdPoints")]
     public class AdPoint
     {
-        public AdPoint()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         [Key]
         public string Id { get; set; }
 

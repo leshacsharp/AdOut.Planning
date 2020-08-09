@@ -78,6 +78,7 @@ namespace AdOut.Planning.WebApi.Controllers
         public async Task<IActionResult> CreatePlan(CreatePlanModel createModel)
         {
             var userId = User.GetUserId();
+            //todo: delete
             userId = "test-user";
             _planManager.Create(createModel, userId);
             await _commitProvider.SaveChangesAsync();

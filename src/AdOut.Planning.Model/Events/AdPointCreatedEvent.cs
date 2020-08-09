@@ -2,9 +2,10 @@
 
 namespace AdOut.Planning.Model.Events
 {
-    //todo: need to add Id column
     public class AdPointCreatedEvent : IntegrationEvent
     {
+        public string Id { get; set; }
+
         public string Location { get; set; }
 
         public string IpAdress { get; set; }

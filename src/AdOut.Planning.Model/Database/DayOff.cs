@@ -10,11 +10,6 @@ namespace AdOut.Planning.Model.Database
     [Table("DaysOff")]
     public class DayOff
     {
-        public DayOff()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         [Key]
         public string Id { get; set; }
 

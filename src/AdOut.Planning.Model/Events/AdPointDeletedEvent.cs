@@ -2,6 +2,6 @@
 {
     public class AdPointDeletedEvent : IntegrationEvent
     {
-        public string AdPointId { get; set; }
+        public string Id { get; set; }
     }
 }
