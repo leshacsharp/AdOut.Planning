@@ -152,7 +152,7 @@ namespace AdOut.Planning.Core.Managers
             Update(ad);
         }
 
-        public async Task DeleteAsync(int adId)
+        public async Task DeleteAsync(string adId)
         {
             var ad = await _adRepository.GetByIdAsync(adId);
             if (ad == null)
@@ -173,12 +173,12 @@ namespace AdOut.Planning.Core.Managers
             Delete(ad);
         }
 
-        public Task<AdDto> GetDtoByIdAsync(int adId)
+        public Task<AdDto> GetDtoByIdAsync(string adId)
         {
             return _adRepository.GetDtoByIdAsync(adId);
         }
 
-        public Task<Ad> GetByIdAsync(int adId)
+        public Task<Ad> GetByIdAsync(string adId)
         {
             return _adRepository.GetByIdAsync(adId);
         }

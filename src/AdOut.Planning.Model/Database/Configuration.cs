@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
@@ -6,8 +7,13 @@ namespace AdOut.Planning.Model.Database
     [Table("Configurations")]
     public class Configuration
     {
+        public Configuration()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Type { get; set; }

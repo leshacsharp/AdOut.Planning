@@ -7,10 +7,10 @@ namespace AdOut.Planning.Model.Database
     public class AdPointDayOff
     {
         [ForeignKey(nameof(AdPoint))]
-        public int AdPointId { get; set; }
+        public string AdPointId { get; set; }
 
         [ForeignKey(nameof(DayOff))]
-        public int DayOffId { get; set; }
+        public string DayOffId { get; set; }
 
         [Required]
         public virtual AdPoint AdPoint { get; set; }

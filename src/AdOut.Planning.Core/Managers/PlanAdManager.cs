@@ -25,7 +25,7 @@ namespace AdOut.Planning.Core.Managers
             _adRepository = adRepository;
         }
 
-        public async Task AddAdToPlanAsync(int planId, int adId, int order)
+        public async Task AddAdToPlanAsync(string planId, string adId, int order)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)
@@ -55,7 +55,7 @@ namespace AdOut.Planning.Core.Managers
             _planAdRepository.Create(planAd);
         }
 
-        public async Task DeleteAdFromPlanAsync(int planId, int adId)
+        public async Task DeleteAdFromPlanAsync(string planId, string adId)
         {
             var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
             if (planAd == null)
@@ -72,7 +72,7 @@ namespace AdOut.Planning.Core.Managers
             _planAdRepository.Delete(planAd);
         }
 
-        public async Task UpdateAdInPlanAsync(int planId, int adId, int order)
+        public async Task UpdateAdInPlanAsync(string planId, string adId, int order)
         {
             var planAd = await _planAdRepository.GetByIdAsync(planId, adId);
             if (planAd == null)

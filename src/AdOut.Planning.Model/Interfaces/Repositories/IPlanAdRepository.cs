@@ -5,6 +5,6 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IPlanAdRepository : IBaseRepository<PlanAd>
     {
-        Task<PlanAd> GetByIdAsync(int planId, int adId);
+        Task<PlanAd> GetByIdAsync(string planId, string adId);
     }
 }

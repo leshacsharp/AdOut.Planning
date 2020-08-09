@@ -34,12 +34,12 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
 
-        public Task<Ad> GetByIdAsync(int adId)
+        public Task<Ad> GetByIdAsync(string adId)
         {
             return Context.Ads.SingleOrDefaultAsync(ad => ad.Id == adId);
         }
 
-        public async Task<AdDto> GetDtoByIdAsync(int adId)
+        public async Task<AdDto> GetDtoByIdAsync(string adId)
         {
             var query = from a in Context.Ads
 

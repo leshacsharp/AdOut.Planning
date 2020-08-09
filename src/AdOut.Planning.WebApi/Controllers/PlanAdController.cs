@@ -37,7 +37,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("add-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddAdToPlan(int planId, int adId, int order)
+        public async Task<IActionResult> AddAdToPlan(string planId, string adId, int order)
         {
             await CheckUserPermissionsForResourceAsync(planId, adId);
 
@@ -51,7 +51,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("delete-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteAdFromPlan(int planId, int adId)
+        public async Task<IActionResult> DeleteAdFromPlan(string planId, string adId)
         {
             await CheckUserPermissionsForResourceAsync(planId, adId);
 
@@ -64,7 +64,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpPut]
         [Route("update-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdateAdInPlan(int planId, int adId, int order)
+        public async Task<IActionResult> UpdateAdInPlan(string planId, string adId, int order)
         {
             await CheckUserPermissionsForResourceAsync(planId, adId);
 
@@ -74,7 +74,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
-        private async Task CheckUserPermissionsForResourceAsync(int planId, int adId)
+        private async Task CheckUserPermissionsForResourceAsync(string planId, string adId)
         {
             var plan = await _planManager.GetByIdAsync(planId);
             var planAuth = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);
@@ -83,8 +83,9 @@ namespace AdOut.Planning.WebApi.Controllers
             {
                 throw new ForbiddenException();
             }
-
-            var ad = await _adManager.GetByIdAsync(planId);
+            
+            //todo: maybe need to delete the block about AD
+            var ad = await _adManager.GetByIdAsync(adId);
             var adAuth = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
 
             if (!adAuth.Succeeded)

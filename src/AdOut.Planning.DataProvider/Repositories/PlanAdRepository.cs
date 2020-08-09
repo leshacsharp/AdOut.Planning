@@ -13,7 +13,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<PlanAd> GetByIdAsync(int planId, int adId)
+        public Task<PlanAd> GetByIdAsync(string planId, string adId)
         {
             return Context.PlanAds.SingleOrDefaultAsync(pa => pa.PlanId == planId && pa.AdId == adId);
         }

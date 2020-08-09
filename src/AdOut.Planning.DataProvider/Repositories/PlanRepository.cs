@@ -17,7 +17,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<AdPointPlanDto>> GetByAdPoint(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var query = from pap in Context.PlanAdPoints
 
@@ -58,7 +58,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result.ToList();
         }
 
-        public async Task<PlanDto> GetDtoByIdAsync(int planId)
+        public async Task<PlanDto> GetDtoByIdAsync(string planId)
         {
             var query = from p in Context.Plans
 
@@ -135,7 +135,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result;
         }
 
-        public Task<Plan> GetByIdAsync(int planId)
+        public Task<Plan> GetByIdAsync(string planId)
         {
             return Context.Plans.SingleOrDefaultAsync(p => p.Id == planId);
         } 

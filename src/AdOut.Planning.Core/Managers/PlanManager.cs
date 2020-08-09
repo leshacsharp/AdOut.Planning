@@ -88,7 +88,7 @@ namespace AdOut.Planning.Core.Managers
             Update(plan);
         }
 
-        public async Task DeleteAsync(int planId)
+        public async Task DeleteAsync(string planId)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)
@@ -99,17 +99,17 @@ namespace AdOut.Planning.Core.Managers
             Delete(plan);
         }
 
-        public Task<PlanDto> GetDtoByIdAsync(int planId)
+        public Task<PlanDto> GetDtoByIdAsync(string planId)
         {
             return _planRepository.GetDtoByIdAsync(planId);
         }
 
-        public Task<Plan> GetByIdAsync(int planId)
+        public Task<Plan> GetByIdAsync(string planId)
         {
             return _planRepository.GetByIdAsync(planId);
         }
 
-        public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate)
+        public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)
@@ -170,7 +170,7 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-        public async Task ExtendPlanAsync(int planId, DateTime newEndDate)
+        public async Task ExtendPlanAsync(string planId, DateTime newEndDate)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)

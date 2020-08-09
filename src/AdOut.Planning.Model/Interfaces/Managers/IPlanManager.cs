@@ -9,18 +9,18 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IPlanManager : IBaseManager<Plan>
     {
-        Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate);
+        Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate);
 
         void Create(CreatePlanModel createModel, string userId);
 
         Task UpdateAsync(UpdatePlanModel updateModel);
 
-        Task DeleteAsync(int planId);
+        Task DeleteAsync(string planId);
 
-        Task<PlanDto> GetDtoByIdAsync(int planId);
+        Task<PlanDto> GetDtoByIdAsync(string planId);
 
-        Task<Plan> GetByIdAsync(int planId);
+        Task<Plan> GetByIdAsync(string planId);
 
-        Task ExtendPlanAsync(int planId, DateTime newEndDate);
+        Task ExtendPlanAsync(string planId, DateTime newEndDate);
     }
 }

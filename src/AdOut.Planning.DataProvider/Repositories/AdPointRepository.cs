@@ -17,12 +17,12 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<AdPoint> GetByIdAsync(int adPointId)
+        public Task<AdPoint> GetByIdAsync(string adPointId)
         {
             return Context.AdPoints.SingleOrDefaultAsync(ap => ap.Id == adPointId);
         }
 
-        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(int adPointsPlanId, DateTime planStart, DateTime planEnd)
+        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(string adPointsPlanId, DateTime planStart, DateTime planEnd)
         {              
             var query = from pap in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)
                         join ap in Context.AdPoints on pap.AdPointId equals ap.Id

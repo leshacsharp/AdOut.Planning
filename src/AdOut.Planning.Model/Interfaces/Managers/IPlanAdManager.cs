@@ -5,10 +5,10 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IPlanAdManager : IBaseManager<PlanAd>
     {
-        Task AddAdToPlanAsync(int planId, int adId, int order);
+        Task AddAdToPlanAsync(string planId, string adId, int order);
 
-        Task DeleteAdFromPlanAsync(int planId, int adId);
+        Task DeleteAdFromPlanAsync(string planId, string adId);
 
-        Task UpdateAdInPlanAsync(int planId, int adId, int order);
+        Task UpdateAdInPlanAsync(string planId, string adId, int order);
     }
 }

@@ -17,7 +17,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<List<ScheduleDto>> GetByPlanAsync(int planId)
+        public Task<List<ScheduleDto>> GetByPlanAsync(string planId)
         {
             var query = from s in Context.Schedules
                         where s.PlanId == planId
@@ -34,7 +34,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
   
-        public Task<AdScheduleTime> GetScheduleInfo(int scheduleId)
+        public Task<AdScheduleTime> GetScheduleInfo(string scheduleId)
         {
             var query = from s in Context.Schedules
                         join p in Context.Plans on s.PlanId equals p.Id
@@ -54,7 +54,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.SingleOrDefaultAsync();
         }
 
-        public Task<Schedule> GetByIdAsync(int scheduleId)
+        public Task<Schedule> GetByIdAsync(string scheduleId)
         {
             return Context.Schedules.SingleOrDefaultAsync(p => p.Id == scheduleId);
         }

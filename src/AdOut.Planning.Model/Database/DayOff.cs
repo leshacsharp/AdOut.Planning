@@ -10,8 +10,14 @@ namespace AdOut.Planning.Model.Database
     [Table("DaysOff")]
     public class DayOff
     {
+        public DayOff()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
+
         public DayOfWeek DayOfWeek { get; set; }
 
         public virtual ICollection<AdPointDayOff> AdPointsDaysOff { get; set; }
