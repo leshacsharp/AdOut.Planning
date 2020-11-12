@@ -16,13 +16,9 @@ namespace AdOut.Planning.Core.Content.Helpers
             {
                 throw new ArgumentNullException(nameof(content));
             }
-            if (width <= 0)
+            if (width <= 0 || height <= 0)
             {
-                throw new ArgumentException("Value can't be zero and less zero", nameof(width));
-            }
-            if (height <= 0)
-            {
-                throw new ArgumentException("Value can't be zero and less zero", nameof(height));
+                throw new ArgumentException("Width and height can't be zero and less than zero.");
             }
 
             var FFMpegOptions = new FFMpegOptions() { RootDirectory = AppDomain.CurrentDomain.BaseDirectory };

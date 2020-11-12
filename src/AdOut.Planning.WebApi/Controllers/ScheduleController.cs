@@ -32,15 +32,6 @@ namespace AdOut.Planning.WebApi.Controllers
             _authorizationService = authorizationService;
         }
 
-        [HttpGet]
-        [Route("plans-timelines")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
-        {
-            var plansTimeLines = await _scheduleManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
-            return Ok(plansTimeLines);
-        }
-
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -89,7 +80,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
-        private async Task CheckUserPermissionsForResourceAsync(int planId)
+        private async Task CheckUserPermissionsForResourceAsync(string planId)
         {
             var plan = await _planManager.GetByIdAsync(planId);
             var authResult = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);

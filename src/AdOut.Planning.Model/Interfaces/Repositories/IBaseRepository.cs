@@ -6,6 +6,8 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
+        //todo: add a GetByIdAsync method
+
         void Create(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

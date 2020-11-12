@@ -31,11 +31,20 @@ namespace AdOut.Planning.WebApi.Controllers
             _authorizationService = authorizationService;
         }
 
+        [HttpGet]
+        [Route("plans-timelines")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
+        {
+            var plansTimeLines = await _planManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
+            return Ok(plansTimeLines);
+        }
+
         [HttpPut]
         [Route("extend-plan")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExtendPlan(int planId, DateTime newEndDate)
+        public async Task<IActionResult> ExtendPlan(string planId, DateTime newEndDate)
         {
             await CheckUserPermissionsForResourceAsync(planId);
 
@@ -55,7 +64,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("{id}")]
         [ProducesResponseType(typeof(PlanDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetPlan(int id)
+        public async Task<IActionResult> GetPlan(string id)
         {
             var plan = await _planManager.GetByIdAsync(id);
             if (plan == null)
@@ -78,7 +87,8 @@ namespace AdOut.Planning.WebApi.Controllers
         public async Task<IActionResult> CreatePlan(CreatePlanModel createModel)
         {
             var userId = User.GetUserId();
-
+            //todo: delete
+            userId = "test-user";
             _planManager.Create(createModel, userId);
             await _commitProvider.SaveChangesAsync();
 
@@ -88,7 +98,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpDelete]
         [Route("delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeletePlan(int id)
+        public async Task<IActionResult> DeletePlan(string id)
         {
             await CheckUserPermissionsForResourceAsync(id);
 
@@ -111,7 +121,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
-        private async Task CheckUserPermissionsForResourceAsync(int planId)
+        private async Task CheckUserPermissionsForResourceAsync(string planId)
         {
             var plan = await _planManager.GetByIdAsync(planId);
             var authResult = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);

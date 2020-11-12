@@ -17,6 +17,6 @@ namespace AdOut.Planning.Model.Api
 
         public DateTime EndDateTime { get; set; }
 
-        public IEnumerable<int> AdPointsIds { get; set; }
+        public IEnumerable<string> AdPointsIds { get; set; }
     }
 }

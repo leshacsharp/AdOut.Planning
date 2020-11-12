@@ -40,6 +40,41 @@ namespace AdOut.Planning.Core.Managers
             _timeLineHelper = timeLineHelper;
         }
 
+        public async Task<List<PlanTimeLine>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
+        {
+            var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
+
+            var plansTimeLines = new List<PlanTimeLine>();
+            foreach (var plan in adPointPlans)
+            {
+                var planTimeLine = new PlanTimeLine() { PlanId = plan.Id, PlanTitle = plan.Title };
+                foreach (var schedule in plan.Schedules)
+                {
+                    var scheduleAdPeriods = _timeLineHelper.GetScheduleTimeLine(schedule);
+                    planTimeLine.AdsPeriods.AddRange(scheduleAdPeriods);
+                }
+
+                plansTimeLines.Add(planTimeLine);
+            }
+
+            return plansTimeLines;
+        }
+
+        public async Task<List<AdPeriod>> GetPlanTimeLine(string planId)
+        {
+            var planSchedules = await _scheduleRepository.GetByPlanAsync(planId);
+            var adPeriods = new List<AdPeriod>();
+
+            foreach (var schedule in planSchedules)
+            {
+                var scheduleTimeLine = _timeLineHelper.GetScheduleTimeLine(schedule);
+                adPeriods.AddRange(scheduleTimeLine);
+            }
+
+            return adPeriods;
+        }
+
+        //todo: delete userId from arguments
         public void Create(CreatePlanModel createModel, string userId)
         {
             if (createModel == null)
@@ -88,7 +123,7 @@ namespace AdOut.Planning.Core.Managers
             Update(plan);
         }
 
-        public async Task DeleteAsync(int planId)
+        public async Task DeleteAsync(string planId)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)
@@ -99,17 +134,17 @@ namespace AdOut.Planning.Core.Managers
             Delete(plan);
         }
 
-        public Task<PlanDto> GetDtoByIdAsync(int planId)
+        public Task<PlanDto> GetDtoByIdAsync(string planId)
         {
             return _planRepository.GetDtoByIdAsync(planId);
         }
 
-        public Task<Plan> GetByIdAsync(int planId)
+        public Task<Plan> GetByIdAsync(string planId)
         {
             return _planRepository.GetByIdAsync(planId);
         }
 
-        public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(int planId, DateTime newEndDate)
+        public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)
@@ -119,7 +154,7 @@ namespace AdOut.Planning.Core.Managers
 
             var validationResult = new ValidationResult<string>();
 
-            if (plan.EndDateTime >= newEndDate)
+            if (newEndDate <= plan.EndDateTime)
             {
                 validationResult.Errors.Add($"New end date can't be less or equal than current end date");
                 return validationResult;
@@ -170,7 +205,7 @@ namespace AdOut.Planning.Core.Managers
             return validationResult;
         }
 
-        public async Task ExtendPlanAsync(int planId, DateTime newEndDate)
+        public async Task ExtendPlanAsync(string planId, DateTime newEndDate)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
             if (plan == null)

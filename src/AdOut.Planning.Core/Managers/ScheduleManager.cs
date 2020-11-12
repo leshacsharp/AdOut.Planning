@@ -56,6 +56,7 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
+            //todo: make something with that!!!
             var scheduleDto = new ScheduleDto()
             {
                 StartTime = scheduleModel.StartTime,
@@ -103,8 +104,8 @@ namespace AdOut.Planning.Core.Managers
                 }
             };
 
-            var scheduleValidator = _scheduleValidatorFactory.CreateChainOfAllValidators();
-            scheduleValidator.Validate(validationContext);
+            var chainOfValidator = _scheduleValidatorFactory.CreateChainOfAllValidators();
+            chainOfValidator.Validate(validationContext);
 
             var validationResult = new ValidationResult<string>()
             {
@@ -112,26 +113,6 @@ namespace AdOut.Planning.Core.Managers
             };
 
             return validationResult;
-        }
-
-        public async Task<List<PlanTimeLine>> GetPlansTimeLines(int adPointId, DateTime dateFrom, DateTime dateTo)
-        {
-            var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
-
-            var plansTimeLines = new List<PlanTimeLine>();
-            foreach (var plan in adPointPlans)
-            {
-                var planTimeLine = new PlanTimeLine() { PlanId = plan.Id, PlanTitle = plan.Title };     
-                foreach (var schedule in plan.Schedules)
-                {
-                    var scheduleAdPeriods = _timeLineHelper.GetScheduleTimeLine(schedule);
-                    planTimeLine.AdsPeriods.AddRange(scheduleAdPeriods);
-                }
-
-                plansTimeLines.Add(planTimeLine);
-            }
-
-            return plansTimeLines;
         }
 
         public async Task CreateAsync(ScheduleModel createModel)
@@ -196,6 +177,7 @@ namespace AdOut.Planning.Core.Managers
             Update(schedule);
         }
 
+        //todo: wtf?
         private AdScheduleTime MapPlanAndScheduleToTimeInfo(Plan plan, Model.Database.Schedule schedule)
         {
             return new AdScheduleTime()

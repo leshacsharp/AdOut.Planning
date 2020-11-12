@@ -34,14 +34,9 @@ namespace AdOut.Planning.DataProvider.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<PlanAd>()
-                        .HasKey(pa => new { pa.PlanId, pa.AdId });
-
-            modelBuilder.Entity<PlanAdPoint>()
-                        .HasKey(pap => new { pap.PlanId, pap.AdPointId });
-
-            modelBuilder.Entity<AdPointDayOff>()
-                        .HasKey(apw => new { apw.AdPointId, apw.DayOffId });
+            modelBuilder.Entity<PlanAd>().HasKey(pa => new { pa.PlanId, pa.AdId });
+            modelBuilder.Entity<PlanAdPoint>().HasKey(pap => new { pap.PlanId, pap.AdPointId });
+            modelBuilder.Entity<AdPointDayOff>().HasKey(apw => new { apw.AdPointId, apw.DayOffId });
         }
     }
 }

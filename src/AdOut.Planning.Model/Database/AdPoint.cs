@@ -11,7 +11,7 @@ namespace AdOut.Planning.Model.Database
     public class AdPoint
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Location { get; set; }

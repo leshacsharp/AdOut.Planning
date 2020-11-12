@@ -68,7 +68,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAd(int id)
+        public async Task<IActionResult> GetAd(string id)
         {
             var ad = await _adManager.GetDtoByIdAsync(id);
             if (ad == null)
@@ -102,7 +102,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             await CheckUserPermissionsForResourceAsync(id);
 
@@ -112,7 +112,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
-        private async Task CheckUserPermissionsForResourceAsync(int adId)
+        private async Task CheckUserPermissionsForResourceAsync(string adId)
         {  
             var ad = await _adManager.GetByIdAsync(adId);
             var authResult = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);

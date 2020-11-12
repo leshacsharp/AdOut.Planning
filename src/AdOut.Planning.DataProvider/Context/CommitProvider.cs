@@ -28,7 +28,7 @@ namespace AdOut.Planning.DataProvider.Context
             var integrationEvents = GenerateCRUDIntegrationEvents();
             var countChanges = await _context.SaveChangesAsync();
 
-            //send integration events AFTER successed execution SaveChanges, to avoid of not consistent data
+            //sending integration events AFTER successed execution SaveChanges to avoid no consistent data
             foreach (var integrationEvent in integrationEvents)
             {
                 _eventBroker.Publish(integrationEvent);

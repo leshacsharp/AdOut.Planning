@@ -9,10 +9,15 @@ namespace AdOut.Planning.Model.Database
     [Table("Plans")]
     public class Plan
     {
-        [Key]
-        public int Id { get; set; }
+        public Plan()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
 
-        //Foreign key of table "Users" that existed in the AdOut.Identity database (another microservice)
+        [Key]
+        public string Id { get; set; }
+
+        //Foreign key of table "Users" that is existed in the AdOut.Identity (another microservice)
         [Required]
         public string UserId { get; set; }
 

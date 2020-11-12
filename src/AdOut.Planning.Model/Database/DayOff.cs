@@ -11,7 +11,8 @@ namespace AdOut.Planning.Model.Database
     public class DayOff
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
+
         public DayOfWeek DayOfWeek { get; set; }
 
         public virtual ICollection<AdPointDayOff> AdPointsDaysOff { get; set; }

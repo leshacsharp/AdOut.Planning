@@ -7,10 +7,10 @@ namespace AdOut.Planning.Model.Database
     public class PlanAd
     {
         [ForeignKey(nameof(Plan))]
-        public int PlanId { get; set; }
+        public string PlanId { get; set; }
 
         [ForeignKey(nameof(Ad))]
-        public int AdId { get; set; }
+        public string AdId { get; set; }
 
         [Required]
         public virtual Plan Plan { get; set; }

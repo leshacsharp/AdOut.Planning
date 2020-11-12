@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Api
 {
     public class UpdatePlanModel
     {
-        public int PlanId { get; set; }
+        public string PlanId { get; set; }
 
         [Required]
         [StringLength(70, MinimumLength = 1)]

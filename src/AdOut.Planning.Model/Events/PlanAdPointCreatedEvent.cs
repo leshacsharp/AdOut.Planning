@@ -2,8 +2,8 @@
 {
     public class PlanAdPointCreatedEvent : IntegrationEvent
     {
-        public int PlanId { get; set; }
+        public string PlanId { get; set; }
 
-        public int AdPointId { get; set; }
+        public string AdPointId { get; set; }
     }
 }

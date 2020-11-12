@@ -17,7 +17,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoint(int adPointId, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<AdPointPlanDto>> GetByAdPoint(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var query = from pap in Context.PlanAdPoints
 
@@ -58,9 +58,9 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result.ToList();
         }
 
-        public async Task<PlanDto> GetDtoByIdAsync(int planId)
+        public async Task<PlanDto> GetDtoByIdAsync(string planId)
         {
-            var query = from p in Context.Plans
+            var query = from p in Context.Plans.Where(p => p.Id == planId)
 
                         join s in Context.Schedules on p.Id equals s.PlanId into sJoin
                         from s in sJoin.DefaultIfEmpty()
@@ -76,8 +76,6 @@ namespace AdOut.Planning.DataProvider.Repositories
 
                         join ap in Context.AdPoints on pap.AdPointId equals ap.Id into apJoin
                         from ap in apJoin.DefaultIfEmpty()
-
-                        where p.Id == planId
 
                         select new
                         {
@@ -116,7 +114,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                         };
 
             var planItems = await query.ToListAsync();
-            var plan = planItems.SingleOrDefault();
+            var plan = planItems.FirstOrDefault();
 
             var result = plan != null ? new PlanDto()
             {
@@ -135,7 +133,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             return result;
         }
 
-        public Task<Plan> GetByIdAsync(int planId)
+        public Task<Plan> GetByIdAsync(string planId)
         {
             return Context.Plans.SingleOrDefaultAsync(p => p.Id == planId);
         } 

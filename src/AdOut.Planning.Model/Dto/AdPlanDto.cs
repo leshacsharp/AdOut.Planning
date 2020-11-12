@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Dto
 {
     public class AdPlanDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public PlanStatus Status { get; set; }
 

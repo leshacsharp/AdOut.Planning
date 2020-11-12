@@ -4,9 +4,10 @@ namespace AdOut.Planning.Model.Api
 {
     public class UpdateScheduleModel
     {
-        public int ScheduleId { get; set; }
+        public string ScheduleId { get; set; }
 
-        public int PlanId { get; set; }
+        //todo: need to try this field from Api model
+        public string PlanId { get; set; }
 
         public TimeSpan StartTime { get; set; }
 

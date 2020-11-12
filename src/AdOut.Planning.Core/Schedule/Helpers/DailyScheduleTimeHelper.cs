@@ -7,6 +7,8 @@ namespace AdOut.Planning.Core.Schedule.Helpers
     {
         protected override TimeSpan GetTimeOfExecutingPlan(AdScheduleTime timeInfo)
         {
+            //todo: add checking on off days og the plan
+
             var daysOfExecutionPlan = (timeInfo.PlanEndDateTime - timeInfo.PlanStartDateTime).Days;
             daysOfExecutionPlan = daysOfExecutionPlan != 0 ? daysOfExecutionPlan : 1;
 

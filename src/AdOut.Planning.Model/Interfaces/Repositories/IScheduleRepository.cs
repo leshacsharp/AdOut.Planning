@@ -7,8 +7,10 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IScheduleRepository : IBaseRepository<Database.Schedule>
     {
-        Task<List<ScheduleDto>> GetByPlanAsync(int planId);
-        Task<Database.Schedule> GetByIdAsync(int scheduleId);
-        Task<AdScheduleTime> GetScheduleInfo(int scheduleId);
+        Task<List<ScheduleDto>> GetByPlanAsync(string planId);
+        Task<Database.Schedule> GetByIdAsync(string scheduleId);
+
+        //todo: why do we need the AdScheduleTime entity?
+        Task<AdScheduleTime> GetScheduleInfo(string scheduleId);
     }
 }

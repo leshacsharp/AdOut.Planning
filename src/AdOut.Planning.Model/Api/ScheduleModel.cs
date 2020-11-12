@@ -4,7 +4,7 @@ namespace AdOut.Planning.Model.Api
 {
     public class ScheduleModel
     {
-        public int PlanId { get; set; }
+        public string PlanId { get; set; }
 
         public TimeSpan StartTime { get; set; }
 

@@ -7,11 +7,16 @@ namespace AdOut.Planning.Model.Database
     [Table("Schedules")]
     public class Schedule
     {
+        public Schedule()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey(nameof(Plan))]
-        public int PlanId { get; set; }
+        public string PlanId { get; set; }
 
         [Required]
         public virtual Plan Plan { get; set; }
