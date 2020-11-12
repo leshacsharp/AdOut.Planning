@@ -42,7 +42,7 @@ namespace AdOut.Planning.Core.Managers
             var planHasAdWithSameOrder = await _planAdRepository.Read(pa => pa.PlanId == planId && pa.Order == order).AnyAsync();
             if (planHasAdWithSameOrder)
             {
-                throw new BadRequestException($"Plans can't contain ads with same order");
+                throw new BadRequestException($"Plans can't contain ads with same orders");
             }
 
             var planAd = new PlanAd()

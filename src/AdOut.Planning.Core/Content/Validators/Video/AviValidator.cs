@@ -17,14 +17,14 @@ namespace AdOut.Planning.Core.Content.Validators.Video
         protected override async Task<bool> IsCorrectFormatAsync(Stream content)
         {
             var signatures = Constants.ContentSignatures.AVI;
-            var neededLengthOfStream = signatures.Max(s => s.Length);
+            var maxLengthOfStream = signatures.Max(s => s.Length);
 
-            if (content.Length < neededLengthOfStream)
+            if (content.Length < maxLengthOfStream)
             {
                 return false;
             }
 
-            var buffer = new byte[neededLengthOfStream];
+            var buffer = new byte[maxLengthOfStream];
             await content.ReadAsync(buffer, 0, buffer.Length);
 
             var haveOneOfTheSignatures = signatures.Any(signature => 

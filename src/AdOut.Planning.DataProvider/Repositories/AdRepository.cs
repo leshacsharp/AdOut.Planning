@@ -41,7 +41,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public async Task<AdDto> GetDtoByIdAsync(string adId)
         {
-            var query = from a in Context.Ads
+            var query = from a in Context.Ads.Where(a => a.Id == adId)
 
                         join pa in Context.PlanAds on a.Id equals pa.AdId into planAdsJoin
                         from pa in planAdsJoin.DefaultIfEmpty()
@@ -54,8 +54,6 @@ namespace AdOut.Planning.DataProvider.Repositories
 
                         join ap in Context.AdPoints on pap.AdPointId equals ap.Id into adPointsJoin
                         from ap in adPointsJoin.DefaultIfEmpty()
-
-                        where a.Id == adId
 
                         select new
                         {
@@ -83,7 +81,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                         };
 
             var adItems = await query.ToListAsync();
-            var ad = adItems.SingleOrDefault();
+            var ad = adItems.FirstOrDefault();
 
             var result = ad != null ? new AdDto()
             {

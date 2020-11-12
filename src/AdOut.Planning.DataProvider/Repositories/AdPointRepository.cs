@@ -23,9 +23,9 @@ namespace AdOut.Planning.DataProvider.Repositories
         }
 
         public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(string adPointsPlanId, DateTime planStart, DateTime planEnd)
-        {              
-            var query = from pap in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)
-                        join ap in Context.AdPoints on pap.AdPointId equals ap.Id
+        {               
+            var query = from papForAdPoints in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)
+                        join ap in Context.AdPoints on papForAdPoints.AdPointId equals ap.Id
 
                         join apd in Context.AdPointDaysOff on ap.Id equals apd.AdPointId into adPointDaysOffJoin
                         from apd in adPointDaysOffJoin.DefaultIfEmpty()
@@ -33,10 +33,10 @@ namespace AdOut.Planning.DataProvider.Repositories
                         join d in Context.DaysOff on apd.DayOffId equals d.Id into daysOffJoin
                         from d in daysOffJoin.DefaultIfEmpty()
 
-                        join pap2 in Context.PlanAdPoints on ap.Id equals pap2.AdPointId into pap2Join
-                        from pap2 in pap2Join.DefaultIfEmpty()
+                        join papForPlans in Context.PlanAdPoints on ap.Id equals papForPlans.AdPointId into pap2Join
+                        from papForPlans in pap2Join.DefaultIfEmpty()
 
-                        join p in Context.Plans on pap2.PlanId equals p.Id into plansJoin
+                        join p in Context.Plans on papForPlans.PlanId equals p.Id into plansJoin
                         from p in plansJoin.DefaultIfEmpty()
 
                         where p.StartDateTime >= planStart && p.EndDateTime <= planEnd
@@ -50,15 +50,15 @@ namespace AdOut.Planning.DataProvider.Repositories
 
                             DaysOff = d != null ? d.DayOfWeek : (DayOfWeek?)null,
                             Schedules = p != null ? p.Schedules.Where(s => s.Date == null || s.Date <= planEnd)
-                                                               .Select(s => new ScheduleDto()
-                                                               {
-                                                                   StartTime = s.StartTime,
-                                                                   EndTime = s.EndTime,
-                                                                   BreakTime = s.BreakTime,
-                                                                   PlayTime = s.PlayTime,
-                                                                   Date = s.Date,
-                                                                   DayOfWeek = s.DayOfWeek
-                                                               }) : null
+                                                     .Select(s => new ScheduleDto()
+                                                     {
+                                                         StartTime = s.StartTime,
+                                                         EndTime = s.EndTime,
+                                                         BreakTime = s.BreakTime,
+                                                         PlayTime = s.PlayTime,
+                                                         Date = s.Date,
+                                                         DayOfWeek = s.DayOfWeek
+                                                     }) : null
                         };
 
             var adPointValidations = await query.ToListAsync();

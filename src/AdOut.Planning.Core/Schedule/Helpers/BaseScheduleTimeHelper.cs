@@ -13,11 +13,11 @@ namespace AdOut.Planning.Core.Schedule.Helpers
                 throw new ArgumentNullException(nameof(timeInfo));
             }
 
-            var timeOfOneAdShowWithBreak = timeInfo.AdPlayTime + timeInfo.AdBreakTime;
+            var timeOfAdTimeWithBreak = timeInfo.AdPlayTime + timeInfo.AdBreakTime;
 
             var timeOfExecutingPlan = GetTimeOfExecutingPlan(timeInfo);
 
-            var countOfShowingAds = timeOfExecutingPlan / timeOfOneAdShowWithBreak;
+            var countOfShowingAds = timeOfExecutingPlan / timeOfAdTimeWithBreak;
             var timeOfShowingAds = countOfShowingAds * timeInfo.AdPlayTime;
 
             return timeOfShowingAds;

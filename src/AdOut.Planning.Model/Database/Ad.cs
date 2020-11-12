@@ -17,7 +17,7 @@ namespace AdOut.Planning.Model.Database
         [Key]
         public string Id { get; set; }
 
-        //Foreign key of table "Users" that existed in the AdOut.Identity database (another microservice)
+        //Foreign key of table "Users" that is existed in the AdOut.Identity (another microservice)
         [Required]
         public string UserId { get; set; }
 
@@ -35,6 +35,7 @@ namespace AdOut.Planning.Model.Database
         [Required]
         public string PreviewPath { get; set; }
 
+        //todo: make initialization of the prop in the constructor instean of init in the codebase!
         public DateTime AddedDate { get; set; }
 
         public DateTime? ConfirmationDate { get; set; }

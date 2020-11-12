@@ -83,6 +83,7 @@ namespace AdOut.Planning.Core.Managers
 
             await Task.WhenAll(saveContentTask, saveThumbnailTask);
 
+            //todo: make initialization of the 'AddedDate' prop in the constructor instead of init in the codebase!
             var ad = new Ad()
             {
                 UserId = userId,
@@ -168,8 +169,8 @@ namespace AdOut.Planning.Core.Managers
 
             var deleteContentTask = _contentStorage.DeleteObjectAsync(ad.Path);
             var deletePreviewContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
-
             await Task.WhenAll(deleteContentTask, deletePreviewContentTask);
+
             Delete(ad);
         }
 

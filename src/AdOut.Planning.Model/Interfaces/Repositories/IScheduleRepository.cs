@@ -9,6 +9,8 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
     {
         Task<List<ScheduleDto>> GetByPlanAsync(string planId);
         Task<Database.Schedule> GetByIdAsync(string scheduleId);
+
+        //todo: why do we need the AdScheduleTime entity?
         Task<AdScheduleTime> GetScheduleInfo(string scheduleId);
     }
 }

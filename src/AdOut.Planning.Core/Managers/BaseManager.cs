@@ -4,6 +4,8 @@ using System;
 
 namespace AdOut.Planning.Core.Managers
 {
+
+    //delete the basemanager because the manager is useless
     public abstract class BaseManager<TEntity> : IBaseManager<TEntity> where TEntity : class
     {
         private readonly IBaseRepository<TEntity> _repository;

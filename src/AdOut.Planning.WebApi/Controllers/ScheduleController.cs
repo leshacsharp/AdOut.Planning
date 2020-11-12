@@ -32,15 +32,6 @@ namespace AdOut.Planning.WebApi.Controllers
             _authorizationService = authorizationService;
         }
 
-        [HttpGet]
-        [Route("plans-timelines")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
-        {
-            var plansTimeLines = await _scheduleManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
-            return Ok(plansTimeLines);
-        }
-
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

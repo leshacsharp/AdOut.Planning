@@ -26,7 +26,7 @@ namespace AdOut.Planning.Core.Content.Validators.Image
             var isCorrectFormat = await IsCorrectFormatAsync(content);
             if (!isCorrectFormat)
             {
-                //throwing a exception because the validators can't validate a content with invalid structure
+                //throwing an exception because the validators can't validate a content with an invalid format
                 throw new ArgumentException(ValidationMessages.Content.InvalidFormat, nameof(content));
             }
 

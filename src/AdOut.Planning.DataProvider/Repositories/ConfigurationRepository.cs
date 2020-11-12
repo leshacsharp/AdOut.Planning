@@ -17,11 +17,13 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<string> GetByTypeAsync(string configType)
         {
+            //todo: refactor this code to one line and return      
+
             var query = from c in Table
                         where c.Type == configType
                         select c.Value;
 
-            return query.SingleAsync();
+            return query.SingleOrDefaultAsync();
         }
     }
 }
