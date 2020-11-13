@@ -12,6 +12,7 @@ namespace AdOut.Planning.Model.Database
         public Ad()
         {
             Id = Guid.NewGuid().ToString();
+            AddedDate = DateTime.UtcNow;
         }
 
         [Key]
@@ -35,7 +36,6 @@ namespace AdOut.Planning.Model.Database
         [Required]
         public string PreviewPath { get; set; }
 
-        //todo: make initialization of the prop in the constructor instean of init in the codebase!
         public DateTime AddedDate { get; set; }
 
         public DateTime? ConfirmationDate { get; set; }

@@ -19,19 +19,18 @@ namespace AdOut.Planning.Core.EventHandlers
 
         protected override Task HandleAsync(AdPointCreatedEvent deliveredEvent)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
-                var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
+            //todo: make services scoped and take off IServiceScopeFactory
+            using var scope = _serviceScopeFactory.CreateScope();
+            var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
+            var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
 
-                var mapperCfg = new MapperConfiguration(cfg => cfg.CreateMap(deliveredEvent.GetType(), typeof(AdPoint)));
-                var mapper = new Mapper(mapperCfg);
+            var mapperCfg = new MapperConfiguration(cfg => cfg.CreateMap(deliveredEvent.GetType(), typeof(AdPoint)));
+            var mapper = new Mapper(mapperCfg);
 
-                var adPoint = mapper.Map<AdPoint>(deliveredEvent);
-                adPointRepository.Create(adPoint);
+            var adPoint = mapper.Map<AdPoint>(deliveredEvent);
+            adPointRepository.Create(adPoint);
 
-                return commitProvider.SaveChangesAsync();
-            }     
+            return commitProvider.SaveChangesAsync();
         }
     }
 }

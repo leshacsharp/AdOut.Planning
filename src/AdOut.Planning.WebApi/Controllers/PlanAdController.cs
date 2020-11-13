@@ -74,6 +74,7 @@ namespace AdOut.Planning.WebApi.Controllers
             return NoContent();
         }
 
+        //todo: mb move this method to some scoped service
         private async Task CheckUserPermissionsForResourceAsync(string planId, string adId)
         {
             var plan = await _planManager.GetByIdAsync(planId);

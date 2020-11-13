@@ -17,11 +17,6 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<AdPoint> GetByIdAsync(string adPointId)
-        {
-            return Context.AdPoints.SingleOrDefaultAsync(ap => ap.Id == adPointId);
-        }
-
         public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(string adPointsPlanId, DateTime planStart, DateTime planEnd)
         {               
             var query = from papForAdPoints in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)

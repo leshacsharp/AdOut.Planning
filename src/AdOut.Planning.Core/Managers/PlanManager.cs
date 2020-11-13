@@ -139,9 +139,9 @@ namespace AdOut.Planning.Core.Managers
             return _planRepository.GetDtoByIdAsync(planId);
         }
 
-        public Task<Plan> GetByIdAsync(string planId)
+        public async Task<Plan> GetByIdAsync(string planId)
         {
-            return _planRepository.GetByIdAsync(planId);
+            return await _planRepository.GetByIdAsync(planId);
         }
 
         public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)

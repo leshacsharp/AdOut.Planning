@@ -32,6 +32,8 @@ namespace AdOut.Planning.WebApi.Controllers
             _authorizationService = authorizationService;
         }
 
+        //todo: change names of actions
+
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -44,6 +46,7 @@ namespace AdOut.Planning.WebApi.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
+            //todo: create user service with getting userid
             var userId = User.GetUserId();
 
             await _adManager.CreateAsync(createModel, userId);

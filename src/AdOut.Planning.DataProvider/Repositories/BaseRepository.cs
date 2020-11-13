@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace AdOut.Planning.DataProvider.Repositories
 {
+    //todo: need to think about AsNoTracking methods in existed repositories
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
         protected IDatabaseContext Context { get; set; }
@@ -33,9 +35,14 @@ namespace AdOut.Planning.DataProvider.Repositories
             Table.Remove(entity);
         }
 
+        public ValueTask<TEntity> GetByIdAsync(params object[] id)
+        {
+            return Table.FindAsync(id);
+        }
+
         public IQueryable<TEntity> Read(Expression<Func<TEntity, bool>> predicate)
         {
             return Table.Where(predicate);
-        }
+        }  
     }
 }

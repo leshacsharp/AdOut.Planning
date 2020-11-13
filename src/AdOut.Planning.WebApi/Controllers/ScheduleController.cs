@@ -58,6 +58,7 @@ namespace AdOut.Planning.WebApi.Controllers
         {
             await CheckUserPermissionsForResourceAsync(updateModel.PlanId);
 
+            //wtf?
             var scheduleModel = new ScheduleModel()
             {
                 PlanId = updateModel.PlanId,

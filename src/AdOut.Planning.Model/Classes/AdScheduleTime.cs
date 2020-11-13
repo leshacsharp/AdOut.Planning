@@ -9,10 +9,8 @@ namespace AdOut.Planning.Model.Classes
 
         public DateTime PlanEndDateTime { get; set; }
 
-        //todo: replace to 'AdsPlayTime'
         public TimeSpan AdPlayTime { get; set; }
 
-        //todo: replace to 'AdsBreakTime'
         public TimeSpan AdBreakTime { get; set; }
 
         public TimeSpan ScheduleStartTime { get; set; }

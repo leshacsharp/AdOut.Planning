@@ -23,10 +23,10 @@ namespace AdOut.Planning.Core.EventHandlers
                 var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
                 var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
 
-                var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.AdPointId);
+                var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.Id);
                 if (adPoint == null)
                 {
-                    throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.AdPointId} was not found (EventId={deliveredEvent.EventId})");
+                    throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
                 }
 
                 adPointRepository.Delete(adPoint);

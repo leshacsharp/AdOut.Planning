@@ -46,7 +46,7 @@ namespace AdOut.Planning.WebApi
                         options.Authority = Configuration.GetValue<string>("Authorization:Authority");
                         options.ApiName = Configuration.GetValue<string>("Authorization:ApiName");
                         options.ApiSecret = Configuration.GetValue<string>("Authorization:ApiSecret");
-
+                        
                         options.EnableCaching = true;
                         options.CacheDuration = TimeSpan.FromSeconds(Configuration.GetValue<int>("Authorization:TokenCacheDurationSec"));
 
@@ -102,6 +102,7 @@ namespace AdOut.Planning.WebApi
                         // .RequireAuthorization(); //!!!!
             });
 
+            //todo: combine to one method
             eventBroker.Configure();
             eventBinder.Bind();
 

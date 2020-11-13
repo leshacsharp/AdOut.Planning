@@ -132,10 +132,5 @@ namespace AdOut.Planning.DataProvider.Repositories
 
             return result;
         }
-
-        public Task<Plan> GetByIdAsync(string planId)
-        {
-            return Context.Plans.SingleOrDefaultAsync(p => p.Id == planId);
-        } 
     }
 }

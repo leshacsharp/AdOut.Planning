@@ -83,14 +83,12 @@ namespace AdOut.Planning.Core.Managers
 
             await Task.WhenAll(saveContentTask, saveThumbnailTask);
 
-            //todo: make initialization of the 'AddedDate' prop in the constructor instead of init in the codebase!
             var ad = new Ad()
             {
                 UserId = userId,
                 Title = createModel.Title,
                 Path = pathForContent,
                 PreviewPath = pathForThumbnail,
-                AddedDate = DateTime.UtcNow,
                 Status = Model.Enum.AdStatus.OnModeration,
                 ContentType = ContentTypes[extension]
             };
@@ -179,9 +177,9 @@ namespace AdOut.Planning.Core.Managers
             return _adRepository.GetDtoByIdAsync(adId);
         }
 
-        public Task<Ad> GetByIdAsync(string adId)
+        public async Task<Ad> GetByIdAsync(string adId)
         {
-            return _adRepository.GetByIdAsync(adId);
+            return await _adRepository.GetByIdAsync(adId);
         }
     }
 }
