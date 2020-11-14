@@ -17,9 +17,9 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(string adPointsPlanId, DateTime planStart, DateTime planEnd)
+        public async Task<List<AdPointValidation>> GetAdPointsValidationAsync(string planId, DateTime planStart, DateTime planEnd)
         {               
-            var query = from papForAdPoints in Context.PlanAdPoints.Where(pap => pap.PlanId == adPointsPlanId)
+            var query = from papForAdPoints in Context.PlanAdPoints.Where(pap => pap.PlanId == planId)
                         join ap in Context.AdPoints on papForAdPoints.AdPointId equals ap.Id
 
                         join apd in Context.AdPointDaysOff on ap.Id equals apd.AdPointId into adPointDaysOffJoin

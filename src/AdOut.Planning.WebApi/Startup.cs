@@ -34,6 +34,8 @@ namespace AdOut.Planning.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddControllers(options =>
             {
                 options.Filters.Add<ExceptionFilterAttribute>();
@@ -102,9 +104,8 @@ namespace AdOut.Planning.WebApi
                         // .RequireAuthorization(); //!!!!
             });
 
-            //todo: combine to one method
-            eventBroker.Configure();
-            eventBinder.Bind();
+            //eventBroker.Configure();
+            //eventBinder.Bind();
 
             using var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<PlanningContext>();

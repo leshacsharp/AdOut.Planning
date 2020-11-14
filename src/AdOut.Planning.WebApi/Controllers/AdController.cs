@@ -4,7 +4,6 @@ using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
-using AdOut.Planning.WebApi.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class AdController : ControllerBase
     {
@@ -32,13 +31,11 @@ namespace AdOut.Planning.WebApi.Controllers
             _authorizationService = authorizationService;
         }
 
-        //todo: change names of actions
-
         [HttpPost]
-        [Route("create")]
+        [Route("ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(List<ContentError>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CreateAdModel createModel)
+        public async Task<IActionResult> CreateAd(CreateAdModel createModel)
         {
             var validationResult = await _adManager.ValidateAsync(createModel.Content);
             if (!validationResult.IsSuccessed)
@@ -46,10 +43,7 @@ namespace AdOut.Planning.WebApi.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            //todo: create user service with getting userid
-            var userId = User.GetUserId();
-
-            await _adManager.CreateAsync(createModel, userId);
+            await _adManager.CreateAsync(createModel);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
@@ -61,13 +55,12 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(typeof(List<AdListDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAds([FromQuery]AdsFilterModel filter)
         {
-            var userId = User.GetUserId();
-            var ads = await _adManager.GetAdsAsync(filter, userId);
+            var ads = await _adManager.GetAdsAsync(filter);
             return Ok(ads);
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("ad/{id}")]
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,9 +82,9 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Route("ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Update(UpdateAdModel updateModel)
+        public async Task<IActionResult> UpdateAd(UpdateAdModel updateModel)
         {
             await CheckUserPermissionsForResourceAsync(updateModel.AdId);
 
@@ -102,10 +95,10 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("delete/{id}")]
+        [Route("ad/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteAd(string id)
         {
             await CheckUserPermissionsForResourceAsync(id);
 

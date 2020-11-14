@@ -20,6 +20,7 @@ namespace AdOut.Planning.Core.Managers
         private readonly IAdPointRepository _adPointRepository; 
         private readonly IPlanAdPointRepository _planAdPointRepository;
         private readonly IScheduleRepository _scheduleRepository;
+        private readonly IUserManager _userManager;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly ITimeLineHelper _timeLineHelper;
 
@@ -28,6 +29,7 @@ namespace AdOut.Planning.Core.Managers
             IAdPointRepository adPointRepository,
             IPlanAdPointRepository planAdPointRepository,
             IScheduleRepository scheduleRepository,
+            IUserManager userManager,
             IScheduleValidatorFactory scheduleValidatorFactory,
             ITimeLineHelper timeLineHelper) 
             : base(planRepository)
@@ -36,6 +38,7 @@ namespace AdOut.Planning.Core.Managers
             _adPointRepository = adPointRepository;
             _planAdPointRepository = planAdPointRepository;
             _scheduleRepository = scheduleRepository;
+            _userManager = userManager;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _timeLineHelper = timeLineHelper;
         }
@@ -74,8 +77,7 @@ namespace AdOut.Planning.Core.Managers
             return adPeriods;
         }
 
-        //todo: delete userId from arguments
-        public void Create(CreatePlanModel createModel, string userId)
+        public void Create(CreatePlanModel createModel)
         {
             if (createModel == null)
             {
@@ -84,7 +86,7 @@ namespace AdOut.Planning.Core.Managers
 
             var plan = new Plan()
             {
-                UserId = userId,
+                UserId = _userManager.GetUserId(),
                 Title = createModel.Title,
                 Type = createModel.Type,
                 StartDateTime = createModel.StartDateTime,

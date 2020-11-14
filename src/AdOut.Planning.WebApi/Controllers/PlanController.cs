@@ -13,7 +13,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class PlanController : ControllerBase
     {
@@ -61,7 +61,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("plan/{id}")]
         [ProducesResponseType(typeof(PlanDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPlan(string id)
@@ -82,21 +82,18 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("plan")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> CreatePlan(CreatePlanModel createModel)
         {
-            var userId = User.GetUserId();
-            //todo: delete
-            userId = "test-user";
-            _planManager.Create(createModel, userId);
+            _planManager.Create(createModel);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpDelete]
-        [Route("delete")]
+        [Route("plan")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeletePlan(string id)
         {
@@ -109,7 +106,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Route("plan")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdatePlan(UpdatePlanModel updateModel)
         {

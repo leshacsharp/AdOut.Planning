@@ -9,7 +9,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class PlanAdController : ControllerBase
     {    
@@ -34,7 +34,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("add-ad")]
+        [Route("plan-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAdToPlan(string planId, string adId, int order)
@@ -48,7 +48,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-ad")]
+        [Route("plan-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAdFromPlan(string planId, string adId)
@@ -62,7 +62,7 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("update-ad")]
+        [Route("plan-ad")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateAdInPlan(string planId, string adId, int order)
         {
@@ -85,7 +85,6 @@ namespace AdOut.Planning.WebApi.Controllers
                 throw new ForbiddenException();
             }
             
-            //todo: maybe need to delete the block about AD
             var ad = await _adManager.GetByIdAsync(adId);
             var adAuth = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
 

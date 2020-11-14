@@ -5,13 +5,12 @@ using AdOut.Planning.Model.Interfaces.Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class ScheduleController : ControllerBase
     {
@@ -33,10 +32,10 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("schedule")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(ScheduleModel createModel)
+        public async Task<IActionResult> CreateSchedule(ScheduleModel createModel)
         {
             var validationResult = await _scheduleManager.ValidateScheduleAsync(createModel);
             if (!validationResult.IsSuccessed)
@@ -51,10 +50,10 @@ namespace AdOut.Planning.WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Route("schedule")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(UpdateScheduleModel updateModel)
+        public async Task<IActionResult> UpdateSchedule(UpdateScheduleModel updateModel)
         {
             await CheckUserPermissionsForResourceAsync(updateModel.PlanId);
 

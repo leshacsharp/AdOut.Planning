@@ -22,6 +22,7 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IAdRepository _adRepository;
         private readonly IPlanAdRepository _planAdRepository;
+        private readonly IUserManager _userManager;
         private readonly IContentStorage _contentStorage;
         private readonly IContentValidatorProvider _contentValidatorProvider;
         private readonly IContentHelperProvider _contentHelperProvider;
@@ -29,6 +30,7 @@ namespace AdOut.Planning.Core.Managers
         public AdManager(
             IAdRepository adRepository,
             IPlanAdRepository planAdRepository,
+            IUserManager userManager,
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
             IContentHelperProvider contentHelperProvider) 
@@ -36,6 +38,7 @@ namespace AdOut.Planning.Core.Managers
         {
             _adRepository = adRepository;
             _planAdRepository = planAdRepository;
+            _userManager = userManager;
             _contentStorage = contentStorage;
             _contentValidatorProvider = contentValidatorProvider;
             _contentHelperProvider = contentHelperProvider;
@@ -62,7 +65,7 @@ namespace AdOut.Planning.Core.Managers
             return contentValidator.ValidateAsync(contentStream);
         }
 
-        public async Task CreateAsync(CreateAdModel createModel, string userId)
+        public async Task CreateAsync(CreateAdModel createModel)
         {
             if (createModel == null)
             {
@@ -85,7 +88,7 @@ namespace AdOut.Planning.Core.Managers
 
             var ad = new Ad()
             {
-                UserId = userId,
+                UserId = _userManager.GetUserId(),
                 Title = createModel.Title,
                 Path = pathForContent,
                 PreviewPath = pathForThumbnail,
@@ -96,13 +99,14 @@ namespace AdOut.Planning.Core.Managers
             Create(ad);
         }
 
-        public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel, string userId)
+        public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel)
         {
             if (filterModel == null)
             {
                 throw new ArgumentNullException(nameof(filterModel));
             }
 
+            var userId = _userManager.GetUserId();
             var filter = PredicateBuilder.New<Ad>(ad => ad.UserId == userId);
 
             if (filterModel.Title != null)

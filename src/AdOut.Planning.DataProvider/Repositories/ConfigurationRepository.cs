@@ -2,7 +2,6 @@
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.DataProvider.Repositories
@@ -12,18 +11,12 @@ namespace AdOut.Planning.DataProvider.Repositories
         public ConfigurationRepository(IDatabaseContext context)
             : base(context)
         {
-
         }
 
-        public Task<string> GetByTypeAsync(string configType)
+        public async Task<string> GetByTypeAsync(string configType)
         {
-            //todo: refactor this code to one line and return      
-
-            var query = from c in Table
-                        where c.Type == configType
-                        select c.Value;
-
-            return query.SingleOrDefaultAsync();
+            var config = await Context.Configurations.SingleOrDefaultAsync(c => c.Type == configType);
+            return config.Value;
         }
     }
 }
