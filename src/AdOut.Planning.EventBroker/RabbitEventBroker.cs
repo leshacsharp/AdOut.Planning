@@ -49,7 +49,7 @@ namespace AdOut.Planning.EventBroker
         {
             var channel = _channelManager.GetPublisherChannel();
 
-            var modelAssembly = typeof(Constants).Assembly;
+            var modelAssembly = typeof(Model.Constants).Assembly;
             var eventTypes = modelAssembly.GetTypes().Where(t => t.BaseType == typeof(IntegrationEvent));
 
             foreach (var eventType in eventTypes)

@@ -15,6 +15,6 @@ namespace AdOut.Planning.Model.Database
 
         public DayOfWeek DayOfWeek { get; set; }
 
-        public virtual ICollection<AdPointDayOff> AdPointsDaysOff { get; set; }
+        public virtual ICollection<AdPoint> AdPoints { get; set; }
     }
 }

@@ -17,120 +17,66 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public async Task<List<AdPointPlanDto>> GetByAdPoint(string adPointId, DateTime dateFrom, DateTime dateTo)
+        public Task<List<AdPointPlanDto>> GetByAdPointAsync(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var query = from pap in Context.PlanAdPoints
+            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(ap => ap.AdPointId == adPointId) &&
+                                                 p.StartDateTime >= dateFrom &&
+                                                 p.EndDateTime <= dateTo)
+                               .Select(p => new AdPointPlanDto()
+                               {
+                                   Id = p.Id,
+                                   Title = p.Title,
+                                   Schedules = p.Schedules.Select(s => new ScheduleDto() 
+                                   {
+                                       StartTime = s.StartTime,
+                                       EndTime = s.EndTime,
+                                       BreakTime = s.BreakTime,
+                                       PlayTime = s.PlayTime,
+                                       DayOfWeek = s.DayOfWeek,
+                                       Date = s.Date
+                                   })
+                               });
 
-                        join p in Context.Plans on pap.PlanId equals p.Id
-                        join s in Context.Schedules on p.Id equals s.PlanId into sJoin
-                        from s in sJoin.DefaultIfEmpty()
-
-                        where pap.AdPointId == adPointId && p.StartDateTime >= dateFrom && p.EndDateTime <= dateTo
-
-                        select new
-                        {
-                            p.Id,
-                            p.Title,
-                            Schedule = s != null ? new ScheduleDto()
-                            {
-                                StartTime = s.StartTime,
-                                EndTime = s.EndTime,
-                                BreakTime = s.BreakTime,
-                                PlayTime = s.PlayTime,
-                                DayOfWeek = s.DayOfWeek,
-                                Date = s.Date
-                            } : null
-                        };
-
-            var plans = await query.ToListAsync();
-
-            var result = from p in plans
-                         group p by new { p.Id, p.Title }
-                         into pGroup
-
-                         select new AdPointPlanDto()
-                         {
-                             Id = pGroup.Key.Id,
-                             Title = pGroup.Key.Title,
-                             Schedules = pGroup.Where(p => p.Schedule != null).Select(p => p.Schedule)
-                         };
-
-            return result.ToList();
+            return query.ToListAsync();
         }
 
-        public async Task<PlanDto> GetDtoByIdAsync(string planId)
-        {
-            var query = from p in Context.Plans.Where(p => p.Id == planId)
+        public Task<PlanDto> GetDtoByIdAsync(string planId)
+        { 
+            var query = Context.Plans.Where(p => p.Id == planId)
+                               .Select(p => new PlanDto()
+                                {
+                                    Title = p.Title,
+                                    UserId = p.UserId,
+                                    Type = p.Type,
+                                    Status = p.Status,
+                                    StartDateTime = p.StartDateTime,
+                                    EndDateTime = p.EndDateTime,
+                                    Schedules = p.Schedules.Select(s => new ScheduleDto()
+                                    {
+                                        StartTime = s.StartTime,
+                                        EndTime = s.EndTime,
+                                        BreakTime = s.BreakTime,
+                                        PlayTime = s.PlayTime,
+                                        Date = s.Date,
+                                        DayOfWeek = s.DayOfWeek
+                                    }),
+                                    Ads = p.PlanAds.Select(pa => new AdListDto()
+                                    {
+                                        Id = pa.Ad.Id,
+                                        Title = pa.Ad.Title,
+                                        Status = pa.Ad.Status,
+                                        ContentType = pa.Ad.ContentType,
+                                        PreviewPath = pa.Ad.PreviewPath
+                                    }),
+                                    AdPoints = p.PlanAdPoints.Select(pap => new AdPointDto()
+                                    {
+                                        Id = pap.AdPointId,
+                                        Location = pap.AdPoint.Location,
+                                        DaysOff = pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek)
+                                    })
+                               });
 
-                        join s in Context.Schedules on p.Id equals s.PlanId into sJoin
-                        from s in sJoin.DefaultIfEmpty()
-
-                        join pa in Context.PlanAds on p.Id equals pa.PlanId into paJoin
-                        from pa in paJoin.DefaultIfEmpty()
-
-                        join a in Context.Ads on pa.AdId equals a.Id into aJoin
-                        from a in aJoin.DefaultIfEmpty()
-
-                        join pap in Context.PlanAdPoints on p.Id equals pap.PlanId into papJoin
-                        from pap in papJoin.DefaultIfEmpty()
-
-                        join ap in Context.AdPoints on pap.AdPointId equals ap.Id into apJoin
-                        from ap in apJoin.DefaultIfEmpty()
-
-                        select new
-                        {
-                            p.Id,
-                            p.UserId,
-                            p.Title,
-                            p.Type,
-                            p.Status,
-                            p.StartDateTime,
-                            p.EndDateTime,
-
-                            Schedule = s != null ? new ScheduleDto()
-                            {
-                                StartTime = s.StartTime,
-                                EndTime = s.EndTime,
-                                BreakTime = s.BreakTime,
-                                PlayTime = s.PlayTime,
-                                Date = s.Date,
-                                DayOfWeek = s.DayOfWeek
-                            } : null,
-
-                            Ad = a != null ? new AdListDto()
-                            {
-                                Id = a.Id,
-                                Title = a.Title,
-                                Status = a.Status,
-                                ContentType = a.ContentType,
-                                PreviewPath = a.PreviewPath
-                            } : null,
-
-                            AdPoint = ap != null ? new AdPointDto()
-                            {
-                                Id = ap.Id,
-                                Location = ap.Location
-                            } : null
-                        };
-
-            var planItems = await query.ToListAsync();
-            var plan = planItems.FirstOrDefault();
-
-            var result = plan != null ? new PlanDto()
-            {
-                Title = plan.Title,
-                UserId = plan.UserId,
-                Type = plan.Type,
-                Status = plan.Status,
-                StartDateTime = plan.StartDateTime,
-                EndDateTime = plan.EndDateTime,
-
-                Schedules = planItems.Where(p => p.Schedule != null).Select(p => p.Schedule),
-                Ads = planItems.Where(p => p.Ad != null).Select(p => p.Ad),
-                AdPoints = planItems.Where(p => p.AdPoint != null).Select(p => p.AdPoint)
-            } : null;
-
-            return result;
+            return query.SingleOrDefaultAsync();
         }
     }
 }

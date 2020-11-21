@@ -45,7 +45,7 @@ namespace AdOut.Planning.Core.Managers
 
         public async Task<List<PlanTimeLine>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var adPointPlans = await _planRepository.GetByAdPoint(adPointId, dateFrom, dateTo);
+            var adPointPlans = await _planRepository.GetByAdPointAsync(adPointId, dateFrom, dateTo);
 
             var plansTimeLines = new List<PlanTimeLine>();
             foreach (var plan in adPointPlans)

@@ -18,7 +18,6 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IPlanRepository _planRepository;
-        private readonly IPlanAdPointRepository _planAdPointRepository;
         private readonly IAdPointRepository _adPointRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
@@ -27,7 +26,6 @@ namespace AdOut.Planning.Core.Managers
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
-            IPlanAdPointRepository planAdPointRepository,
             IAdPointRepository adPointRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeHelperProvider scheduleTimeHelperProvider,
@@ -36,7 +34,6 @@ namespace AdOut.Planning.Core.Managers
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
-            _planAdPointRepository = planAdPointRepository;
             _adPointRepository = adPointRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeHelperProvider = scheduleTimeHelperProvider;

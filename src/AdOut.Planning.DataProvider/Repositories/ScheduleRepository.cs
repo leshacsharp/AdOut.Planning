@@ -19,37 +19,34 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<ScheduleDto>> GetByPlanAsync(string planId)
         {
-            var query = from s in Context.Schedules
-                        where s.PlanId == planId
-                        select new ScheduleDto()
-                        {
-                            StartTime = s.StartTime,
-                            EndTime = s.EndTime,
-                            BreakTime = s.BreakTime,
-                            PlayTime = s.PlayTime,
-                            Date = s.Date,
-                            DayOfWeek = s.DayOfWeek
-                        };
+            var query = Context.Schedules.Where(s => s.PlanId == planId)
+                               .Select(s => new ScheduleDto()
+                               {
+                                   StartTime = s.StartTime,
+                                   EndTime = s.EndTime,
+                                   BreakTime = s.BreakTime,
+                                   PlayTime = s.PlayTime,
+                                   Date = s.Date,
+                                   DayOfWeek = s.DayOfWeek
+                               });
 
             return query.ToListAsync();
         }
   
         public Task<AdScheduleTime> GetScheduleInfo(string scheduleId)
         {
-            var query = from s in Context.Schedules
-                        join p in Context.Plans on s.PlanId equals p.Id
-                        where s.Id == scheduleId
-                        select new AdScheduleTime()
-                        {
-                            PlanStartDateTime = p.StartDateTime,
-                            PlanEndDateTime = p.EndDateTime,
-                            ScheduleStartTime = s.StartTime,
-                            ScheduleEndTime = s.EndTime,
-                            ScheduleDayOfWeek = s.DayOfWeek,
-                            ScheduleDate = s.Date,
-                            AdPlayTime = s.PlayTime,
-                            AdBreakTime = s.BreakTime
-                        };
+            var query = Context.Schedules.Where(s => s.Id == scheduleId)
+                               .Select(s => new AdScheduleTime()
+                               {
+                                   PlanStartDateTime = s.Plan.StartDateTime,
+                                   PlanEndDateTime = s.Plan.EndDateTime,
+                                   ScheduleStartTime = s.StartTime,
+                                   ScheduleEndTime = s.EndTime,
+                                   ScheduleDayOfWeek = s.DayOfWeek,
+                                   ScheduleDate = s.Date,
+                                   AdPlayTime = s.PlayTime,
+                                   AdBreakTime = s.BreakTime
+                               });
 
             return query.SingleOrDefaultAsync();
         }

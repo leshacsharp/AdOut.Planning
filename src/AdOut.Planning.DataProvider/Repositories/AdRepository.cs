@@ -20,79 +20,41 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<AdListDto>> GetAds(Expression<Func<Ad, bool>> predicate)
         {
-            var query = from ad in Context.Ads.Where(predicate)
-                        orderby ad.AddedDate descending
-                        select new AdListDto()
-                        {
-                            Id = ad.Id,
-                            Title = ad.Title,
-                            ContentType = ad.ContentType,
-                            Status = ad.Status,
-                            PreviewPath = ad.PreviewPath
-                        };
+            var query = Context.Ads.Where(predicate)
+                               .OrderByDescending(a => a.AddedDate)
+                               .Select(a => new AdListDto()
+                               {
+                                   Id = a.Id,
+                                   Title = a.Title,
+                                   ContentType = a.ContentType,
+                                   Status = a.Status,
+                                   PreviewPath = a.PreviewPath
+                               });
 
             return query.ToListAsync();
         }
 
-        public async Task<AdDto> GetDtoByIdAsync(string adId)
+        public Task<AdDto> GetDtoByIdAsync(string adId)
         {
-            var query = from a in Context.Ads.Where(a => a.Id == adId)
+            var query = Context.Ads.Where(a => a.Id == adId)
+                               .Select(a => new AdDto()
+                               {
+                                   UserId = a.UserId,
+                                   Title = a.Title,
+                                   Path = a.Path,
+                                   ContentType = a.ContentType,
+                                   Status = a.Status,
+                                   AddedDate = a.AddedDate,
+                                   ConfirmationDate = a.ConfirmationDate,
+                                   Plans = a.PlanAds.Select(pa => new AdPlanDto()
+                                   {
+                                       Id = pa.Plan.Id,
+                                       Title = pa.Plan.Title,
+                                       Status = pa.Plan.Status
+                                   })
+                               });
 
-                        join pa in Context.PlanAds on a.Id equals pa.AdId into planAdsJoin
-                        from pa in planAdsJoin.DefaultIfEmpty()
-
-                        join p in Context.Plans on pa.PlanId equals p.Id into plansJoin
-                        from p in plansJoin.DefaultIfEmpty()
-
-                        join pap in Context.PlanAdPoints on p.Id equals pap.PlanId into planAdPointsJoin
-                        from pap in planAdPointsJoin.DefaultIfEmpty()
-
-                        join ap in Context.AdPoints on pap.AdPointId equals ap.Id into adPointsJoin
-                        from ap in adPointsJoin.DefaultIfEmpty()
-
-                        select new
-                        {
-                            a.Id,
-                            a.UserId,
-                            a.Title,
-                            a.Path,
-                            a.ContentType,
-                            a.Status,
-                            a.AddedDate,
-                            a.ConfirmationDate,
-
-                            Plan = p != null ? new AdPlanDto()
-                            {
-                                Id = p.Id,
-                                Title = p.Title,
-                                Status = p.Status
-                            } : null,
-
-                            AdPoint = ap != null ? new AdPointDto()
-                            {
-                                Id = ap.Id,
-                                Location = ap.Location
-                            } : null
-                        };
-
-            var adItems = await query.ToListAsync();
-            var ad = adItems.FirstOrDefault();
-
-            var result = ad != null ? new AdDto()
-            {
-                UserId = ad.UserId,
-                Title = ad.Title,
-                Path = ad.Path,
-                ContentType = ad.ContentType,
-                Status = ad.Status,
-                AddedDate = ad.AddedDate,
-                ConfirmationDate = ad.ConfirmationDate,
-
-                Plans = adItems.Where(a => a.Plan != null).Select(a => a.Plan),
-                AdPoints = adItems.Where(a => a.AdPoint != null).Select(a => a.AdPoint)
-            } : null;
-
-            return result;
+            return query.SingleOrDefaultAsync();
         }
     }
 }

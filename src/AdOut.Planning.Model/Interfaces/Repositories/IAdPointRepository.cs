@@ -8,6 +8,6 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IAdPointRepository : IBaseRepository<AdPoint>
     {
-        Task<List<AdPointValidation>> GetAdPointsValidationAsync(string adPointsPlanId, DateTime planStart, DateTime planEnd);
+        Task<List<AdPointValidation>> GetAdPointsValidationAsync(string planId, DateTime planStart, DateTime planEnd);
     }
 }

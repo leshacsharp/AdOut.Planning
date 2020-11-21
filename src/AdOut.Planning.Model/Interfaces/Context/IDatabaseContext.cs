@@ -12,17 +12,15 @@ namespace AdOut.Planning.Model.Interfaces.Context
 
         DbSet<Plan> Plans { get; set; }
 
-        DbSet<Database.Schedule> Schedules { get; set; }
-
         DbSet<AdPoint> AdPoints { get; set; }
 
-        DbSet<PlanAd> PlanAds { get; set; }  
+        DbSet<PlanAd> PlanAds { get; set; }
 
         DbSet<PlanAdPoint> PlanAdPoints { get; set; }
 
-        DbSet<DayOff> DaysOff { get; set; }
+        DbSet<Database.Schedule> Schedules { get; set; }
 
-        DbSet<AdPointDayOff> AdPointDaysOff { get; set; }
+        DbSet<DayOff> DaysOff { get; set; }
 
         DbSet<Configuration> Configurations { get; set; }
 

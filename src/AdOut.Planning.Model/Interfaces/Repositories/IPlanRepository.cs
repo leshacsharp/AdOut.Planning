@@ -8,7 +8,7 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IPlanRepository : IBaseRepository<Plan>
     {
-        Task<List<AdPointPlanDto>> GetByAdPoint(string adPointId, DateTime dateFrom, DateTime dateTo);
+        Task<List<AdPointPlanDto>> GetByAdPointAsync(string adPointId, DateTime dateFrom, DateTime dateTo);
         Task<PlanDto> GetDtoByIdAsync(string planId);
     }
 }
