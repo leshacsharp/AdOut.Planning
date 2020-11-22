@@ -33,11 +33,12 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
   
-        public Task<AdScheduleTime> GetScheduleInfo(string scheduleId)
+        public Task<AdScheduleTime> GetScheduleInfoAsync(string scheduleId)
         {
             var query = Context.Schedules.Where(s => s.Id == scheduleId)
                                .Select(s => new AdScheduleTime()
                                {
+                                   PlanType = s.Plan.Type,
                                    PlanStartDateTime = s.Plan.StartDateTime,
                                    PlanEndDateTime = s.Plan.EndDateTime,
                                    ScheduleStartTime = s.StartTime,
@@ -45,7 +46,10 @@ namespace AdOut.Planning.DataProvider.Repositories
                                    ScheduleDayOfWeek = s.DayOfWeek,
                                    ScheduleDate = s.Date,
                                    AdPlayTime = s.PlayTime,
-                                   AdBreakTime = s.BreakTime
+                                   AdBreakTime = s.BreakTime,
+                                   AdPointsDaysOff = s.Plan.PlanAdPoints
+                                         .SelectMany(pap => pap.AdPoint.DaysOff)
+                                         .Select(doof => doof.DayOfWeek)
                                });
 
             return query.SingleOrDefaultAsync();

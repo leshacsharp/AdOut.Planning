@@ -17,23 +17,26 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
+
+            //todo: refactoring
             if (context.Plan.Type == PlanType.Daily)
             {
                 foreach (var adPoint in context.AdPoints)
                 {
                     foreach (var eAdPeriod in adPoint.AdPeriods)
                     {
-                        foreach (var newAdPeriod in context.NewAdsPeriods)
+                        foreach (var existedtr in eAdPeriod.TimeRanges)
                         {
-                            if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
-                                newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
-                                newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection   
+                            foreach (var newtr in context.NewAdPeriod.TimeRanges)
                             {
-                                var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
-                                var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
+                                if (existedtr.IsInterescted(newtr))
+                                {
+                                    var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
+                                    var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
-                                context.Errors.Add(validationMessage);
+                                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
+                                    context.Errors.Add(validationMessage);
+                                }
                             }
                         }
                     }

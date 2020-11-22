@@ -1,6 +1,5 @@
 ﻿using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
-using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
@@ -77,22 +76,26 @@ namespace AdOut.Planning.Core.Managers
                     DaysOff = adPoint.DaysOff.ToList()
                 };
 
-                foreach (var schedule in adPoint.Schedules)
+                foreach (var app in adPoint.Plans)
                 {
-                    var schdeduleAdsPeriods = _timeLineHelper.GetScheduleTimeLine(schedule);
-                    adPointTime.AdPeriods.AddRange(schdeduleAdsPeriods);
+                    foreach (var s in app.Schedules)
+                    {
+                        //todo: think about filtering ads periods by dates!
+                        var schdeduleAdsPeriod = _timeLineHelper.GetScheduleTimeLine(s, app.StartDateTime, app.EndDateTime);
+                        adPointTime.AdPeriods.Add(schdeduleAdsPeriod);
+                    }
                 }
-                
+       
                 adPointTimes.Add(adPointTime);
             }
 
-            var newAdsPeriods = _timeLineHelper.GetScheduleTimeLine(scheduleDto);
+            var newAdPeriod = _timeLineHelper.GetScheduleTimeLine(scheduleDto, plan.StartDateTime, plan.EndDateTime);
 
             var validationContext = new ScheduleValidationContext()
             {
                 Schedule = scheduleDto,
                 AdPoints = adPointTimes,
-                NewAdsPeriods = newAdsPeriods,
+                NewAdPeriod = newAdPeriod,
                 Plan = new SchedulePlan()
                 {
                     Type = plan.Type,
@@ -151,11 +154,23 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Schedule with id={updateModel.ScheduleId} was not found");
             }
 
-            var plan = await _planRepository.GetByIdAsync(schedule.PlanId);
-            var adScheduleTimeBeforeUpdating = MapPlanAndScheduleToTimeInfo(plan, schedule);
-            
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(plan.Type);
-            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(adScheduleTimeBeforeUpdating);
+            var scheduleInfo = await _scheduleRepository.GetScheduleInfoAsync(updateModel.ScheduleId);
+            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleInfo.PlanType);
+
+            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleInfo);
+
+            scheduleInfo.ScheduleStartTime = updateModel.StartTime;
+            scheduleInfo.ScheduleEndTime = updateModel.EndTime;
+            scheduleInfo.AdBreakTime = updateModel.BreakTime;
+            scheduleInfo.ScheduleDayOfWeek = updateModel.DayOfWeek;
+            scheduleInfo.ScheduleDate = updateModel.Date;
+
+            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleInfo);
+
+            if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
+            {
+                throw new BadRequestException(ValidationMessages.Schedule.TimeIsIncreased);
+            }
 
             schedule.StartTime = updateModel.StartTime;
             schedule.EndTime = updateModel.EndTime;
@@ -163,31 +178,7 @@ namespace AdOut.Planning.Core.Managers
             schedule.DayOfWeek = updateModel.DayOfWeek;
             schedule.Date = updateModel.Date;
 
-            var adScheduleTimeAfterUpdating = MapPlanAndScheduleToTimeInfo(plan, schedule);
-            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(adScheduleTimeAfterUpdating);
-
-            if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
-            {
-                throw new BadRequestException(ValidationMessages.Schedule.TimeIsIncreased);
-            }
-
             Update(schedule);
-        }
-
-        //todo: wtf?
-        private AdScheduleTime MapPlanAndScheduleToTimeInfo(Plan plan, Model.Database.Schedule schedule)
-        {
-            return new AdScheduleTime()
-            {
-                PlanStartDateTime = plan.StartDateTime,
-                PlanEndDateTime = plan.EndDateTime,
-                ScheduleStartTime = schedule.StartTime,
-                ScheduleEndTime = schedule.EndTime,
-                ScheduleDayOfWeek = schedule.DayOfWeek,
-                ScheduleDate = schedule.Date,
-                AdPlayTime = schedule.PlayTime,
-                AdBreakTime = schedule.BreakTime
-            };
-        }
+        } 
     }
 }

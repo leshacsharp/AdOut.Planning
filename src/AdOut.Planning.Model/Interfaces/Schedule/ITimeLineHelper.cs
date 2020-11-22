@@ -1,11 +1,11 @@
 ﻿using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Dto;
-using System.Collections.Generic;
+using System;
 
 namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface ITimeLineHelper
     {
-        List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule);
+        AdPeriod GetScheduleTimeLine(ScheduleDto schedule, DateTime planStart, DateTime planEnd)
     }
 }

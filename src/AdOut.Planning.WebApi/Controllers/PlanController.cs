@@ -3,7 +3,6 @@ using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
-using AdOut.Planning.WebApi.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +65,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPlan(string id)
         {
-            var plan = await _planManager.GetByIdAsync(id);
+            var plan = await _planManager.GetDtoByIdAsync(id);
             if (plan == null)
             {
                 return NotFound();

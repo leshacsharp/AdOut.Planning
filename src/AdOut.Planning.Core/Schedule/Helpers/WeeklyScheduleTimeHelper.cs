@@ -1,25 +1,24 @@
-﻿using AdOut.Planning.Model.Classes;
+﻿using AdOut.Planning.Model.Dto;
 using System;
 
 namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class WeeklyScheduleTimeHelper : BaseScheduleTimeHelper
     {
-        protected override TimeSpan GetTimeOfExecutingPlan(AdScheduleTime timeInfo)
+        protected override TimeSpan GetTimeOfExecutingPlan(AdScheduleTime scheduleInfo)
         {
-            var daysOfExecutionPlan = GetCountOfWeekDay(timeInfo.PlanStartDateTime, timeInfo.PlanEndDateTime, timeInfo.ScheduleDayOfWeek.Value);
+            var daysOfExecutionPlan = GetWeekDays(scheduleInfo.PlanStartDateTime, scheduleInfo.PlanEndDateTime, scheduleInfo.ScheduleDayOfWeek.Value);
 
-            var timeOfExecutingPlanByDay = timeInfo.ScheduleEndTime - timeInfo.ScheduleStartTime;
+            var timeOfExecutingPlanByDay = scheduleInfo.ScheduleEndTime - scheduleInfo.ScheduleStartTime;
             var timeOfExecutingPlan = daysOfExecutionPlan * timeOfExecutingPlanByDay;
 
             return timeOfExecutingPlan;
         }
 
-        private int GetCountOfWeekDay(DateTime from, DateTime to, DayOfWeek day)
+        private int GetWeekDays(DateTime from, DateTime to, DayOfWeek day)
         {
             var daysCount = 0;
-            var currentDate = from;
-            currentDate = currentDate.AddHours(currentDate.Hour * -1);
+            var currentDate = new DateTime(from.Year, from.Month, from.Day);
 
             while (currentDate <= to)
             {
@@ -27,7 +26,6 @@ namespace AdOut.Planning.Core.Schedule.Helpers
                 {
                     daysCount++;
                 }
-
                 currentDate = currentDate.AddDays(1);
             }
 

@@ -30,9 +30,9 @@ namespace AdOut.Planning.Core.Schedule.Validators
                         {
                             foreach (var newAdPeriod in context.NewAdsPeriods)
                             {
-                                if (newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime ||  //left intersection
-                                    newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime ||      //right intersection
-                                    newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime)      //inner intersection
+                                if ((newAdPeriod.StartTime <= eAdPeriod.StartTime && newAdPeriod.EndTime >= eAdPeriod.StartTime) ||  //left intersection
+                                    (newAdPeriod.StartTime <= eAdPeriod.EndTime && newAdPeriod.EndTime >= eAdPeriod.EndTime) ||      //right intersection
+                                    (newAdPeriod.StartTime >= eAdPeriod.StartTime && newAdPeriod.EndTime <= eAdPeriod.EndTime))      //inner intersection
                                 {
                                     var eAdPeriodDate = eAdPeriod.Date.Value;
                                     var scheduleTimeMode = $"{scheduleDate.ToShortDateString()}, {scheduleDate.DayOfWeek}, {newAdPeriod.StartTime} - {newAdPeriod.EndTime}";

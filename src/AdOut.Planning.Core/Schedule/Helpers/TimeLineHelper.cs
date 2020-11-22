@@ -8,39 +8,82 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class TimeLineHelper : ITimeLineHelper
     {
-        public List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule)
-        {
-            var adsPeriods = new List<AdPeriod>();
-
-            AdPeriod currentAdPeriod = null;
+        public AdPeriod GetScheduleTimeLine(ScheduleDto schedule, DateTime planStart, DateTime planEnd)
+        {     
+            var adTimeRanges = new List<TimeRange>();
             var adTimeWithBreak = schedule.PlayTime + schedule.BreakTime;
+            TimeRange currentTimeRange = null;
 
-            while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
+            while (currentTimeRange.End + adTimeWithBreak <= schedule.EndTime)
             {
                 var adStartTime = TimeSpan.Zero;
-                if (currentAdPeriod == null)
+                if (currentTimeRange == null)
                 {
                     adStartTime = schedule.StartTime;
                 }
                 else
                 {
-                    adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
+                    adStartTime = currentTimeRange.End.Add(schedule.BreakTime);
                 }
 
                 var adEndTime = adStartTime.Add(schedule.PlayTime);
-                var adPeriod = new AdPeriod()
-                {
-                    StartTime = adStartTime,
-                    EndTime = adEndTime,
-                    Date = schedule.Date,
-                    DayOfWeek = schedule.DayOfWeek
-                };
+                var adTimeRange = new TimeRange(adStartTime, adEndTime);
 
-                currentAdPeriod = adPeriod;
-                adsPeriods.Add(adPeriod);
+                currentTimeRange = adTimeRange;
+                adTimeRanges.Add(adTimeRange);
             }
 
-            return adsPeriods;
+            var adDates = new List<DateTime>();
+            var currentDate = new DateTime(planStart.Year, planStart.Month, planStart.Day);
+
+            while (currentDate <= planEnd)
+            {
+                adDates.Add(currentDate);
+                currentDate = currentDate.AddDays(1);
+            }
+
+            var sceduleAdPeriod = new AdPeriod()
+            {
+                Dates = adDates,
+                TimeRanges = adTimeRanges
+            };
+
+            return sceduleAdPeriod;
         }
+
+        //public List<AdPeriod> GetScheduleTimeLine(ScheduleDto schedule)
+        //{
+        //    var adsPeriods = new List<AdPeriod>();
+
+        //    AdPeriod currentAdPeriod = null;
+        //    var adTimeWithBreak = schedule.PlayTime + schedule.BreakTime;
+
+        //    while (currentAdPeriod.EndTime + adTimeWithBreak <= schedule.EndTime)
+        //    {
+        //        var adStartTime = TimeSpan.Zero;
+        //        if (currentAdPeriod == null)
+        //        {
+        //            adStartTime = schedule.StartTime;
+        //        }
+        //        else
+        //        {
+        //            adStartTime = currentAdPeriod.EndTime.Add(schedule.BreakTime);
+        //        }
+
+        //        var adEndTime = adStartTime.Add(schedule.PlayTime);
+        //        var adPeriod = new AdPeriod()
+        //        {
+        //            StartTime = adStartTime,
+        //            EndTime = adEndTime,
+        //            Date = schedule.Date,
+        //            DayOfWeek = schedule.DayOfWeek
+        //        };
+
+        //        currentAdPeriod = adPeriod;
+        //        adsPeriods.Add(adPeriod);
+        //    }
+
+        //    return adsPeriods;
+        //}
     }
 }

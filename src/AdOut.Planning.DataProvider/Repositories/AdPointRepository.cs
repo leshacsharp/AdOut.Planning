@@ -19,26 +19,30 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<AdPointValidation>> GetAdPointsValidationAsync(string planId, DateTime planStart, DateTime planEnd)
         {
-            var query = Context.AdPoints.Where(ap => ap.PlanAdPoints.Any(pap => pap.PlanId == planId &&
-                                                                                pap.Plan.StartDateTime >= planStart &&
-                                                                                pap.Plan.EndDateTime <= planEnd))
+            //todo: check a generated sql
+
+            var query = Context.AdPoints.Where(ap => ap.PlanAdPoints.Any(pap => pap.PlanId == planId))                                                  
                            .Select(ap => new AdPointValidation()
                            {
                                Location = ap.Location,
                                StartWorkingTime = ap.StartWorkingTime,
                                EndWorkingTime = ap.EndWorkingTime,
                                DaysOff = ap.DaysOff.Select(doff => doff.DayOfWeek),
-                               Schedules = ap.PlanAdPoints.SelectMany(pap => pap.Plan.Schedules)
-                                                   .Where(s => s.Date == null || s.Date <= planEnd)
-                                                   .Select(s => new ScheduleDto() 
-                                                   {
-                                                       StartTime = s.StartTime,
-                                                       EndTime = s.EndTime,
-                                                       BreakTime = s.BreakTime,
-                                                       PlayTime = s.PlayTime,
-                                                       Date = s.Date,
-                                                       DayOfWeek = s.DayOfWeek
-                                                   })
+                               Plans = ap.PlanAdPoints.Select(pap => new PlanValidation() 
+                               {
+                                    StartDateTime = pap.Plan.StartDateTime,
+                                    EndDateTime = pap.Plan.EndDateTime,
+                                    //todo: mb need to add conditions for schedules
+                                    Schedules = pap.Plan.Schedules.Select(s => new ScheduleDto()
+                                    {
+                                        StartTime = s.StartTime,
+                                        EndTime = s.EndTime,
+                                        BreakTime = s.BreakTime,
+                                        PlayTime = s.PlayTime,
+                                        Date = s.Date,
+                                        DayOfWeek = s.DayOfWeek
+                                    })
+                               })                                                 
                            });
 
             return query.ToListAsync();

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using AdOut.Planning.Model.Enum;
+using System;
+using System.Collections.Generic;
 
-namespace AdOut.Planning.Model.Classes
+namespace AdOut.Planning.Model.Dto
 {
-    //add days off property for dayli time helper
     public class AdScheduleTime
     {
+        public PlanType PlanType { get; set; }
+
         public DateTime PlanStartDateTime { get; set; }
 
         public DateTime PlanEndDateTime { get; set; }
@@ -20,5 +23,7 @@ namespace AdOut.Planning.Model.Classes
         public DayOfWeek? ScheduleDayOfWeek { get; set; }
 
         public DateTime? ScheduleDate { get; set; }
+
+        public IEnumerable<DayOfWeek> AdPointsDaysOff { get; set; }
     }
 }

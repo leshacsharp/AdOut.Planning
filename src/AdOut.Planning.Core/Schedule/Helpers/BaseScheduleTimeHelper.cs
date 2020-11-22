@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Classes;
+﻿using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 
@@ -6,23 +6,22 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public abstract class BaseScheduleTimeHelper : IScheduleTimeHelper
     {
-        public TimeSpan GetTimeOfAdsShowing(AdScheduleTime timeInfo)
+        public TimeSpan GetTimeOfAdsShowing(AdScheduleTime scheduleInfo)
         {
-            if (timeInfo == null)
+            if (scheduleInfo == null)
             {
-                throw new ArgumentNullException(nameof(timeInfo));
+                throw new ArgumentNullException(nameof(scheduleInfo));
             }
 
-            var timeOfAdTimeWithBreak = timeInfo.AdPlayTime + timeInfo.AdBreakTime;
+            var timeOfExecutingPlan = GetTimeOfExecutingPlan(scheduleInfo);
 
-            var timeOfExecutingPlan = GetTimeOfExecutingPlan(timeInfo);
-
+            var timeOfAdTimeWithBreak = scheduleInfo.AdPlayTime + scheduleInfo.AdBreakTime;
             var countOfShowingAds = timeOfExecutingPlan / timeOfAdTimeWithBreak;
-            var timeOfShowingAds = countOfShowingAds * timeInfo.AdPlayTime;
+            var timeOfShowingAds = countOfShowingAds * scheduleInfo.AdPlayTime;
 
             return timeOfShowingAds;
         }
 
-        protected abstract TimeSpan GetTimeOfExecutingPlan(AdScheduleTime timeInfo);
+        protected abstract TimeSpan GetTimeOfExecutingPlan(AdScheduleTime scheduleInfo);
     }
 }
