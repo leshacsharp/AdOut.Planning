@@ -1,10 +1,12 @@
-﻿using AdOut.Planning.Model.Dto;
+﻿using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Dto;
 using System;
 
 namespace AdOut.Planning.Model.Interfaces.Schedule
 {
     public interface IScheduleTimeHelper
     {
-        TimeSpan GetTimeOfAdsShowing(AdScheduleTime scheduleInfo);
+        TimeSpan GetTimeOfAdsShowing(ScheduleTime scheduleTime);
+        AdPeriod GetScheduleTimeLine(ScheduleTime scheduleTime);
     }
 }

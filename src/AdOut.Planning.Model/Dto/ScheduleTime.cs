@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
-    public class AdScheduleTime
+    public class ScheduleTime
     {
         public PlanType PlanType { get; set; }
 

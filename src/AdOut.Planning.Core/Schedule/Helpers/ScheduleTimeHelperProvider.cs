@@ -1,9 +1,8 @@
-﻿using AdOut.Planning.Core.Schedule.Helpers;
-using AdOut.Planning.Model.Enum;
+﻿using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 
-namespace AdOut.Planning.Core.Schedule.Providers
+namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class ScheduleTimeHelperProvider : IScheduleTimeHelperProvider
     {
