@@ -17,6 +17,54 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
+        public Task<TempPlanValidation> GetTempPlanValidationAsync(string planId)
+        {
+            //todo: check sql
+
+            var query = Context.Plans.Where(p => p.Id == planId)
+                                     .Select(p => new TempPlanValidation()
+                                     {
+                                         Type = p.Type,
+                                         StartDateTime = p.StartDateTime,
+                                         EndDateTime = p.EndDateTime,
+                                         AdPoints = p.PlanAdPoints.Select(pap => new AdPointValidation()
+                                         {
+                                             StartWorkingTime = pap.AdPoint.StartWorkingTime,
+                                             EndWorkingTime = pap.AdPoint.EndWorkingTime,             
+                                             DaysOff = pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek)
+                                         })
+                                     });
+
+            return query.SingleOrDefaultAsync();
+        }
+
+        public Task<List<PlanValidation>> GetPlanValidationsAsync(string planId, DateTime planStart, DateTime planEnd)
+        {
+            //todo: check sql and add conditions for intersections
+            //todo: do I need a disctinct in DaysOff?
+
+            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.PlanId == planId))
+                                     .Select(p => new PlanValidation()
+                                     {
+                                         Type = p.Type,
+                                         StartDateTime = p.StartDateTime,
+                                         EndDateTime = p.EndDateTime,
+                                         Schedules = p.Schedules.Select(s => new ScheduleDto()
+                                         {
+                                             StartTime = s.StartTime,
+                                             EndTime = s.EndTime,
+                                             BreakTime = s.BreakTime,
+                                             PlayTime = s.PlayTime,
+                                             Date = s.Date,
+                                             DayOfWeek = s.DayOfWeek
+                                         }),
+                                         AdPointsDaysOff = p.PlanAdPoints
+                                             .SelectMany(pap => pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek))
+                                     });
+
+            return query.ToListAsync();
+        }
+
         public Task<List<AdPointPlanDto>> GetByAdPointAsync(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var query = Context.Plans.Where(p => p.PlanAdPoints.Any(ap => ap.AdPointId == adPointId) &&

@@ -20,15 +20,13 @@ namespace AdOut.Planning.Core.Managers
         private readonly IAdPointRepository _adPointRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
-        private readonly ITimeLineHelper _timeLineHelper;
 
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
             IAdPointRepository adPointRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
-            IScheduleTimeHelperProvider scheduleTimeHelperProvider,
-            ITimeLineHelper timeLineHelper)
+            IScheduleTimeHelperProvider scheduleTimeHelperProvider)
             : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
@@ -36,72 +34,56 @@ namespace AdOut.Planning.Core.Managers
             _adPointRepository = adPointRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
-            _timeLineHelper = timeLineHelper;
         }
-   
+
+
         public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel)
         {
+            //todo: refactoring and variables naming
+
             if (scheduleModel == null)
             {
                 throw new ArgumentNullException(nameof(scheduleModel));
             }
 
-            var plan = await _planRepository.GetByIdAsync(scheduleModel.PlanId);
+            var plan = await _planRepository.GetTempPlanValidationAsync(scheduleModel.PlanId);
             if (plan == null)
             {
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
-            //todo: make something with that!!!
-            var scheduleDto = new ScheduleDto()
+            var planValidations = await _planRepository.GetPlanValidationsAsync(scheduleModel.PlanId, plan.StartDateTime, plan.EndDateTime);
+            var existingAdPeriods = new List<AdPeriod>();
+
+            foreach (var p in planValidations)
             {
-                StartTime = scheduleModel.StartTime,
-                EndTime = scheduleModel.EndTime,
-                PlayTime = scheduleModel.PlayTime,
-                BreakTime = scheduleModel.BreakTime,
-                DayOfWeek = scheduleModel.DayOfWeek,
-                Date = scheduleModel.Date
-            };
-
-            var adPointsValidations = await _adPointRepository.GetAdPointsValidationAsync(plan.Id, plan.StartDateTime, plan.EndDateTime);
-            var adPointTimes = new List<AdPointTime>();
-
-            foreach (var adPoint in adPointsValidations)
-            {
-                var adPointTime = new AdPointTime()
+                var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(p.Type);
+                foreach (var s in p.Schedules)
                 {
-                    Location = adPoint.Location,
-                    StartWorkingTime = adPoint.StartWorkingTime,
-                    EndWorkingTime = adPoint.EndWorkingTime,
-                    DaysOff = adPoint.DaysOff.ToList()
-                };
-
-                foreach (var app in adPoint.Plans)
-                {
-                    foreach (var s in app.Schedules)
-                    {
-                        //todo: think about filtering ads periods by dates!
-                        var schdeduleAdsPeriod = _timeLineHelper.GetScheduleTimeLine(s, app.StartDateTime, app.EndDateTime);
-                        adPointTime.AdPeriods.Add(schdeduleAdsPeriod);
-                    }
+                    var existingScheduleTime = MapToAdScheduleTime(p, s);
+                    var existingAdPeriod = timeHelper.GetScheduleTimeLine(existingScheduleTime);
+                    existingAdPeriods.Add(existingAdPeriod);
                 }
-       
-                adPointTimes.Add(adPointTime);
             }
 
-            var newAdPeriod = _timeLineHelper.GetScheduleTimeLine(scheduleDto, plan.StartDateTime, plan.EndDateTime);
+            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(plan.Type);
+            var newScheduleTime = MapToAdScheduleTime(plan, scheduleModel);
+            var newAdPeriod = scheduleTimeHelper.GetScheduleTimeLine(newScheduleTime);
 
             var validationContext = new ScheduleValidationContext()
             {
-                Schedule = scheduleDto,
-                AdPoints = adPointTimes,
-                NewAdPeriod = newAdPeriod,
-                Plan = new SchedulePlan()
-                {
-                    Type = plan.Type,
-                    StartDateTime = plan.StartDateTime,
-                    EndDateTime = plan.EndDateTime
-                }
+                ScheduleStartTime = scheduleModel.StartTime,
+                ScheduleEndTime = scheduleModel.EndTime,
+                AdPlayTime = scheduleModel.PlayTime,
+                AdBreakTime = scheduleModel.BreakTime,
+                ScheduleDayOfWeek = scheduleModel.DayOfWeek,
+                ScheduleDate = scheduleModel.Date,
+                PlanType = plan.Type,
+                PlanStartDateTime = plan.StartDateTime,
+                PlanEndDateTime = plan.EndDateTime,
+                AdPoints = plan.AdPoints.ToList(),
+                ExistingAdPeriods = existingAdPeriods,
+                NewAdPeriod = newAdPeriod
             };
 
             var chainOfValidator = _scheduleValidatorFactory.CreateChainOfAllValidators();
@@ -154,18 +136,18 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Schedule with id={updateModel.ScheduleId} was not found");
             }
 
-            var scheduleInfo = await _scheduleRepository.GetScheduleInfoAsync(updateModel.ScheduleId);
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleInfo.PlanType);
+            var scheduleTime = await _scheduleRepository.GetScheduleTimeAsync(updateModel.ScheduleId);
+            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleTime.PlanType);
 
-            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleInfo);
+            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleTime);
 
-            scheduleInfo.ScheduleStartTime = updateModel.StartTime;
-            scheduleInfo.ScheduleEndTime = updateModel.EndTime;
-            scheduleInfo.AdBreakTime = updateModel.BreakTime;
-            scheduleInfo.ScheduleDayOfWeek = updateModel.DayOfWeek;
-            scheduleInfo.ScheduleDate = updateModel.Date;
+            scheduleTime.ScheduleStartTime = updateModel.StartTime;
+            scheduleTime.ScheduleEndTime = updateModel.EndTime;
+            scheduleTime.AdBreakTime = updateModel.BreakTime;
+            scheduleTime.ScheduleDayOfWeek = updateModel.DayOfWeek;
+            scheduleTime.ScheduleDate = updateModel.Date;
 
-            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleInfo);
+            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleTime);
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
@@ -180,5 +162,43 @@ namespace AdOut.Planning.Core.Managers
 
             Update(schedule);
         } 
+
+        private ScheduleTime MapToAdScheduleTime(PlanValidation plan, ScheduleDto schedule)
+        {
+            var adPointsDaysOff = plan.AdPointsDaysOff.Distinct();
+
+            return new ScheduleTime()
+            {
+                AdPointsDaysOff = adPointsDaysOff,
+                PlanType = plan.Type,
+                PlanStartDateTime = plan.StartDateTime,
+                PlanEndDateTime = plan.EndDateTime,
+                ScheduleStartTime = schedule.StartTime,
+                ScheduleEndTime = schedule.EndTime,
+                AdPlayTime = schedule.PlayTime,
+                AdBreakTime = schedule.BreakTime,
+                ScheduleDayOfWeek = schedule.DayOfWeek,
+                ScheduleDate = schedule.Date
+            };
+        }
+
+        private ScheduleTime MapToAdScheduleTime(TempPlanValidation plan, ScheduleModel schedule)
+        {
+            var adPointsDaysOff = plan.AdPoints.SelectMany(ap => ap.DaysOff).Distinct();
+
+            return new ScheduleTime()
+            {
+                AdPointsDaysOff = adPointsDaysOff,
+                PlanType = plan.Type,
+                PlanStartDateTime = plan.StartDateTime,
+                PlanEndDateTime = plan.EndDateTime,
+                ScheduleStartTime = schedule.StartTime,
+                ScheduleEndTime = schedule.EndTime,
+                AdPlayTime = schedule.PlayTime,
+                AdBreakTime = schedule.BreakTime,
+                ScheduleDayOfWeek = schedule.DayOfWeek,
+                ScheduleDate = schedule.Date
+            };
+        }
     }
 }

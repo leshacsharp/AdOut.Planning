@@ -17,26 +17,25 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-
             //todo: refactoring
-            if (context.Plan.Type == PlanType.Daily)
+            if (context.PlanType == PlanType.Daily)
             {
-                foreach (var adPoint in context.AdPoints)
-                {
-                    foreach (var eAdPeriod in adPoint.AdPeriods)
-                    {
-                        foreach (var existedtr in eAdPeriod.TimeRanges)
-                        {
-                            foreach (var newtr in context.NewAdPeriod.TimeRanges)
-                            {
-                                if (existedtr.IsInterescted(newtr))
-                                {
-                                    var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
-                                    var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
+                //todo: get existing ad periods that have same dates as in the new ad period
 
-                                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
-                                    context.Errors.Add(validationMessage);
-                                }
+                foreach (var eAdPeriod in context.ExistingAdPeriods)
+                {
+                    foreach (var existingTR in eAdPeriod.TimeRanges)
+                    {
+                        foreach (var newTR in context.NewAdPeriod.TimeRanges)
+                        {
+                            if (existingTR.IsInterescted(newTR))
+                            {
+                                //refactor errors messages
+                                var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
+                                var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
+
+                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
+                                context.Errors.Add(validationMessage);
                             }
                         }
                     }

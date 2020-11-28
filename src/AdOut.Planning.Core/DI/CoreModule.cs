@@ -41,7 +41,6 @@ namespace AdOut.Planning.Core.DI
 
             services.AddScoped<IScheduleValidatorFactory, ScheduleValidatorFactory>();
             services.AddScoped<IScheduleTimeHelperProvider, ScheduleTimeHelperProvider>();
-            services.AddScoped<ITimeLineHelper, TimeLineHelper>();
 
             //todo: uncomment in Production
             //var awsConfig = new AWSS3Config();

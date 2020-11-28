@@ -33,10 +33,10 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
   
-        public Task<AdScheduleTime> GetScheduleInfoAsync(string scheduleId)
+        public Task<ScheduleTime> GetScheduleTimeAsync(string scheduleId)
         {
             var query = Context.Schedules.Where(s => s.Id == scheduleId)
-                               .Select(s => new AdScheduleTime()
+                               .Select(s => new ScheduleTime()
                                {
                                    PlanType = s.Plan.Type,
                                    PlanStartDateTime = s.Plan.StartDateTime,
