@@ -26,9 +26,9 @@ namespace AdOut.Planning.Model.Classes
 
         public DateTime PlanEndDateTime { get; set; }
 
-        public List<AdPeriod> ExistingAdPeriods { get; set; }
+        public List<SchedulePeriod> ExistingSchedulePeriods { get; set; }
 
-        public AdPeriod NewAdPeriod { get; set; }
+        public SchedulePeriod NewSchedulePeriod { get; set; }
 
         public List<AdPointValidation> AdPoints { get; set; }
 

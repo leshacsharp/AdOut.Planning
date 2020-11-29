@@ -17,15 +17,14 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Plan.Type == ScheduleType.Specific)
-            { 
-                var schedule = context.Schedule;
-                if (schedule.Date < context.Plan.StartDateTime || schedule.Date > context.Plan.EndDateTime)
+            if (context.ScheduleType == ScheduleType.Specific)
+            {  
+                if (context.ScheduleDate < context.PlanStartDateTime || context.ScheduleDate > context.PlanEndDateTime)
                 {
-                    var scheduleDate = schedule.Date.Value.ToShortDateString();
-                    var planBounds = $"{context.Plan.StartDateTime.ToShortDateString()} - {context.Plan.EndDateTime.ToShortDateString()}";
+                    var scheduleDate = context.ScheduleDate.Value.ToShortDateString();
+                    var planBounds = $"{context.PlanStartDateTime.ToShortDateString()}-{context.PlanEndDateTime.ToShortDateString()}";
 
-                    var validationMessage = string.Format(ValidationMessages.Schedule.DateOutOfBounds_T, scheduleDate, planBounds);
+                    var validationMessage = string.Format(ValidationMessages.Schedule.DateBounds_T, scheduleDate, planBounds);
                     context.Errors.Add(validationMessage);
                 }
             }

@@ -2,17 +2,17 @@
 
 namespace AdOut.Planning.Model.Classes
 {
-    public class PlanTimeLine
+    public class PlanPeriod
     {
         public string PlanId { get; set; }
 
         public string PlanTitle { get; set; }
 
-        public List<AdPeriod> AdsPeriods { get; set; }
+        public List<SchedulePeriod> SchedulePeriods { get; set; }
 
-        public PlanTimeLine()
+        public PlanPeriod()
         {
-            AdsPeriods = new List<AdPeriod>();
+            SchedulePeriods = new List<SchedulePeriod>();
         }
     }
 }

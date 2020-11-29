@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
-    //todo: think about name of class
-    public class TempPlanValidation
+    public class SchedulePlanValidation
     {
         public DateTime StartDateTime { get; set; }
 

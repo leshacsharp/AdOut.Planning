@@ -10,12 +10,12 @@ namespace AdOut.Planning.Model
         {
             public static class Schedule
             {
-                public const string DayIsADayOff_T = "Schedule day of week ({0}) is a day off for AdPoint({1})";
-                public const string DateIsADayOff_T = "Schedule date ({0}) is a day off for Ad Point({1})";
-                public const string TimeIsNotAllowed_T = "Schedule time ({0}) is not allowed for AdPoint({1}) time mode({2})";
-                public const string TimeIntersection_T = "Your schedule intersects existing schedule at {0} date";
-                public const string DateOutOfBounds_T = "Schedule date({0}) is out of plan bounds({1})";
-                public const string TimeIsIncreased = "Ads showing time increased compared to previos schedule state, you cannot increase it";
+                public const string DayDayOff_T = "Schedule day of week {0} is a day off for AdPoint({1})";
+                public const string DateDayOff_T = "Schedule date {0} is a day off for Ad Point({1})";
+                public const string TimeNotAllowed_T = "Schedule {0} goes out of AdPoint({1}) schedule bounds {2}";
+                public const string TimeIntersected_T = "Schedule intersects an existing schedule at {0} date";
+                public const string DateBounds_T = "Schedule date {0} goes out of plan bounds {1}";
+                public const string TimeIncreased = "Ads showing time increased compared to previos schedule state, you cannot increase it";
             }
 
             public static class Content

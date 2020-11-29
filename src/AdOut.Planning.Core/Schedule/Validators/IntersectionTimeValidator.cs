@@ -18,17 +18,17 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-            foreach (var napDate in context.NewAdPeriod.Dates)
+            foreach (var nspDate in context.NewSchedulePeriod.Dates)
             {
-                var adPeriodsWithCommonDate = context.ExistingAdPeriods.Where(eap => eap.Dates.Contains(napDate));
-                var existingTimeRanges = adPeriodsWithCommonDate.SelectMany(ap => ap.TimeRanges).ToList();
+                var periodsWithCommonDate = context.ExistingSchedulePeriods.Where(esp => esp.Dates.Contains(nspDate));
+                var existingTimeRanges = periodsWithCommonDate.SelectMany(ap => ap.TimeRanges).ToList();
                
-                foreach (var newTimeRange in context.NewAdPeriod.TimeRanges)
+                foreach (var newTimeRange in context.NewSchedulePeriod.TimeRanges)
                 {
-                    var haveIntersecttion = existingTimeRanges.Any(etr => etr.IsInterescted(newTimeRange));
-                    if (haveIntersecttion)
+                    var haveIntersection = existingTimeRanges.Any(etr => etr.IsInterescted(newTimeRange));
+                    if (haveIntersection)
                     {
-                        var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, napDate.ToShortDateString());
+                        var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersected_T, nspDate.ToShortDateString());
                         context.Errors.Add(validationMessage);
                         break;
                     }

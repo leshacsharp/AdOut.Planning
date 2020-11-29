@@ -17,21 +17,18 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IPlanRepository _planRepository;
-        private readonly IAdPointRepository _adPointRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
 
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
-            IAdPointRepository adPointRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeHelperProvider scheduleTimeHelperProvider)
             : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
-            _adPointRepository = adPointRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
         }
@@ -46,29 +43,29 @@ namespace AdOut.Planning.Core.Managers
                 throw new ArgumentNullException(nameof(scheduleModel));
             }
 
-            var plan = await _planRepository.GetTempPlanValidationAsync(scheduleModel.PlanId);
+            var plan = await _planRepository.GetPlanScheduleValidationAsync(scheduleModel.PlanId);
             if (plan == null)
             {
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
             var planValidations = await _planRepository.GetPlanValidationsAsync(scheduleModel.PlanId, plan.StartDateTime, plan.EndDateTime);
-            var existingAdPeriods = new List<AdPeriod>();
+            var existingSchedulePeriods = new List<SchedulePeriod>();
 
             foreach (var p in planValidations)
             {
                 foreach (var s in p.Schedules)
                 {
                     var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
-                    var existingScheduleTime = MapToAdScheduleTime(p, s);
-                    var existingAdPeriod = timeHelper.GetScheduleTimeLine(existingScheduleTime);
-                    existingAdPeriods.Add(existingAdPeriod);
+                    var existingScheduleTime = MapToScheduleTime(p, s);
+                    var existingSchedulePeriod = timeHelper.GetScheduleTimeLine(existingScheduleTime);
+                    existingSchedulePeriods.Add(existingSchedulePeriod);
                 }
             }
 
             var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleModel.Type);
-            var newScheduleTime = MapToAdScheduleTime(plan, scheduleModel);
-            var newAdPeriod = scheduleTimeHelper.GetScheduleTimeLine(newScheduleTime);
+            var newScheduleTime = MapToScheduleTime(plan, scheduleModel);
+            var newSchedulePeriod = scheduleTimeHelper.GetScheduleTimeLine(newScheduleTime);
 
             var validationContext = new ScheduleValidationContext()
             {
@@ -82,8 +79,8 @@ namespace AdOut.Planning.Core.Managers
                 PlanStartDateTime = plan.StartDateTime,
                 PlanEndDateTime = plan.EndDateTime,
                 AdPoints = plan.AdPoints.ToList(),
-                ExistingAdPeriods = existingAdPeriods,
-                NewAdPeriod = newAdPeriod
+                ExistingSchedulePeriods = existingSchedulePeriods,
+                NewSchedulePeriod = newSchedulePeriod
             };
 
             var chainOfValidators = _scheduleValidatorFactory.CreateChainOfAllValidators();
@@ -151,7 +148,7 @@ namespace AdOut.Planning.Core.Managers
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
-                throw new BadRequestException(ValidationMessages.Schedule.TimeIsIncreased);
+                throw new BadRequestException(ValidationMessages.Schedule.TimeIncreased);
             }
 
             schedule.StartTime = updateModel.StartTime;
@@ -161,9 +158,10 @@ namespace AdOut.Planning.Core.Managers
             schedule.Date = updateModel.Date;
 
             Update(schedule);
-        } 
+        }
 
-        private ScheduleTime MapToAdScheduleTime(PlanValidation plan, ScheduleDto schedule)
+        //todo: create mapper for these entities
+        private ScheduleTime MapToScheduleTime(PlanValidation plan, ScheduleDto schedule)
         {
             var adPointsDaysOff = plan.AdPointsDaysOff.Distinct();
 
@@ -182,7 +180,7 @@ namespace AdOut.Planning.Core.Managers
             };
         }
 
-        private ScheduleTime MapToAdScheduleTime(TempPlanValidation plan, ScheduleModel schedule)
+        private ScheduleTime MapToScheduleTime(SchedulePlanValidation plan, ScheduleModel schedule)
         {
             var adPointsDaysOff = plan.AdPoints.SelectMany(ap => ap.DaysOff).Distinct();
 

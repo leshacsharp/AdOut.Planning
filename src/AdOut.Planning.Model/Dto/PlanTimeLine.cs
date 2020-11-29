@@ -3,12 +3,15 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
-    //todo: replace to PlanExistingValidation
-    public class PlanValidation
+    public class PlanTimeLine
     {
+        public string Id { get; set; }
+
+        public string Title { get; set; }
+
         public DateTime StartDateTime { get; set; }
 
-        public DateTime EndDateTime { get; set; }
+        public DateTime EndDateTime { get; set; } 
 
         public IEnumerable<ScheduleDto> Schedules { get; set; }
 

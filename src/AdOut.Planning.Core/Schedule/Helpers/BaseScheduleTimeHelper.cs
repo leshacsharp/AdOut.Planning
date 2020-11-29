@@ -8,7 +8,7 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public abstract class BaseScheduleTimeHelper : IScheduleTimeHelper
     {
-        public AdPeriod GetScheduleTimeLine(ScheduleTime scheduleTime)
+        public SchedulePeriod GetScheduleTimeLine(ScheduleTime scheduleTime)
         {
             var adTimeRanges = new List<TimeRange>();
             var adTimeWithBreak = scheduleTime.AdPlayTime + scheduleTime.AdBreakTime;
@@ -33,7 +33,7 @@ namespace AdOut.Planning.Core.Schedule.Helpers
                 adTimeRanges.Add(adTimeRange);
             }
 
-            var sceduleAdPeriod = new AdPeriod()
+            var sceduleAdPeriod = new SchedulePeriod()
             {
                 Dates = GetPlanWorkingDays(scheduleTime),
                 TimeRanges = adTimeRanges
