@@ -17,8 +17,10 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
+
+
             //todo: refactoring
-            if (context.PlanType == PlanType.Daily)
+            if (context.ScheduleType == ScheduleType.Daily)
             {
                 //todo: get existing ad periods that have same dates as in the new ad period
 
@@ -34,7 +36,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                                 var sAdPeriodTimeMode = $"{newAdPeriod.StartTime} - {newAdPeriod.EndTime}";
                                 var eAdPeriodTimeMode = $"{eAdPeriod.StartTime} - {eAdPeriod.EndTime}";
 
-                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode, adPoint.Location);
+                                var validationMessage = string.Format(ValidationMessages.Schedule.TimeIntersection_T, sAdPeriodTimeMode, eAdPeriodTimeMode);
                                 context.Errors.Add(validationMessage);
                             }
                         }

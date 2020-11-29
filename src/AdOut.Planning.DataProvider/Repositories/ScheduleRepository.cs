@@ -6,7 +6,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using AdOut.Planning.Model.Dto;
-using AdOut.Planning.Model.Classes;
 
 namespace AdOut.Planning.DataProvider.Repositories
 {
@@ -22,6 +21,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             var query = Context.Schedules.Where(s => s.PlanId == planId)
                                .Select(s => new ScheduleDto()
                                {
+                                   Type = s.Type,
                                    StartTime = s.StartTime,
                                    EndTime = s.EndTime,
                                    BreakTime = s.BreakTime,
@@ -38,9 +38,9 @@ namespace AdOut.Planning.DataProvider.Repositories
             var query = Context.Schedules.Where(s => s.Id == scheduleId)
                                .Select(s => new ScheduleTime()
                                {
-                                   PlanType = s.Plan.Type,
                                    PlanStartDateTime = s.Plan.StartDateTime,
                                    PlanEndDateTime = s.Plan.EndDateTime,
+                                   ScheduleType = s.Type,
                                    ScheduleStartTime = s.StartTime,
                                    ScheduleEndTime = s.EndTime,
                                    ScheduleDayOfWeek = s.DayOfWeek,

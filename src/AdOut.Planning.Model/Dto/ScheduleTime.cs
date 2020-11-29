@@ -5,12 +5,12 @@ using System.Collections.Generic;
 namespace AdOut.Planning.Model.Dto
 {
     public class ScheduleTime
-    {
-        public PlanType PlanType { get; set; }
-
+    { 
         public DateTime PlanStartDateTime { get; set; }
 
         public DateTime PlanEndDateTime { get; set; }
+
+        public ScheduleType ScheduleType { get; set; }
 
         public TimeSpan AdPlayTime { get; set; }
 

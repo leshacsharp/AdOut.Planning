@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AdOut.Planning.Model.Enum;
+using System;
 
 namespace AdOut.Planning.Model.Dto
 {
     public class ScheduleDto
     {
+        public ScheduleType Type { get; set; }
+
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan EndTime { get; set; }

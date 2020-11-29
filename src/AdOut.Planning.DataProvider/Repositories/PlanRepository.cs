@@ -24,7 +24,6 @@ namespace AdOut.Planning.DataProvider.Repositories
             var query = Context.Plans.Where(p => p.Id == planId)
                                      .Select(p => new TempPlanValidation()
                                      {
-                                         Type = p.Type,
                                          StartDateTime = p.StartDateTime,
                                          EndDateTime = p.EndDateTime,
                                          AdPoints = p.PlanAdPoints.Select(pap => new AdPointValidation()
@@ -43,14 +42,15 @@ namespace AdOut.Planning.DataProvider.Repositories
             //todo: check sql and add conditions for intersections
             //todo: do I need a disctinct in DaysOff?
 
-            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.PlanId == planId))
+            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.PlanId == planId) &&
+                                                 p.StartDateTime < planEnd && planStart < p.EndDateTime)
                                      .Select(p => new PlanValidation()
                                      {
-                                         Type = p.Type,
                                          StartDateTime = p.StartDateTime,
                                          EndDateTime = p.EndDateTime,
                                          Schedules = p.Schedules.Select(s => new ScheduleDto()
                                          {
+                                             Type = s.Type,
                                              StartTime = s.StartTime,
                                              EndTime = s.EndTime,
                                              BreakTime = s.BreakTime,
@@ -76,6 +76,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                    Title = p.Title,
                                    Schedules = p.Schedules.Select(s => new ScheduleDto() 
                                    {
+                                       Type = s.Type,
                                        StartTime = s.StartTime,
                                        EndTime = s.EndTime,
                                        BreakTime = s.BreakTime,
@@ -95,12 +96,12 @@ namespace AdOut.Planning.DataProvider.Repositories
                                 {
                                     Title = p.Title,
                                     UserId = p.UserId,
-                                    Type = p.Type,
                                     Status = p.Status,
                                     StartDateTime = p.StartDateTime,
                                     EndDateTime = p.EndDateTime,
                                     Schedules = p.Schedules.Select(s => new ScheduleDto()
                                     {
+                                        Type = s.Type,
                                         StartTime = s.StartTime,
                                         EndTime = s.EndTime,
                                         BreakTime = s.BreakTime,

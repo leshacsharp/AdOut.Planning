@@ -11,7 +11,7 @@ namespace AdOut.Planning.Model.Api
         [StringLength(70, MinimumLength = 1)]
         public string Title { get; set; }
 
-        public PlanType Type { get; set; }
+        public ScheduleType Type { get; set; }
 
         public DateTime StartDateTime { get; set; }
 

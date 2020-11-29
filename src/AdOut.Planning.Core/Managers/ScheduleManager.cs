@@ -57,16 +57,16 @@ namespace AdOut.Planning.Core.Managers
 
             foreach (var p in planValidations)
             {
-                var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(p.Type);
                 foreach (var s in p.Schedules)
                 {
+                    var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
                     var existingScheduleTime = MapToAdScheduleTime(p, s);
                     var existingAdPeriod = timeHelper.GetScheduleTimeLine(existingScheduleTime);
                     existingAdPeriods.Add(existingAdPeriod);
                 }
             }
 
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(plan.Type);
+            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleModel.Type);
             var newScheduleTime = MapToAdScheduleTime(plan, scheduleModel);
             var newAdPeriod = scheduleTimeHelper.GetScheduleTimeLine(newScheduleTime);
 
@@ -78,7 +78,7 @@ namespace AdOut.Planning.Core.Managers
                 AdBreakTime = scheduleModel.BreakTime,
                 ScheduleDayOfWeek = scheduleModel.DayOfWeek,
                 ScheduleDate = scheduleModel.Date,
-                PlanType = plan.Type,
+                ScheduleType = scheduleModel.Type,
                 PlanStartDateTime = plan.StartDateTime,
                 PlanEndDateTime = plan.EndDateTime,
                 AdPoints = plan.AdPoints.ToList(),
@@ -86,8 +86,8 @@ namespace AdOut.Planning.Core.Managers
                 NewAdPeriod = newAdPeriod
             };
 
-            var chainOfValidator = _scheduleValidatorFactory.CreateChainOfAllValidators();
-            chainOfValidator.Validate(validationContext);
+            var chainOfValidators = _scheduleValidatorFactory.CreateChainOfAllValidators();
+            chainOfValidators.Validate(validationContext);
 
             var validationResult = new ValidationResult<string>()
             {
@@ -137,7 +137,7 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var scheduleTime = await _scheduleRepository.GetScheduleTimeAsync(updateModel.ScheduleId);
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleTime.PlanType);
+            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleTime.ScheduleType);
 
             var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleTime);
 
@@ -170,9 +170,9 @@ namespace AdOut.Planning.Core.Managers
             return new ScheduleTime()
             {
                 AdPointsDaysOff = adPointsDaysOff,
-                PlanType = plan.Type,
                 PlanStartDateTime = plan.StartDateTime,
                 PlanEndDateTime = plan.EndDateTime,
+                ScheduleType = schedule.Type,
                 ScheduleStartTime = schedule.StartTime,
                 ScheduleEndTime = schedule.EndTime,
                 AdPlayTime = schedule.PlayTime,
@@ -189,9 +189,9 @@ namespace AdOut.Planning.Core.Managers
             return new ScheduleTime()
             {
                 AdPointsDaysOff = adPointsDaysOff,
-                PlanType = plan.Type,
                 PlanStartDateTime = plan.StartDateTime,
                 PlanEndDateTime = plan.EndDateTime,
+                ScheduleType = schedule.Type,
                 ScheduleStartTime = schedule.StartTime,
                 ScheduleEndTime = schedule.EndTime,
                 AdPlayTime = schedule.PlayTime,

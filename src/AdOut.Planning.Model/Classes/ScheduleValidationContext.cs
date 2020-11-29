@@ -20,7 +20,7 @@ namespace AdOut.Planning.Model.Classes
 
         public DateTime? ScheduleDate { get; set; }
 
-        public PlanType PlanType { get; set; }
+        public ScheduleType ScheduleType { get; set; }
 
         public DateTime PlanStartDateTime { get; set; }
 

@@ -6,14 +6,14 @@ namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public class ScheduleTimeHelperProvider : IScheduleTimeHelperProvider
     {
-        public IScheduleTimeHelper CreateScheduleTimeHelper(PlanType planType)
+        public IScheduleTimeHelper CreateScheduleTimeHelper(ScheduleType type)
         {
-            return planType switch
+            return type switch
             {
-                PlanType.Daily => new DailyScheduleTimeHelper(),
-                PlanType.Weekly => new WeeklyScheduleTimeHelper(),
-                PlanType.Specific => new SpecificScheduleTimeHelper(),
-                _ => throw new NotSupportedException($"PlanType={planType} is not supported")
+                ScheduleType.Daily => new DailyScheduleTimeHelper(),
+                ScheduleType.Weekly => new WeeklyScheduleTimeHelper(),
+                ScheduleType.Specific => new SpecificScheduleTimeHelper(),
+                _ => throw new NotSupportedException($"Schedule type={type} is not supported")
             };
         }
     }
