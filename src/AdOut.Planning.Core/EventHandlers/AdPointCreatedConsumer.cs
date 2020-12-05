@@ -9,25 +9,27 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.EventHandlers
 {
+    //todo: Can we make scoped consumers?
     public class AdPointCreatedConsumer : BaseConsumer<AdPointCreatedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        public AdPointCreatedConsumer(IServiceScopeFactory serviceScopeFactory)
+        private readonly IMapper _mapper;
+
+        public AdPointCreatedConsumer(
+            IServiceScopeFactory serviceScopeFactory,
+            IMapper mapper)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _mapper = mapper;
         }
 
         protected override Task HandleAsync(AdPointCreatedEvent deliveredEvent)
         {
-            //todo: make services scoped and take off IServiceScopeFactory
             using var scope = _serviceScopeFactory.CreateScope();
             var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
             var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
 
-            var mapperCfg = new MapperConfiguration(cfg => cfg.CreateMap(deliveredEvent.GetType(), typeof(AdPoint)));
-            var mapper = new Mapper(mapperCfg);
-
-            var adPoint = mapper.Map<AdPoint>(deliveredEvent);
+            var adPoint = _mapper.Map<AdPoint>(deliveredEvent);
             adPointRepository.Create(adPoint);
 
             return commitProvider.SaveChangesAsync();

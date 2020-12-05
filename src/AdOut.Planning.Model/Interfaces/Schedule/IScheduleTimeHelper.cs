@@ -7,6 +7,6 @@ namespace AdOut.Planning.Model.Interfaces.Schedule
     public interface IScheduleTimeHelper
     {
         TimeSpan GetTimeOfAdsShowing(ScheduleTime scheduleTime);
-        SchedulePeriod GetScheduleTimeLine(ScheduleTime scheduleTime);
+        SchedulePeriod GetSchedulePeriod(ScheduleTime scheduleTime);
     }
 }

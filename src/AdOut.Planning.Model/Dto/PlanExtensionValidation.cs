@@ -9,8 +9,8 @@ namespace AdOut.Planning.Model.Dto
 
         public DateTime EndDateTime { get; set; }
 
-        public IEnumerable<AdPointValidation> AdPoints { get; set; }
-
         public IEnumerable<ScheduleDto> Schedules { get; set; }
+
+        public IEnumerable<AdPointValidation> AdPoints { get; set; }
     }
 }

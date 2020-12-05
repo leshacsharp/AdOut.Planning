@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace AdOut.Planning.Model.Dto
 {
-    public class SchedulePlanValidation
+    public class ScheduleValidation
     {
-        public DateTime StartDateTime { get; set; }
+        public DateTime PlanStartDateTime { get; set; }
 
-        public DateTime EndDateTime { get; set; }
+        public DateTime PlanEndDateTime { get; set; }
 
         public IEnumerable<AdPointValidation> AdPoints { get; set; }
     }

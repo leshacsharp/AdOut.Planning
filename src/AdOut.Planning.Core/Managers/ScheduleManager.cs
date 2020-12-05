@@ -1,10 +1,12 @@
-﻿using AdOut.Planning.Model.Api;
+﻿using AdOut.Planning.Core.Mapping;
+using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Schedule;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,53 +21,54 @@ namespace AdOut.Planning.Core.Managers
         private readonly IPlanRepository _planRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
+        private readonly IMapper _mapper;
 
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
-            IScheduleTimeHelperProvider scheduleTimeHelperProvider)
+            IScheduleTimeHelperProvider scheduleTimeHelperProvider,
+            IMapper mapper)
             : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
+            _mapper = mapper;
         }
 
 
         public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel)
         {
-            //todo: refactoring and variables naming
-
             if (scheduleModel == null)
             {
                 throw new ArgumentNullException(nameof(scheduleModel));
             }
 
-            var plan = await _planRepository.GetPlanScheduleValidationAsync(scheduleModel.PlanId);
-            if (plan == null)
+            var scheduleValidation = await _planRepository.GetScheduleValidationAsync(scheduleModel.PlanId);
+            if (scheduleValidation == null)
             {
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
-            var planValidations = await _planRepository.GetPlanValidationsAsync(scheduleModel.PlanId, plan.StartDateTime, plan.EndDateTime);
+            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(scheduleModel.PlanId, scheduleValidation.PlanStartDateTime, scheduleValidation.PlanEndDateTime);
             var existingSchedulePeriods = new List<SchedulePeriod>();
 
-            foreach (var p in planValidations)
+            foreach (var p in planTimeLines)
             {
                 foreach (var s in p.Schedules)
                 {
                     var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
-                    var existingScheduleTime = MapToScheduleTime(p, s);
-                    var existingSchedulePeriod = timeHelper.GetScheduleTimeLine(existingScheduleTime);
+                    var existingScheduleTime = _mapper.MergeInto<ScheduleTime>(p, s);
+                    var existingSchedulePeriod = timeHelper.GetSchedulePeriod(existingScheduleTime);
                     existingSchedulePeriods.Add(existingSchedulePeriod);
                 }
             }
 
             var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleModel.Type);
-            var newScheduleTime = MapToScheduleTime(plan, scheduleModel);
-            var newSchedulePeriod = scheduleTimeHelper.GetScheduleTimeLine(newScheduleTime);
+            var newScheduleTime = _mapper.MergeInto<ScheduleTime>(scheduleValidation, scheduleModel);
+            var newSchedulePeriod = scheduleTimeHelper.GetSchedulePeriod(newScheduleTime);
 
             var validationContext = new ScheduleValidationContext()
             {
@@ -76,9 +79,9 @@ namespace AdOut.Planning.Core.Managers
                 ScheduleDayOfWeek = scheduleModel.DayOfWeek,
                 ScheduleDate = scheduleModel.Date,
                 ScheduleType = scheduleModel.Type,
-                PlanStartDateTime = plan.StartDateTime,
-                PlanEndDateTime = plan.EndDateTime,
-                AdPoints = plan.AdPoints.ToList(),
+                PlanStartDateTime = scheduleValidation.PlanStartDateTime,
+                PlanEndDateTime = scheduleValidation.PlanEndDateTime,
+                AdPoints = scheduleValidation.AdPoints.ToList(),
                 ExistingSchedulePeriods = existingSchedulePeriods,
                 NewSchedulePeriod = newSchedulePeriod
             };
@@ -158,45 +161,6 @@ namespace AdOut.Planning.Core.Managers
             schedule.Date = updateModel.Date;
 
             Update(schedule);
-        }
-
-        //todo: create mapper for these entities
-        private ScheduleTime MapToScheduleTime(PlanValidation plan, ScheduleDto schedule)
-        {
-            var adPointsDaysOff = plan.AdPointsDaysOff.Distinct();
-
-            return new ScheduleTime()
-            {
-                AdPointsDaysOff = adPointsDaysOff,
-                PlanStartDateTime = plan.StartDateTime,
-                PlanEndDateTime = plan.EndDateTime,
-                ScheduleType = schedule.Type,
-                ScheduleStartTime = schedule.StartTime,
-                ScheduleEndTime = schedule.EndTime,
-                AdPlayTime = schedule.PlayTime,
-                AdBreakTime = schedule.BreakTime,
-                ScheduleDayOfWeek = schedule.DayOfWeek,
-                ScheduleDate = schedule.Date
-            };
-        }
-
-        private ScheduleTime MapToScheduleTime(SchedulePlanValidation plan, ScheduleModel schedule)
-        {
-            var adPointsDaysOff = plan.AdPoints.SelectMany(ap => ap.DaysOff).Distinct();
-
-            return new ScheduleTime()
-            {
-                AdPointsDaysOff = adPointsDaysOff,
-                PlanStartDateTime = plan.StartDateTime,
-                PlanEndDateTime = plan.EndDateTime,
-                ScheduleType = schedule.Type,
-                ScheduleStartTime = schedule.StartTime,
-                ScheduleEndTime = schedule.EndTime,
-                AdPlayTime = schedule.PlayTime,
-                AdBreakTime = schedule.BreakTime,
-                ScheduleDayOfWeek = schedule.DayOfWeek,
-                ScheduleDate = schedule.Date
-            };
         }
     }
 }

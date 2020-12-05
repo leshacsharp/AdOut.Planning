@@ -3,11 +3,13 @@ using AdOut.Planning.Core.Content.Storages;
 using AdOut.Planning.Core.Content.Validators;
 using AdOut.Planning.Core.EventHandlers;
 using AdOut.Planning.Core.Managers;
+using AdOut.Planning.Core.Mapping;
 using AdOut.Planning.Core.Schedule.Helpers;
 using AdOut.Planning.Core.Schedule.Validators;
 using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Schedule;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
@@ -53,6 +55,12 @@ namespace AdOut.Planning.Core.DI
 
             services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();
             services.AddSingleton<IBasicConsumer, AdPointDeletedConsumer>();
+
+            services.AddAutoMapper(c =>
+            {
+                c.AddProfile<ScheduleProfile>();
+                c.AddProfile<EventProfile>();
+            });
         }
     }
 }

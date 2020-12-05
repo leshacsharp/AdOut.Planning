@@ -6,8 +6,6 @@ namespace AdOut.Planning.Model.Classes
     {
         public string PlanId { get; set; }
 
-        public string PlanTitle { get; set; }
-
         public List<SchedulePeriod> SchedulePeriods { get; set; }
 
         public PlanPeriod()
