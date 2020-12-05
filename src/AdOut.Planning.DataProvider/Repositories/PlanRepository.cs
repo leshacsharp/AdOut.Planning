@@ -47,8 +47,6 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<ScheduleValidation> GetScheduleValidationAsync(string planId)
         {
-            //todo: check sql
-
             var query = Context.Plans.Where(p => p.Id == planId)
                                      .Select(p => new ScheduleValidation()
                                      {
@@ -67,7 +65,6 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string planId, DateTime planStart, DateTime planEnd)
         {
-            //todo: check sql
             //todo: do I need a disctinct in DaysOff?
 
             var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.PlanId == planId) &&

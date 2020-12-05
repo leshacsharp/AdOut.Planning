@@ -11,8 +11,6 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
         void Update(TEntity entity);
         void Delete(TEntity entity);
         ValueTask<TEntity> GetByIdAsync(params object[] id);
-
-        //todo: delete this method!
         IQueryable<TEntity> Read(Expression<Func<TEntity, bool>> predicate);
     }
 }

@@ -37,7 +37,6 @@ namespace AdOut.Planning.Core.Content.Storages
                 InputStream = content
             };
 
-            //todo: add logging
             return _awsClient.PutObjectAsync(putRequest);
         }
 
@@ -54,7 +53,6 @@ namespace AdOut.Planning.Core.Content.Storages
                 Key = filePath,
             };
 
-            //todo: add logging
             return _awsClient.DeleteObjectAsync(deleteRequest);
         }
 
@@ -71,7 +69,6 @@ namespace AdOut.Planning.Core.Content.Storages
                 Key = filePath,
             };
 
-            //todo: add logging
             var response =  await _awsClient.GetObjectAsync(getRequest);
             return response.ResponseStream;
         }
