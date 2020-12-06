@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Common.Helpers;
+﻿using AdOut.Planning.Core.Helpers;
 using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;

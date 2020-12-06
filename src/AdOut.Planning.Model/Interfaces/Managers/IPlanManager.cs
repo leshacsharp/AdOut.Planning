@@ -10,13 +10,11 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IPlanManager : IBaseManager<Plan>
     {
-        //change names of these 2 methods
-
-        Task<List<PlanTimeLine>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo);
-
-        Task<List<AdPeriod>> GetPlanTimeLine(string planId);
+        Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo);
 
         Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate);
+
+        Task ExtendPlanAsync(string planId, DateTime newEndDate);
 
         void Create(CreatePlanModel createModel);
 
@@ -27,7 +25,5 @@ namespace AdOut.Planning.Model.Interfaces.Managers
         Task<PlanDto> GetDtoByIdAsync(string planId);
 
         Task<Plan> GetByIdAsync(string planId);
-
-        Task ExtendPlanAsync(string planId, DateTime newEndDate);
     }
 }

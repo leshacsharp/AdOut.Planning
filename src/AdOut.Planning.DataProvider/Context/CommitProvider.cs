@@ -14,13 +14,16 @@ namespace AdOut.Planning.DataProvider.Context
     {
         private readonly IDatabaseContext _context;
         private readonly IEventBroker _eventBroker;
+        private readonly IMapper _mapper;
 
         public CommitProvider(
             IDatabaseContext context,
-            IEventBroker eventBroker)
+            IEventBroker eventBroker,
+            IMapper mapper)
         {
             _context = context;
             _eventBroker = eventBroker;
+            _mapper = mapper;
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -54,10 +57,7 @@ namespace AdOut.Planning.DataProvider.Context
 
                 if (eventType != null)
                 {
-                    var mapperCfg = new MapperConfiguration(cfg => cfg.CreateMap(entityType, eventType));
-                    var mapper = new Mapper(mapperCfg);
-
-                    var integrationEvent = (IntegrationEvent)mapper.Map(entry.Entity, entityType, eventType);
+                    var integrationEvent = (IntegrationEvent)_mapper.Map(entry.Entity, entityType, eventType);
                     integrationEvents.Add(integrationEvent);
                 }
             }

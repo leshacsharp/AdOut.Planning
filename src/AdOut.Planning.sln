@@ -9,11 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.DataProvider
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.Core", "AdOut.Planning.Core\AdOut.Planning.Core.csproj", "{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.Common", "AdOut.Planning.Common\AdOut.Planning.Common.csproj", "{507E2C4A-780F-47E0-AAFD-A40044377963}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.WebApi", "AdOut.Planning.WebApi\AdOut.Planning.WebApi.csproj", "{E238654C-AE27-49EA-88DE-772E78365BCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdOut.Planning.EventBroker", "AdOut.Planning.EventBroker\AdOut.Planning.EventBroker.csproj", "{F4AC3328-08F7-4851-BB2A-8414C661E35E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdOut.Planning.EventBroker", "AdOut.Planning.EventBroker\AdOut.Planning.EventBroker.csproj", "{F4AC3328-08F7-4851-BB2A-8414C661E35E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +31,6 @@ Global
 		{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0756C11B-7D73-4925-8A8E-3B8A6BEA68D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{507E2C4A-780F-47E0-AAFD-A40044377963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{507E2C4A-780F-47E0-AAFD-A40044377963}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{507E2C4A-780F-47E0-AAFD-A40044377963}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{507E2C4A-780F-47E0-AAFD-A40044377963}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E238654C-AE27-49EA-88DE-772E78365BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU

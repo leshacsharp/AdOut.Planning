@@ -10,8 +10,6 @@ namespace AdOut.Planning.Model.Dto
 
         public string UserId { get; set; }
 
-        public PlanType Type { get; set; }
-
         public PlanStatus Status { get; set; }
 
         public DateTime StartDateTime { get; set; }

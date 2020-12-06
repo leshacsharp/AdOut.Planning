@@ -5,7 +5,7 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
 using static AdOut.Planning.Model.Constants;
 
-namespace AdOut.Planning.Core.Content.Providers
+namespace AdOut.Planning.Core.Content.Validators
 {
     public class ContentValidatorProvider : IContentValidatorProvider
     {

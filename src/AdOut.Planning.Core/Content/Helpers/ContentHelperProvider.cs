@@ -1,10 +1,9 @@
-﻿using AdOut.Planning.Core.Content.Helpers;
-using AdOut.Planning.Model;
+﻿using AdOut.Planning.Model;
 using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Content;
 using System;
 
-namespace AdOut.Planning.Core.Content.Providers
+namespace AdOut.Planning.Core.Content.Helpers
 {
     public class ContentHelperProvider : IContentHelperProvider
     { 

@@ -25,8 +25,6 @@ namespace AdOut.Planning.Model.Database
         [StringLength(70, MinimumLength = 1)]
         public string Title { get; set; }
 
-        public PlanType Type { get; set; }
-
         public PlanStatus Status { get; set; }
 
         public DateTime StartDateTime { get; set; }

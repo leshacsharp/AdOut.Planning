@@ -1,7 +1,7 @@
 ﻿using AdOut.Planning.Model.Enum;
 using System;
 
-namespace AdOut.Planning.Common.Helpers
+namespace AdOut.Planning.Core.Helpers
 {
     public static class PathHelper
     {

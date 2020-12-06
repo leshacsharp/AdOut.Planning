@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
-namespace AdOut.Planning.Common
+namespace AdOut.Planning.EventBroker
 {
     public class TypeInfoConverter : JsonConverter
     {

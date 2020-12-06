@@ -1,28 +1,65 @@
 ﻿using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
+using System.Collections.Generic;
 
 namespace AdOut.Planning.Core.Schedule.Helpers
 {
     public abstract class BaseScheduleTimeHelper : IScheduleTimeHelper
     {
-        public TimeSpan GetTimeOfAdsShowing(AdScheduleTime timeInfo)
+        public SchedulePeriod GetSchedulePeriod(ScheduleTime scheduleTime)
         {
-            if (timeInfo == null)
+            var adTimeRanges = new List<TimeRange>();
+            var adTimeWithBreak = scheduleTime.AdPlayTime + scheduleTime.AdBreakTime;
+            TimeRange currentTimeRange = null;
+
+            while (currentTimeRange.End + adTimeWithBreak <= scheduleTime.ScheduleEndTime)
             {
-                throw new ArgumentNullException(nameof(timeInfo));
+                var adStartTime = TimeSpan.Zero;
+                if (currentTimeRange == null)
+                {
+                    adStartTime = scheduleTime.ScheduleStartTime;
+                }
+                else
+                {
+                    adStartTime = currentTimeRange.End.Add(scheduleTime.AdBreakTime);
+                }
+
+                var adEndTime = adStartTime.Add(scheduleTime.AdPlayTime);
+                var adTimeRange = new TimeRange(adStartTime, adEndTime);
+
+                currentTimeRange = adTimeRange;
+                adTimeRanges.Add(adTimeRange);
             }
 
-            var timeOfAdTimeWithBreak = timeInfo.AdPlayTime + timeInfo.AdBreakTime;
+            var sceduleAdPeriod = new SchedulePeriod()
+            {
+                Dates = GetPlanWorkingDays(scheduleTime),
+                TimeRanges = adTimeRanges
+            };
 
-            var timeOfExecutingPlan = GetTimeOfExecutingPlan(timeInfo);
-
-            var countOfShowingAds = timeOfExecutingPlan / timeOfAdTimeWithBreak;
-            var timeOfShowingAds = countOfShowingAds * timeInfo.AdPlayTime;
-
-            return timeOfShowingAds;
+            return sceduleAdPeriod;
         }
 
-        protected abstract TimeSpan GetTimeOfExecutingPlan(AdScheduleTime timeInfo);
+        public TimeSpan GetTimeOfAdsShowing(ScheduleTime scheduleTime)
+        {
+            if (scheduleTime == null)
+            {
+                throw new ArgumentNullException(nameof(scheduleTime));
+            }
+
+            var planWorkingDays = GetPlanWorkingDays(scheduleTime).Count;
+            var ExecutionPlanTimeByDay = scheduleTime.ScheduleEndTime - scheduleTime.ScheduleStartTime;
+            var executionPlanTime = planWorkingDays * ExecutionPlanTimeByDay;
+
+            var adTimeWithBreak = scheduleTime.AdPlayTime + scheduleTime.AdBreakTime;
+            var countOfShowingAds = executionPlanTime / adTimeWithBreak;
+            var adsShowingTime = countOfShowingAds * scheduleTime.AdPlayTime;
+
+            return adsShowingTime;
+        }
+
+        protected abstract List<DateTime> GetPlanWorkingDays(ScheduleTime scheduleTime);
     }
 }

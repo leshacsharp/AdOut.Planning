@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdOut.Planning.Model.Enum;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,6 +21,8 @@ namespace AdOut.Planning.Model.Database
 
         [Required]
         public virtual Plan Plan { get; set; }
+
+        public ScheduleType Type { get; set; }
 
         public TimeSpan StartTime { get; set; }
 

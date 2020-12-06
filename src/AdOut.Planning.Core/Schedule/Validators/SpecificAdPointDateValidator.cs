@@ -3,6 +3,7 @@ using AdOut.Planning.Model.Attributes;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Enum;
 using System;
+using System.Linq;
 using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Schedule.Validators
@@ -17,9 +18,9 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Plan.Type == PlanType.Specific)
+            if (context.ScheduleType == ScheduleType.Specific)
             {
-                var schedulerDate = context.Schedule.Date.Value;
+                var schedulerDate = context.ScheduleDate.Value;
                 var schedulerDayOfWeek = schedulerDate.DayOfWeek;
 
                 foreach (var adPoint in context.AdPoints)
@@ -27,7 +28,7 @@ namespace AdOut.Planning.Core.Schedule.Validators
                     var isScheduleDayADayOff = adPoint.DaysOff.Contains(schedulerDayOfWeek);
                     if (isScheduleDayADayOff)
                     {
-                        var validationMessage = string.Format(ValidationMessages.Schedule.DateIsADayOff_T, schedulerDate.ToShortDateString(), adPoint.Location);
+                        var validationMessage = string.Format(ValidationMessages.Schedule.DateDayOff_T, schedulerDate.ToShortDateString(), adPoint.Location);
                         context.Errors.Add(validationMessage);
                     }
                 }

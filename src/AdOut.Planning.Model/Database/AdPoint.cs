@@ -22,6 +22,6 @@ namespace AdOut.Planning.Model.Database
 
         public virtual ICollection<PlanAdPoint> PlanAdPoints { get; set; }
 
-        public virtual ICollection<AdPointDayOff> AdPointsDaysOff { get; set; }
+        public virtual ICollection<DayOff> DaysOff { get; set; }
     }
 }

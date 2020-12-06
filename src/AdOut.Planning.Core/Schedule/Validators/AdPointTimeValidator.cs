@@ -17,15 +17,14 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var schedule = context.Schedule;
             foreach (var adPoint in context.AdPoints)
             {
-                if(schedule.StartTime < adPoint.StartWorkingTime || schedule.EndTime > adPoint.EndWorkingTime)
+                if (context.ScheduleStartTime < adPoint.StartWorkingTime || context.ScheduleEndTime > adPoint.EndWorkingTime)
                 {
-                    var schedulerTimeMode = $"{schedule.StartTime} - {schedule.EndTime}";
-                    var adPointTimeMode = $"{adPoint.StartWorkingTime} - {adPoint.EndWorkingTime}";
+                    var schedulerTimeMode = $"{context.ScheduleStartTime}-{context.ScheduleEndTime}";
+                    var adPointTimeMode = $"{adPoint.StartWorkingTime}-{adPoint.EndWorkingTime}";
 
-                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeIsNotAllowed_T, schedulerTimeMode, adPoint.Location, adPointTimeMode);
+                    var validationMessage = string.Format(ValidationMessages.Schedule.TimeNotAllowed_T, schedulerTimeMode, adPoint.Location, adPointTimeMode);
                     context.Errors.Add(validationMessage);
                 }
             }

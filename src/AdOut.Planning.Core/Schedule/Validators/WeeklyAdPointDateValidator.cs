@@ -18,16 +18,16 @@ namespace AdOut.Planning.Core.Schedule.Validators
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Plan.Type == PlanType.Weekly)
+            if (context.ScheduleType == ScheduleType.Weekly)
             {
-                var scheduleDayOfWeek = context.Schedule.DayOfWeek.Value;
+                var scheduleDayOfWeek = context.ScheduleDayOfWeek.Value;
 
                 foreach (var adPoint in context.AdPoints)
                 {
                     var isScheduleDayADayOff = adPoint.DaysOff.Contains(scheduleDayOfWeek);
                     if (isScheduleDayADayOff)
                     {
-                        var validationMessage = string.Format(ValidationMessages.Schedule.DayIsADayOff_T, scheduleDayOfWeek, adPoint.Location);
+                        var validationMessage = string.Format(ValidationMessages.Schedule.DayDayOff_T, scheduleDayOfWeek, adPoint.Location);
                         context.Errors.Add(validationMessage);
                     }
                 }
