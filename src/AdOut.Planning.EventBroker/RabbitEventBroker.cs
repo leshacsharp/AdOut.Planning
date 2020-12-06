@@ -1,6 +1,4 @@
-﻿using AdOut.Planning.Common;
-using AdOut.Planning.Model;
-using AdOut.Planning.Model.Events;
+﻿using AdOut.Planning.Model.Events;
 using AdOut.Planning.Model.Interfaces.Infrastructure;
 using Newtonsoft.Json;
 using RabbitMQ.Client;

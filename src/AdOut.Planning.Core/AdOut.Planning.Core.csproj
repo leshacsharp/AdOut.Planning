@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Alturos.VideoInfo" Version="2.0.1" />
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
     <PackageReference Include="AWSSDK.S3" Version="3.5.4.1" />
@@ -17,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdOut.Planning.Common\AdOut.Planning.Common.csproj" />
     <ProjectReference Include="..\AdOut.Planning.DataProvider\AdOut.Planning.DataProvider.csproj" />
     <ProjectReference Include="..\AdOut.Planning.Model\AdOut.Planning.Model.csproj" />
   </ItemGroup>

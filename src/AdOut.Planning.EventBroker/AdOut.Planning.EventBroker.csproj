@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdOut.Planning.Common\AdOut.Planning.Common.csproj" />
     <ProjectReference Include="..\AdOut.Planning.Model\AdOut.Planning.Model.csproj" />
   </ItemGroup>
 
