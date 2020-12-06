@@ -4,7 +4,7 @@ using System;
 
 namespace AdOut.Planning.Model.Interfaces.Schedule
 {
-    public interface IScheduleTimeHelper
+    public interface IScheduleTimeService
     {
         TimeSpan GetTimeOfAdsShowing(ScheduleTime scheduleTime);
         SchedulePeriod GetSchedulePeriod(ScheduleTime scheduleTime);

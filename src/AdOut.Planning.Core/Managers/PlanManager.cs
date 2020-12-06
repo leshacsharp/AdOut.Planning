@@ -22,7 +22,7 @@ namespace AdOut.Planning.Core.Managers
         private readonly IPlanAdPointRepository _planAdPointRepository;
         private readonly IUserManager _userManager;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
-        private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
+        private readonly IScheduleTimeServiceProvider _scheduleTimeServiceProvider;
         private readonly IMapper _mapper;
 
         public PlanManager(
@@ -30,7 +30,7 @@ namespace AdOut.Planning.Core.Managers
             IPlanAdPointRepository planAdPointRepository,
             IUserManager userManager,
             IScheduleValidatorFactory scheduleValidatorFactory,
-            IScheduleTimeHelperProvider scheduleTimeHelperProvider,
+            IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper) 
             : base(planRepository)
         {
@@ -38,7 +38,7 @@ namespace AdOut.Planning.Core.Managers
             _planAdPointRepository = planAdPointRepository;
             _userManager = userManager;
             _scheduleValidatorFactory = scheduleValidatorFactory;
-            _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
+            _scheduleTimeServiceProvider = scheduleTimeServiceProvider;
             _mapper = mapper;
         }
 
@@ -52,9 +52,9 @@ namespace AdOut.Planning.Core.Managers
                 var planPeriod = new PlanPeriod() { PlanId = plan.Id };
                 foreach (var schedule in plan.Schedules)
                 {
-                    var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(schedule.Type);
+                    var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(schedule.Type);
                     var scheduleTime = _mapper.MergeInto<ScheduleTime>(plan, schedule);
-                    var schedulePeriod = timeHelper.GetSchedulePeriod(scheduleTime);
+                    var schedulePeriod = timeService.GetSchedulePeriod(scheduleTime);
                     planPeriod.SchedulePeriods.Add(schedulePeriod);
                 }
 
@@ -154,9 +154,9 @@ namespace AdOut.Planning.Core.Managers
             {
                 foreach (var s in p.Schedules)
                 {
-                    var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
+                    var timeService= _scheduleTimeServiceProvider.CreateScheduleTimeService(s.Type);
                     var existingScheduleTime = _mapper.MergeInto<ScheduleTime>(p, s);
-                    var existingSchedulePeriod = timeHelper.GetSchedulePeriod(existingScheduleTime);
+                    var existingSchedulePeriod = timeService.GetSchedulePeriod(existingScheduleTime);
                     existingSchedulePeriods.Add(existingSchedulePeriod);
                 }
             }
@@ -172,9 +172,9 @@ namespace AdOut.Planning.Core.Managers
             var intersectionValidators = _scheduleValidatorFactory.CreateChainOfValidators(ValidatorType.IntersectionTime);
             foreach (var s in planExtValidation.Schedules)
             {
-                var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
+                var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(s.Type);
                 var newScheduleTime = _mapper.MergeInto<ScheduleTime>(planExtValidation, s);
-                var newSchedulePeriod = timeHelper.GetSchedulePeriod(newScheduleTime);
+                var newSchedulePeriod = timeService.GetSchedulePeriod(newScheduleTime);
                 validationContext.NewSchedulePeriod = newSchedulePeriod;
 
                 intersectionValidators.Validate(validationContext);

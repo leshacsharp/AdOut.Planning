@@ -38,7 +38,7 @@ namespace AdOut.Planning.Core.DI
             }
 
             services.AddScoped<IScheduleValidatorFactory, ScheduleValidatorFactory>();
-            services.AddScoped<IScheduleTimeHelperProvider, ScheduleTimeHelperProvider>();
+            services.AddScoped<IScheduleTimeServiceProvider, ScheduleTimeServiceProvider>();
 
             //todo: uncomment in Production
             //var awsConfig = new AWSS3Config();
@@ -55,6 +55,7 @@ namespace AdOut.Planning.Core.DI
 
             services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();
             services.AddSingleton<IBasicConsumer, AdPointDeletedConsumer>();
+            services.AddSingleton<IBasicConsumer, TariffCreatedConsumer>();
 
             services.AddAutoMapper(c =>
             {

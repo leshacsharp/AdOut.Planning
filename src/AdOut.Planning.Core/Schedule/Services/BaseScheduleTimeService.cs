@@ -4,9 +4,9 @@ using AdOut.Planning.Model.Interfaces.Schedule;
 using System;
 using System.Collections.Generic;
 
-namespace AdOut.Planning.Core.Schedule.Helpers
+namespace AdOut.Planning.Core.Schedule.Services
 {
-    public abstract class BaseScheduleTimeHelper : IScheduleTimeHelper
+    public abstract class BaseScheduleTimeService : IScheduleTimeService
     {
         public SchedulePeriod GetSchedulePeriod(ScheduleTime scheduleTime)
         {

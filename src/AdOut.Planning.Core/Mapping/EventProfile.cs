@@ -13,6 +13,8 @@ namespace AdOut.Planning.Core.Mapping
 
             CreateMap<PlanAdPoint, PlanAdPointCreatedEvent>();
             CreateMap<Plan, PlanCreatedEvent>();
+
+            CreateMap<TariffCreatedEvent, Tariff>();
         }
     }
 }

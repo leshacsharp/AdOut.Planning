@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace AdOut.Planning.Core.Schedule.Helpers
+namespace AdOut.Planning.Core.Schedule.Services
 {
-    public class WeeklyScheduleTimeHelper : BaseScheduleTimeHelper
+    public class WeeklyScheduleTimeService : BaseScheduleTimeService
     {
         protected override List<DateTime> GetPlanWorkingDays(ScheduleTime scheduleTime)
         {

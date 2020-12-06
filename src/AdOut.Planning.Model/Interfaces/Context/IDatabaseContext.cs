@@ -22,6 +22,8 @@ namespace AdOut.Planning.Model.Interfaces.Context
 
         DbSet<DayOff> DaysOff { get; set; }
 
+        DbSet<Tariff> Tariffs { get; set; }
+
         DbSet<Configuration> Configurations { get; set; }
 
         ChangeTracker ChangeTracker { get; }

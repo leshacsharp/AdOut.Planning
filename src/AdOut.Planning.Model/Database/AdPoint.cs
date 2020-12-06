@@ -22,6 +22,8 @@ namespace AdOut.Planning.Model.Database
 
         public virtual ICollection<PlanAdPoint> PlanAdPoints { get; set; }
 
+        public virtual ICollection<Tariff> Tariffs { get; set; }
+
         public virtual ICollection<DayOff> DaysOff { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace AdOut.Planning.DataProvider.DI
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IAdRepository, AdRepository>();
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
+            services.AddScoped<ITariffRepository, TariffRepository>();
         }
     }
 }

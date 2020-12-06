@@ -20,21 +20,21 @@ namespace AdOut.Planning.Core.Managers
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IPlanRepository _planRepository;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
-        private readonly IScheduleTimeHelperProvider _scheduleTimeHelperProvider;
+        private readonly IScheduleTimeServiceProvider _scheduleTimeServiceProvider;
         private readonly IMapper _mapper;
 
         public ScheduleManager(
             IScheduleRepository scheduleRepository,
             IPlanRepository planRepository,
             IScheduleValidatorFactory scheduleValidatorFactory,
-            IScheduleTimeHelperProvider scheduleTimeHelperProvider,
+            IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper)
             : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
             _scheduleValidatorFactory = scheduleValidatorFactory;
-            _scheduleTimeHelperProvider = scheduleTimeHelperProvider;
+            _scheduleTimeServiceProvider = scheduleTimeServiceProvider;
             _mapper = mapper;
         }
 
@@ -59,16 +59,16 @@ namespace AdOut.Planning.Core.Managers
             {
                 foreach (var s in p.Schedules)
                 {
-                    var timeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(s.Type);
+                    var timeService= _scheduleTimeServiceProvider.CreateScheduleTimeService(s.Type);
                     var existingScheduleTime = _mapper.MergeInto<ScheduleTime>(p, s);
-                    var existingSchedulePeriod = timeHelper.GetSchedulePeriod(existingScheduleTime);
+                    var existingSchedulePeriod = timeService.GetSchedulePeriod(existingScheduleTime);
                     existingSchedulePeriods.Add(existingSchedulePeriod);
                 }
             }
 
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleModel.Type);
+            var scheduleTimeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(scheduleModel.Type);
             var newScheduleTime = _mapper.MergeInto<ScheduleTime>(scheduleValidation, scheduleModel);
-            var newSchedulePeriod = scheduleTimeHelper.GetSchedulePeriod(newScheduleTime);
+            var newSchedulePeriod = scheduleTimeService.GetSchedulePeriod(newScheduleTime);
 
             var validationContext = new ScheduleValidationContext()
             {
@@ -137,9 +137,9 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var scheduleTime = await _scheduleRepository.GetScheduleTimeAsync(updateModel.ScheduleId);
-            var scheduleTimeHelper = _scheduleTimeHelperProvider.CreateScheduleTimeHelper(scheduleTime.ScheduleType);
+            var scheduleTimeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(scheduleTime.ScheduleType);
 
-            var timeOfAdsShowingBeforeUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleTime);
+            var timeOfAdsShowingBeforeUpdating = scheduleTimeService.GetTimeOfAdsShowing(scheduleTime);
 
             scheduleTime.ScheduleStartTime = updateModel.StartTime;
             scheduleTime.ScheduleEndTime = updateModel.EndTime;
@@ -147,7 +147,7 @@ namespace AdOut.Planning.Core.Managers
             scheduleTime.ScheduleDayOfWeek = updateModel.DayOfWeek;
             scheduleTime.ScheduleDate = updateModel.Date;
 
-            var timeOfAdsShowingAfterUpdating = scheduleTimeHelper.GetTimeOfAdsShowing(scheduleTime);
+            var timeOfAdsShowingAfterUpdating = scheduleTimeService.GetTimeOfAdsShowing(scheduleTime);
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {

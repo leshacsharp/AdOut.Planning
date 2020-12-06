@@ -24,6 +24,8 @@ namespace AdOut.Planning.DataProvider.Context
 
         public DbSet<Schedule> Schedules { get; set; }
 
+        public DbSet<Tariff> Tariffs { get; set; }
+
         public DbSet<DayOff> DaysOff { get; set; }
 
         public DbSet<Configuration> Configurations { get; set; }
