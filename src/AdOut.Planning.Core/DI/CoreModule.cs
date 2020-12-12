@@ -1,14 +1,12 @@
-﻿using AdOut.Planning.Core.Content.Helpers;
-using AdOut.Planning.Core.Content.Storages;
-using AdOut.Planning.Core.Content.Validators;
-using AdOut.Planning.Core.EventHandlers;
+﻿using AdOut.Planning.Core.EventHandlers;
 using AdOut.Planning.Core.Managers;
 using AdOut.Planning.Core.Mapping;
-using AdOut.Planning.Core.Schedule.Helpers;
-using AdOut.Planning.Core.Schedule.Validators;
-using AdOut.Planning.Model.Interfaces.Content;
+using AdOut.Planning.Core.Services.Content;
+using AdOut.Planning.Core.Services.Schedule;
+using AdOut.Planning.Core.Validators.Content;
+using AdOut.Planning.Core.Validators.Schedule;
 using AdOut.Planning.Model.Interfaces.Managers;
-using AdOut.Planning.Model.Interfaces.Schedule;
+using AdOut.Planning.Model.Interfaces.Services;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +24,7 @@ namespace AdOut.Planning.Core.DI
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IPlanManager, PlanManager>();
             services.AddScoped<IPlanAdManager, PlanAdManager>();
-            services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IUserService, UserService>();
 
             var scheduleValidators = Assembly.GetCallingAssembly()
                            .GetTypes()
@@ -50,7 +48,7 @@ namespace AdOut.Planning.Core.DI
             //services.AddScoped<IContentStorage>(p => new AWSS3Storage(awsClient, awsConfig.BucketName));
 
             services.AddScoped<IContentStorage, LocalStorage>();
-            services.AddScoped<IContentHelperProvider, ContentHelperProvider>();
+            services.AddScoped<IContentServiceProvider, ContentServiceProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();
 
             services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();

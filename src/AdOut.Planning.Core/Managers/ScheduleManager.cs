@@ -5,7 +5,7 @@ using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
-using AdOut.Planning.Model.Interfaces.Schedule;
+using AdOut.Planning.Model.Interfaces.Services;
 using AutoMapper;
 using System;
 using System.Collections.Generic;

@@ -7,7 +7,7 @@ using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
-using AdOut.Planning.Model.Interfaces.Schedule;
+using AdOut.Planning.Model.Interfaces.Services;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IPlanRepository _planRepository;
         private readonly IPlanAdPointRepository _planAdPointRepository;
-        private readonly IUserManager _userManager;
+        private readonly IUserService _userManager;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeServiceProvider _scheduleTimeServiceProvider;
         private readonly IMapper _mapper;
@@ -28,7 +28,7 @@ namespace AdOut.Planning.Core.Managers
         public PlanManager(
             IPlanRepository planRepository,
             IPlanAdPointRepository planAdPointRepository,
-            IUserManager userManager,
+            IUserService userManager,
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper) 

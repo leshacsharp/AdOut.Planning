@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Interfaces.Managers;
+﻿using AdOut.Planning.Model.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Threading.Tasks;
@@ -7,10 +7,10 @@ namespace AdOut.Planning.WebApi.Auth
 {
     public class ResourceAuthorizationHandler<TResource> : AuthorizationHandler<SameUserRequirement, TResource>
     {
-        private readonly IUserManager _userManager;
-        public ResourceAuthorizationHandler(IUserManager userManager)
+        private readonly IUserService _userService;
+        public ResourceAuthorizationHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameUserRequirement requirement, TResource resource)
@@ -24,7 +24,7 @@ namespace AdOut.Planning.WebApi.Auth
             }
 
             var resourceUserId = (string)resourceUserIdProp.GetValue(resource);
-            var requestUserId = _userManager.GetUserId();
+            var requestUserId = _userService.GetUserId();
 
             if (resourceUserId == requestUserId)
             {

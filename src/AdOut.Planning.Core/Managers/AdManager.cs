@@ -4,9 +4,9 @@ using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Exceptions;
-using AdOut.Planning.Model.Interfaces.Content;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
+using AdOut.Planning.Model.Interfaces.Services;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -22,18 +22,18 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IAdRepository _adRepository;
         private readonly IPlanAdRepository _planAdRepository;
-        private readonly IUserManager _userManager;
+        private readonly IUserService _userManager;
         private readonly IContentStorage _contentStorage;
         private readonly IContentValidatorProvider _contentValidatorProvider;
-        private readonly IContentHelperProvider _contentHelperProvider;
+        private readonly IContentServiceProvider _contentServiceProvider;
             
         public AdManager(
             IAdRepository adRepository,
             IPlanAdRepository planAdRepository,
-            IUserManager userManager,
+            IUserService userManager,
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
-            IContentHelperProvider contentHelperProvider) 
+            IContentServiceProvider contentServiceProvider) 
             : base(adRepository)
         {
             _adRepository = adRepository;
@@ -41,7 +41,7 @@ namespace AdOut.Planning.Core.Managers
             _userManager = userManager;
             _contentStorage = contentStorage;
             _contentValidatorProvider = contentValidatorProvider;
-            _contentHelperProvider = contentHelperProvider;
+            _contentServiceProvider = contentServiceProvider;
         }
 
         public Task<ValidationResult<string>> ValidateAsync(IFormFile content)
@@ -75,8 +75,8 @@ namespace AdOut.Planning.Core.Managers
             var extension = Path.GetExtension(createModel.Content.FileName);
             var contentStream = createModel.Content.OpenReadStream();
 
-            var contentHelper = _contentHelperProvider.CreateContentHelper(extension);
-            var thumbnail = contentHelper.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
+            var contentService= _contentServiceProvider.CreateContentService(extension);
+            var thumbnail = contentService.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
 
             var pathForContent = PathHelper.GeneratePath(extension, Model.Enum.DirectoryPath.None);
             var pathForThumbnail = PathHelper.GeneratePath(DefaultValues.DefaultThumbnailExtension, Model.Enum.DirectoryPath.None);
