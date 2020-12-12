@@ -14,7 +14,7 @@ namespace AdOut.Planning.Core.Services.Schedule
             var adTimeWithBreak = scheduleTime.AdPlayTime + scheduleTime.AdBreakTime;
             TimeRange currentTimeRange = null;
 
-            while (currentTimeRange.End + adTimeWithBreak <= scheduleTime.ScheduleEndTime)
+            do
             {
                 var adStartTime = TimeSpan.Zero;
                 if (currentTimeRange == null)
@@ -32,6 +32,7 @@ namespace AdOut.Planning.Core.Services.Schedule
                 currentTimeRange = adTimeRange;
                 adTimeRanges.Add(adTimeRange);
             }
+            while (currentTimeRange.End + adTimeWithBreak <= scheduleTime.ScheduleEndTime);
 
             var sceduleAdPeriod = new SchedulePeriod()
             {

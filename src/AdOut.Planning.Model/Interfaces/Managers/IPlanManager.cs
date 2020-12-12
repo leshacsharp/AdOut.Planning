@@ -10,6 +10,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IPlanManager : IBaseManager<Plan>
     {
+        double CalculatePlanPrice(List<ScheduleTime> schedulesTimes, List<TariffDto> tariffs);
         Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo);
 
         Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate);

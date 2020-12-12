@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AdOut.Planning.Model.Dto
 {
     public class ScheduleTime
-    { 
+    {
         public DateTime PlanStartDateTime { get; set; }
 
         public DateTime PlanEndDateTime { get; set; }

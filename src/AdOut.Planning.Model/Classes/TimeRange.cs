@@ -17,5 +17,20 @@ namespace AdOut.Planning.Model.Classes
         {
            return this.Start < timeRange.End && timeRange.Start < this.End;
         }
+
+        public bool IsInterescted(TimeSpan start, TimeSpan end)
+        {
+            return this.Start < end && start < this.End;
+        }
+
+        public bool IsLeftIntersected(TimeSpan start, TimeSpan end)
+        {
+            return start < this.Start && end > this.Start && end < this.End;
+        }
+
+        public bool IsRightIntersected(TimeSpan start, TimeSpan end)
+        {
+            return end > this.End && start < this.End && start > this.Start; 
+        }
     }
 }
