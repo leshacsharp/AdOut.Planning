@@ -92,6 +92,28 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
 
+        public Task<PlanPriceDto> GetPlanPriceAsync(string planId)
+        {
+            var query = Context.Plans.Where(p => p.Id == planId)
+                                     .Select(p => new PlanPriceDto()
+                                     {
+                                         StartDateTime = p.StartDateTime,
+                                         EndDateTime = p.EndDateTime,
+                                         AdPoints = p.PlanAdPoints.Select(pap => new AdPointDto() 
+                                         {
+                                            DaysOff = pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek),
+                                            Tariffs = pap.AdPoint.Tariffs.Select(t => new TariffDto()
+                                            {
+                                                StartTime = t.StartTime,
+                                                EndTime = t.EndTime,
+                                                PriceForMinute = t.PriceForMinute
+                                            })
+                                         })   
+                                     });
+
+            return query.SingleOrDefaultAsync();
+        }
+
         public Task<PlanDto> GetDtoByIdAsync(string planId)
         { 
             var query = Context.Plans.Where(p => p.Id == planId)

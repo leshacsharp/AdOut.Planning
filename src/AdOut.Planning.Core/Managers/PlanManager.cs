@@ -42,46 +42,6 @@ namespace AdOut.Planning.Core.Managers
             _mapper = mapper;
         }
 
-        public double CalculatePlanPrice(List<ScheduleTime> schedulesTimes, List<TariffDto> tariffs)
-        {
-            var price = 0d;
-            foreach (var scheduleTime in schedulesTimes)
-            {
-                var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(scheduleTime.ScheduleType);
-                var schedulePeriod = timeService.GetSchedulePeriod(scheduleTime);
-                var schedulePriceForDay = 0d;
-
-                foreach (var timeRange in schedulePeriod.TimeRanges)
-                {            
-                    foreach (var tariff in tariffs)
-                    {
-                        if (timeRange.IsInterescted(tariff.StartTime, tariff.EndTime))
-                        {
-                            var minutesInTariff = 0d;
-                            if (timeRange.IsRightIntersected(tariff.StartTime, tariff.EndTime))
-                            {
-                                minutesInTariff = (timeRange.End - tariff.StartTime).TotalMinutes;
-                            }
-                            else if (timeRange.IsLeftIntersected(tariff.StartTime, tariff.EndTime))
-                            {
-                                minutesInTariff = (tariff.EndTime - timeRange.Start).TotalMinutes;
-                            }
-                            else
-                            {
-                                minutesInTariff = (timeRange.End - timeRange.Start).TotalMinutes;
-                            }
-
-                            schedulePriceForDay += minutesInTariff * tariff.PriceForMinute;
-                        } 
-                    }      
-                }
-
-                price += schedulePeriod.Dates.Count * schedulePriceForDay;
-            }
-
-            return price;
-        }
-
         public async Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
             var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(adPointId, dateFrom, dateTo);

@@ -25,15 +25,20 @@ namespace AdOut.Planning.Core.Mapping
             CreateMap<PlanTimeLine, ScheduleTime>()
                 .ForMember(x => x.PlanStartDateTime, x => x.MapFrom(m => m.StartDateTime))
                 .ForMember(x => x.PlanEndDateTime, x => x.MapFrom(m => m.EndDateTime))
-                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPointsDaysOff.Distinct()));
+                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPointsDaysOff));
 
             CreateMap<ScheduleValidation, ScheduleTime>()
-                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff).Distinct()));
+                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff)));
 
             CreateMap<PlanExtensionValidation, ScheduleTime>()
                 .ForMember(x => x.PlanStartDateTime, x => x.MapFrom(m => m.StartDateTime))
                 .ForMember(x => x.PlanEndDateTime, x => x.MapFrom(m => m.EndDateTime))
-                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff).Distinct()));
+                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff)));
+
+            CreateMap<PlanPriceDto, ScheduleTime>()
+                .ForMember(x => x.PlanStartDateTime, x => x.MapFrom(m => m.StartDateTime))
+                .ForMember(x => x.PlanEndDateTime, x => x.MapFrom(m => m.EndDateTime))
+                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff)));
         }
     }
 }

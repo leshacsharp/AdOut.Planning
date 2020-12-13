@@ -38,7 +38,6 @@ namespace AdOut.Planning.Core.Managers
             _mapper = mapper;
         }
 
-
         public async Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel)
         {
             if (scheduleModel == null)
@@ -161,6 +160,50 @@ namespace AdOut.Planning.Core.Managers
             schedule.Date = updateModel.Date;
 
             Update(schedule);
+        }
+
+        public async Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule)
+        {
+            var planPrice = await _planRepository.GetPlanPriceAsync(planId);
+            if (planPrice == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(schedule.Type);
+            var scheduleTime = _mapper.MergeInto<ScheduleTime>(planPrice, schedule);
+            var schedulePeriod = timeService.GetSchedulePeriod(scheduleTime);
+
+            var adPointsTariffs = planPrice.AdPoints.SelectMany(ap => ap.Tariffs).ToList();
+            var schedulePriceForDay = 0d;
+
+            foreach (var timeRange in schedulePeriod.TimeRanges)
+            {
+                foreach (var tariff in adPointsTariffs)
+                {
+                    if (timeRange.IsInterescted(tariff.StartTime, tariff.EndTime))
+                    {
+                        var minutesInTariff = 0d;
+                        if (timeRange.IsRightIntersected(tariff.StartTime, tariff.EndTime))
+                        {
+                            minutesInTariff = (timeRange.End - tariff.StartTime).TotalMinutes;
+                        }
+                        else if (timeRange.IsLeftIntersected(tariff.StartTime, tariff.EndTime))
+                        {
+                            minutesInTariff = (tariff.EndTime - timeRange.Start).TotalMinutes;
+                        }
+                        else
+                        {
+                            minutesInTariff = (timeRange.End - timeRange.Start).TotalMinutes;
+                        }
+
+                        schedulePriceForDay += minutesInTariff * tariff.PriceForMinute;
+                    }
+                }
+            }
+
+            var price = schedulePeriod.Dates.Count * schedulePriceForDay;
+            return price;
         }
     }
 }

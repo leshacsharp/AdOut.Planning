@@ -8,5 +8,6 @@ namespace AdOut.Planning.Model.Dto
         public string Id { get; set; }
         public string Location { get; set; }
         public IEnumerable<DayOfWeek> DaysOff { get; set; }
+        public IEnumerable<TariffDto> Tariffs { get; set; }
     }
 }
