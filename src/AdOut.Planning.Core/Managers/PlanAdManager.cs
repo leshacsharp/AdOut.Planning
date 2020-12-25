@@ -1,5 +1,5 @@
-﻿using AdOut.Planning.Model.Database;
-using AdOut.Planning.Model.Exceptions;
+﻿using AdOut.Extensions.Exceptions;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;

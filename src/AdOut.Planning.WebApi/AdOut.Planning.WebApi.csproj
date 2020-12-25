@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdOut.Planning.Core\AdOut.Planning.Core.csproj" />
-    <ProjectReference Include="..\AdOut.Planning.EventBroker\AdOut.Planning.EventBroker.csproj" />
   </ItemGroup>
 
 

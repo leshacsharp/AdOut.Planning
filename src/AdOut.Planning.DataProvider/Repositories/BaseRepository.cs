@@ -1,5 +1,5 @@
-﻿using AdOut.Planning.Model.Interfaces.Context;
-using AdOut.Planning.Model.Interfaces.Repositories;
+﻿using AdOut.Extensions.Repositories;
+using AdOut.Planning.Model.Interfaces.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;

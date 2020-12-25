@@ -1,10 +1,10 @@
-﻿using AdOut.Planning.Core.Mapping;
+﻿using AdOut.Extensions.Exceptions;
+using AdOut.Planning.Core.Mapping;
 using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Enum;
-using AdOut.Planning.Model.Exceptions;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Services;

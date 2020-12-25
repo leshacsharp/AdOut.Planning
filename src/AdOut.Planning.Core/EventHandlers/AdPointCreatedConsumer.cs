@@ -1,7 +1,7 @@
-﻿using AdOut.Planning.Core.EventHandlers.Base;
+﻿using AdOut.Extensions.Communication;
+using AdOut.Extensions.Context;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Events;
-using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.EventHandlers
 {
-    //todo: Can we make scoped consumers? If so, we should add a default virtual HandleAsync method 
     public class AdPointCreatedConsumer : BaseConsumer<AdPointCreatedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -32,7 +31,7 @@ namespace AdOut.Planning.Core.EventHandlers
             var adPoint = _mapper.Map<AdPoint>(deliveredEvent);
             adPointRepository.Create(adPoint);
 
-            return commitProvider.SaveChangesAsync();
+            return commitProvider.SaveChangesAsync(false);
         }
     }
 }

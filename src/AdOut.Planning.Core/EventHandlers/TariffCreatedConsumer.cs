@@ -1,7 +1,7 @@
-﻿using AdOut.Planning.Core.EventHandlers.Base;
+﻿using AdOut.Extensions.Communication;
+using AdOut.Extensions.Context;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Events;
-using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;

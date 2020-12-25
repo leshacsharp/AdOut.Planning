@@ -1,4 +1,6 @@
-﻿namespace AdOut.Planning.Model.Events
+﻿using AdOut.Extensions.Communication;
+
+namespace AdOut.Planning.Model.Events
 {
     public class PlanAdPointCreatedEvent : IntegrationEvent
     {

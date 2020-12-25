@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Database;
+﻿using AdOut.Extensions.Repositories;
+using AdOut.Planning.Model.Database;
 
 namespace AdOut.Planning.Model.Interfaces.Repositories
 {

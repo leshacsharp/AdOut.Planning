@@ -1,11 +1,11 @@
-﻿using AdOut.Planning.Model.Interfaces.Managers;
-using AdOut.Planning.Model.Interfaces.Repositories;
+﻿using AdOut.Extensions.Repositories;
+using AdOut.Planning.Model.Interfaces.Managers;
 using System;
 
 namespace AdOut.Planning.Core.Managers
 {
 
-    //delete the basemanager because the manager is useless
+    //todo: delete the basemanager because the manager is useless
     public abstract class BaseManager<TEntity> : IBaseManager<TEntity> where TEntity : class
     {
         private readonly IBaseRepository<TEntity> _repository;

@@ -1,25 +1,19 @@
-using AdOut.Planning.Core.DI;
+using AdOut.Extensions.Communication;
+using AdOut.Extensions.Communication.Interfaces;
+using AdOut.Extensions.Filters;
 using AdOut.Planning.DataProvider.Context;
-using AdOut.Planning.DataProvider.DI;
-using AdOut.Planning.EventBroker.DI;
-using AdOut.Planning.Model.Interfaces.Infrastructure;
 using AdOut.Planning.Model.Settings;
 using AdOut.Planning.WebApi.Auth;
-using AdOut.Planning.WebApi.DI;
-using AdOut.Planning.WebApi.Filters;
+using AdOut.Planning.WebApi.Configuration;
 using IdentityServer4.AccessTokenValidation;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 
 namespace AdOut.Planning.WebApi
 {
@@ -62,12 +56,12 @@ namespace AdOut.Planning.WebApi
             });
 
             services.AddDbContext<PlanningContext>(options =>
-                     options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+                     options.UseSqlServer(Configuration.GetConnectionString("DevConnection")).EnableSensitiveDataLogging());
 
-            services.AddDataProviderModule();
-            services.AddCoreModule(Configuration);
-            services.AddEventBrokerModule();
-            services.AddWebApiModule();
+            services.AddDataProviderServices();
+            services.AddCoreServices();
+            services.AddWebApiServices();
+            services.AddMessageBrokerServices();
 
             services.Configure<AWSS3Config>(Configuration.GetSection(nameof(AWSS3Config)));
             services.Configure<RabbitConfig>(Configuration.GetSection(nameof(RabbitConfig)));
@@ -78,7 +72,7 @@ namespace AdOut.Planning.WebApi
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBroker eventBroker, IEventBinder eventBinder)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -104,12 +98,14 @@ namespace AdOut.Planning.WebApi
                         // .RequireAuthorization(); //!!!!
             });
 
-            //eventBroker.Configure();
-            //eventBinder.Bind();
-
             using var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<PlanningContext>();
+            var messageBroker = scope.ServiceProvider.GetRequiredService<IMessageBroker>();
+            var consumerBinder = scope.ServiceProvider.GetRequiredService<IConsumerBinder>();
+
             context.Database.Migrate();
+            messageBroker.Configure();
+            consumerBinder.Bind();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using AdOut.Extensions.Communication;
 
 namespace AdOut.Planning.Model.Events
 {
