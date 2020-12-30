@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdOut.Extensions" Version="1.0.1" />
+    <PackageReference Include="AdOut.Extensions" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AdOut.Planning.DataProvider.Repositories
 {
     //todo: need to think about AsNoTracking methods in existed repositories
-    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : PersistentEntity
     {
         protected IDatabaseContext Context { get; set; }
         protected DbSet<TEntity> Table { get; set; }

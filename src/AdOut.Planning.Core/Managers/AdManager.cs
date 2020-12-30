@@ -88,7 +88,6 @@ namespace AdOut.Planning.Core.Managers
 
             var ad = new Ad()
             {
-                UserId = _userManager.GetUserId(),
                 Title = createModel.Title,
                 Path = pathForContent,
                 PreviewPath = pathForThumbnail,
@@ -107,7 +106,7 @@ namespace AdOut.Planning.Core.Managers
             }
 
             var userId = _userManager.GetUserId();
-            var filter = PredicateBuilder.New<Ad>(ad => ad.UserId == userId);
+            var filter = PredicateBuilder.New<Ad>(ad => ad.Creator == userId);
 
             if (filterModel.Title != null)
             {

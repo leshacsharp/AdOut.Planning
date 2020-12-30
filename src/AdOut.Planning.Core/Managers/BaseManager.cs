@@ -6,7 +6,7 @@ namespace AdOut.Planning.Core.Managers
 {
 
     //todo: delete the basemanager because the manager is useless
-    public abstract class BaseManager<TEntity> : IBaseManager<TEntity> where TEntity : class
+    public abstract class BaseManager<TEntity> : IBaseManager<TEntity> where TEntity : PersistentEntity
     {
         private readonly IBaseRepository<TEntity> _repository;
         public BaseManager(IBaseRepository<TEntity> repository)

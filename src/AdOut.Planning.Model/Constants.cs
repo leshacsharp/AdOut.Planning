@@ -76,18 +76,6 @@ namespace AdOut.Planning.Model
             public const string Audio = "audio";
         }
 
-        public static class ClaimsTypes
-        {
-            public const string UserId = "sub";
-        }
-
-        public static class HttpStatusCodes
-        {
-            public const int Status400BadRequest = 400;
-            public const int Status401Unauthorized = 401;
-            public const int Status403Forbidden = 403;
-        }
-
         public static class ConfigurationsTypes
         {
             public const string MinImageWidth = "MinImageWidth";

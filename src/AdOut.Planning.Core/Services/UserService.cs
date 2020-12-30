@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model;
+﻿using AdOut.Extensions.Authorization;
 using AdOut.Planning.Model.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
@@ -14,7 +14,7 @@ namespace AdOut.Planning.Core.Managers
 
         public string GetUserId()
         {
-            return _httpContextAccessor.HttpContext?.User.FindFirst(Constants.ClaimsTypes.UserId)?.Value;
+            return _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypeNames.UserId)?.Value;
         }
     }
 }

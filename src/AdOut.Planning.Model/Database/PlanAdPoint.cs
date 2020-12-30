@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AdOut.Extensions.Repositories;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
     [Table("PlanAdPoints")]
-    public class PlanAdPoint
+    public class PlanAdPoint : PersistentEntity
     {
         [ForeignKey(nameof(Plan))]
         public string PlanId { get; set; }

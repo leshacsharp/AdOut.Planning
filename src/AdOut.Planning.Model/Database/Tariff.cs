@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AdOut.Extensions.Repositories;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
     [Table("Tariffs")]
-    public class Tariff
+    public class Tariff : PersistentEntity
     {
         [Key]
         public string Id { get; set; }

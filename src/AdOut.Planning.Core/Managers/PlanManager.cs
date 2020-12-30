@@ -20,7 +20,6 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IPlanRepository _planRepository;
         private readonly IPlanAdPointRepository _planAdPointRepository;
-        private readonly IUserService _userManager;
         private readonly IScheduleValidatorFactory _scheduleValidatorFactory;
         private readonly IScheduleTimeServiceProvider _scheduleTimeServiceProvider;
         private readonly IMapper _mapper;
@@ -28,7 +27,6 @@ namespace AdOut.Planning.Core.Managers
         public PlanManager(
             IPlanRepository planRepository,
             IPlanAdPointRepository planAdPointRepository,
-            IUserService userManager,
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper) 
@@ -36,7 +34,6 @@ namespace AdOut.Planning.Core.Managers
         {
             _planRepository = planRepository;
             _planAdPointRepository = planAdPointRepository;
-            _userManager = userManager;
             _scheduleValidatorFactory = scheduleValidatorFactory;
             _scheduleTimeServiceProvider = scheduleTimeServiceProvider;
             _mapper = mapper;
@@ -73,7 +70,6 @@ namespace AdOut.Planning.Core.Managers
 
             var plan = new Plan()
             {
-                UserId = _userManager.GetUserId(),
                 Title = createModel.Title,
                 StartDateTime = createModel.StartDateTime,
                 EndDateTime = createModel.EndDateTime

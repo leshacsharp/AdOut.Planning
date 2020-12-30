@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Enum;
+﻿using AdOut.Extensions.Repositories;
+using AdOut.Planning.Model.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AdOut.Planning.Model.Database
 {
     [Table("Plans")]
-    public class Plan
+    public class Plan : PersistentEntity
     {
         public Plan()
         {
@@ -16,10 +17,6 @@ namespace AdOut.Planning.Model.Database
 
         [Key]
         public string Id { get; set; }
-
-        //Foreign key of table "Users" that is existed in the AdOut.Identity (another microservice)
-        [Required]
-        public string UserId { get; set; }
 
         [Required]
         [StringLength(70, MinimumLength = 1)]

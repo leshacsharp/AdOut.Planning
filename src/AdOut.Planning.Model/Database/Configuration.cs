@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AdOut.Extensions.Repositories;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
     [Table("Configurations")]
-    public class Configuration
+    public class Configuration : PersistentEntity
     {
         public Configuration()
         {

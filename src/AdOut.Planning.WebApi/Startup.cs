@@ -95,7 +95,6 @@ namespace AdOut.Planning.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                        // .RequireAuthorization(); //!!!!
             });
 
             using var scope = app.ApplicationServices.CreateScope();

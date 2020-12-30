@@ -1,4 +1,5 @@
-﻿using AdOut.Planning.Model.Enum;
+﻿using AdOut.Extensions.Repositories;
+using AdOut.Planning.Model.Enum;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AdOut.Planning.Model.Database
 {
     [Table("Schedules")]
-    public class Schedule
+    public class Schedule : PersistentEntity
     {
         public Schedule()
         {

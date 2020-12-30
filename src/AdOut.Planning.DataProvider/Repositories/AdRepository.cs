@@ -39,7 +39,7 @@ namespace AdOut.Planning.DataProvider.Repositories
             var query = Context.Ads.Where(a => a.Id == adId)
                                .Select(a => new AdDto()
                                {
-                                   UserId = a.UserId,
+                                   UserId = a.Creator,
                                    Title = a.Title,
                                    Path = a.Path,
                                    ContentType = a.ContentType,

@@ -120,7 +120,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                .Select(p => new PlanDto()
                                 {
                                     Title = p.Title,
-                                    UserId = p.UserId,
+                                    UserId = p.Creator,
                                     Status = p.Status,
                                     StartDateTime = p.StartDateTime,
                                     EndDateTime = p.EndDateTime,
