@@ -18,5 +18,8 @@ namespace AdOut.Planning.Model.Events
         public int ScreenWidthCm { get; set; }
 
         public int ScreenHeightCm { get; set; }
+
+        //todo: move to the IntegrationEvent
+        public string Creator { get; set; }
     }
 }

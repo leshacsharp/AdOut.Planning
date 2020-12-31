@@ -37,7 +37,7 @@ namespace AdOut.Planning.WebApi.Configuration
         public static void AddDataProviderServices(this IServiceCollection services)
         {
             services.AddScoped<IDatabaseContext>(p => p.GetRequiredService<PlanningContext>());
-            services.AddScoped<ICommitProvider, CustomCommitProvider<PlanningContext>>();
+            services.AddScoped<ICommitProvider, CommitProvider<PlanningContext>>();
 
             services.AddScoped<IAdPointRepository, AdPointRepository>();
             services.AddScoped<IPlanRepository, PlanRepository>();
