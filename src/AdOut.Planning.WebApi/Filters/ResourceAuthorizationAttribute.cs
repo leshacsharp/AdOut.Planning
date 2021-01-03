@@ -12,14 +12,17 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.WebApi.Auth
+namespace AdOut.Planning.WebApi.Filters
 {
     public class ResourceAuthorizationAttribute : Attribute, IAsyncActionFilter
     {
         private readonly Type _resourceType;
-        public ResourceAuthorizationAttribute(Type resourceType)
+        private readonly string _resourceIdName;
+
+        public ResourceAuthorizationAttribute(Type resourceType, string resourceIdName = "id")
         {
             _resourceType = resourceType;
+            _resourceIdName = resourceIdName;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -33,12 +36,9 @@ namespace AdOut.Planning.WebApi.Auth
 
             var actionDesc = (ControllerActionDescriptor)context.ActionDescriptor;
             var resourceIdName = GetResourceIdName(actionDesc.MethodInfo.GetParameters());
-            if (string.IsNullOrEmpty(resourceIdName))
-            {
-                throw new ArgumentException("The action parameters don't contain an argument or a property marked ResourceIdAttribute.");
-            }
-
+            resourceIdName = !string.IsNullOrEmpty(resourceIdName) ? resourceIdName : _resourceIdName;         
             var resourceId = GetResourceId(context.ActionArguments, resourceIdName);
+
             var dbcontext = context.HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
             var resource = await dbcontext.FindAsync(_resourceType, resourceId);
             if (resource == null)
@@ -49,7 +49,6 @@ namespace AdOut.Planning.WebApi.Auth
 
             var persistentResource = (PersistentEntity)resource;
             var userId = user.FindFirst(ClaimTypeNames.UserId).Value;
-
             if (persistentResource.Creator != userId)
             {
                 context.Result = new ForbidResult();

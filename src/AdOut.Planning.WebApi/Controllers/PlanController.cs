@@ -1,39 +1,36 @@
 ﻿using AdOut.Extensions.Context;
-using AdOut.Extensions.Exceptions;
 using AdOut.Planning.Model.Api;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
-using AdOut.Planning.Model.Exceptions;
-using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
+using AdOut.Planning.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
     [Route("api/v1")]
     [ApiController]
+    [Authorize]
     public class PlanController : ControllerBase
     {
         private readonly IPlanManager _planManager;
         private readonly ICommitProvider _commitProvider;
-        private readonly IAuthorizationService _authorizationService;
 
         public PlanController(
             IPlanManager planManager,
-            ICommitProvider commitProvider,
-            IAuthorizationService authorizationService)
+            ICommitProvider commitProvider)
         {
             _planManager = planManager;
             _commitProvider = commitProvider;
-            _authorizationService = authorizationService;
         }
 
         [HttpGet]
         [Route("plans-timelines")]
+        //[ResourceAuthorization(typeof(Plan), "adPointId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
@@ -43,12 +40,11 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpPut]
         [Route("extend-plan")]
+        //[ResourceAuthorization(typeof(Plan), "planId")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ExtendPlan(string planId, DateTime newEndDate)
         {
-            await CheckUserPermissionsForResourceAsync(planId);
-
             var validationResult = await _planManager.ValidatePlanExtensionAsync(planId, newEndDate);
             if (!validationResult.IsSuccessed)
             {
@@ -63,22 +59,16 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpGet]
         [Route("plan/{id}")]
+        //[ResourceAuthorization(typeof(Plan))]
         [ProducesResponseType(typeof(PlanDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPlan(string id)
-        {
+        {     
             var plan = await _planManager.GetDtoByIdAsync(id);
             if (plan == null)
             {
                 return NotFound();
             }
-
-            var authResult = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);
-            if (!authResult.Succeeded)
-            {
-                return Forbid();
-            }
-
             return Ok(plan);
         }
 
@@ -95,39 +85,26 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpDelete]
         [Route("plan")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ResourceAuthorization(typeof(Plan))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]   
         public async Task<IActionResult> DeletePlan(string id)
         {
-            await CheckUserPermissionsForResourceAsync(id);
-
             await _planManager.DeleteAsync(id);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
         }
-
+     
         [HttpPut]
         [Route("plan")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ResourceAuthorization(typeof(Plan))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]      
         public async Task<IActionResult> UpdatePlan(UpdatePlanModel updateModel)
         {
-            await CheckUserPermissionsForResourceAsync(updateModel.PlanId);
-
             await _planManager.UpdateAsync(updateModel);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private async Task CheckUserPermissionsForResourceAsync(string planId)
-        {
-            var plan = await _planManager.GetByIdAsync(planId);
-            var authResult = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);
-
-            if (!authResult.Succeeded)
-            {
-                throw new ForbiddenException();
-            }
         }
     }
 }

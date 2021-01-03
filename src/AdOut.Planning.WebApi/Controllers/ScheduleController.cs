@@ -1,12 +1,12 @@
 ﻿using AdOut.Extensions.Context;
 using AdOut.Extensions.Exceptions;
 using AdOut.Planning.Model.Api;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Interfaces.Managers;
-using Microsoft.AspNetCore.Authorization;
+using AdOut.Planning.WebApi.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
@@ -17,18 +17,15 @@ namespace AdOut.Planning.WebApi.Controllers
         private readonly IScheduleManager _scheduleManager;
         private readonly IPlanManager _planManager;
         private readonly ICommitProvider _commitProvider;
-        private readonly IAuthorizationService _authorizationService;
 
         public ScheduleController(
             IScheduleManager scheduleManager,
             IPlanManager planManager,
-            ICommitProvider commitProvider,
-            IAuthorizationService authorizationService)
+            ICommitProvider commitProvider)
         {
             _scheduleManager = scheduleManager;
             _planManager = planManager;
             _commitProvider = commitProvider;
-            _authorizationService = authorizationService;
         }
 
         [HttpPost]
@@ -51,12 +48,11 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpPut]
         [Route("schedule")]
+        //[ResourceAuthorization(typeof(Schedule))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateSchedule(UpdateScheduleModel updateModel)
         {
-            await CheckUserPermissionsForResourceAsync(updateModel.PlanId);
-
             //wtf?
             var scheduleModel = new ScheduleModel()
             {
@@ -78,17 +74,6 @@ namespace AdOut.Planning.WebApi.Controllers
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private async Task CheckUserPermissionsForResourceAsync(string planId)
-        {
-            var plan = await _planManager.GetByIdAsync(planId);
-            var authResult = await _authorizationService.AuthorizeAsync(User, plan, AuthPolicies.ResourcePolicy);
-
-            if (!authResult.Succeeded)
-            {
-                throw new ForbiddenException();
-            }
         }
     }
 }

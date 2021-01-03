@@ -1,15 +1,14 @@
 ﻿using AdOut.Extensions.Context;
-using AdOut.Extensions.Exceptions;
 using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Classes;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Managers;
-using Microsoft.AspNetCore.Authorization;
+using AdOut.Planning.WebApi.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
@@ -19,16 +18,13 @@ namespace AdOut.Planning.WebApi.Controllers
     {
         private readonly IAdManager _adManager;
         private readonly ICommitProvider _commitProvider;
-        private readonly IAuthorizationService _authorizationService;
 
         public AdController(
             IAdManager adManager,
-            ICommitProvider commitProvider,
-            IAuthorizationService authorizationService)
+            ICommitProvider commitProvider)
         {
             _adManager = adManager;
             _commitProvider = commitProvider;
-            _authorizationService = authorizationService;
         }
 
         [HttpPost]
@@ -61,6 +57,7 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpGet]
         [Route("ad/{id}")]
+        //[ResourceAuthorization(typeof(Ad))]
         [ProducesResponseType(typeof(AdDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,23 +68,15 @@ namespace AdOut.Planning.WebApi.Controllers
             {
                 return NotFound();
             }
-
-            var authResult = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
-            if (!authResult.Succeeded)
-            {
-                return Forbid();
-            }
-
             return Ok(ad);
         }
 
         [HttpPut]
         [Route("ad")]
+        //[ResourceAuthorization(typeof(Ad))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateAd(UpdateAdModel updateModel)
         {
-            await CheckUserPermissionsForResourceAsync(updateModel.AdId);
-
             await _adManager.UpdateAsync(updateModel);
             await _commitProvider.SaveChangesAsync();
 
@@ -96,27 +85,15 @@ namespace AdOut.Planning.WebApi.Controllers
 
         [HttpDelete]
         [Route("ad/{id}")]
+        //[ResourceAuthorization(typeof(Ad))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAd(string id)
-        {
-            await CheckUserPermissionsForResourceAsync(id);
-
+        {       
             await _adManager.DeleteAsync(id);
             await _commitProvider.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private async Task CheckUserPermissionsForResourceAsync(string adId)
-        {  
-            var ad = await _adManager.GetByIdAsync(adId);
-            var authResult = await _authorizationService.AuthorizeAsync(User, ad, AuthPolicies.ResourcePolicy);
-
-            if (!authResult.Succeeded)
-            {
-                throw new ForbiddenException();
-            }
-        }
+        }  
     }
 }

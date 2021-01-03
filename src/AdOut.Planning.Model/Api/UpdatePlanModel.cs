@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AdOut.Extensions.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdOut.Planning.Model.Api
 {
     public class UpdatePlanModel
     {
+        [ResourceId]
         public string PlanId { get; set; }
 
         [Required]

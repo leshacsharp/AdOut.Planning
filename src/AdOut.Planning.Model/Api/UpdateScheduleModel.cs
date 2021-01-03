@@ -1,9 +1,11 @@
-﻿using System;
+﻿using AdOut.Extensions.Authorization;
+using System;
 
 namespace AdOut.Planning.Model.Api
 {
     public class UpdateScheduleModel
     {
+        [ResourceId]
         public string ScheduleId { get; set; }
 
         //todo: need to try this field from Api model
