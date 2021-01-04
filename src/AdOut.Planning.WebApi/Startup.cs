@@ -3,7 +3,6 @@ using AdOut.Extensions.Communication.Interfaces;
 using AdOut.Extensions.Filters;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.Model.Settings;
-using AdOut.Planning.WebApi.Auth;
 using AdOut.Planning.WebApi.Configuration;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
@@ -50,17 +49,11 @@ namespace AdOut.Planning.WebApi
                         options.RoleClaimType = "role";
                     });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ResourcePolicy", policy => policy.AddRequirements(new SameUserRequirement()));    
-            });
-
             services.AddDbContext<PlanningContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")).EnableSensitiveDataLogging());
 
             services.AddDataProviderServices();
             services.AddCoreServices();
-            services.AddWebApiServices();
             services.AddMessageBrokerServices();
 
             services.Configure<AWSS3Config>(Configuration.GetSection(nameof(AWSS3Config)));

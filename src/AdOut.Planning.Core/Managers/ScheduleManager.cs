@@ -51,14 +51,14 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
-            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(scheduleModel.PlanId, scheduleValidation.PlanStartDateTime, scheduleValidation.PlanEndDateTime);
+            var planTimeLines = await _planRepository.GetPlanTimeLinesByPlanAsync(scheduleModel.PlanId, scheduleValidation.PlanStartDateTime, scheduleValidation.PlanEndDateTime);
             var existingSchedulePeriods = new List<SchedulePeriod>();
 
             foreach (var p in planTimeLines)
             {
                 foreach (var s in p.Schedules)
                 {
-                    var timeService= _scheduleTimeServiceProvider.CreateScheduleTimeService(s.Type);
+                    var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(s.Type);
                     var existingScheduleTime = _mapper.MergeInto<ScheduleTime>(p, s);
                     var existingSchedulePeriod = timeService.GetSchedulePeriod(existingScheduleTime);
                     existingSchedulePeriods.Add(existingSchedulePeriod);
@@ -150,7 +150,7 @@ namespace AdOut.Planning.Core.Managers
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
-                throw new BadRequestException(ValidationMessages.Schedule.TimeIncreased);
+                throw new UnprocessableEntityException(ValidationMessages.Schedule.TimeIncreased);
             }
 
             schedule.StartTime = updateModel.StartTime;

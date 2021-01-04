@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.DataProvider.Repositories
@@ -67,9 +68,50 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
             //todo: do I need a disctinct in DaysOff?
 
-            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.PlanId == planId) &&
-                                                 p.StartDateTime < planEnd &&
-                                                 planStart < p.EndDateTime)
+            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.AdPoint.PlanAdPoints.Any(x => x.PlanId == planId)) &&
+                                                 planStart < p.EndDateTime &&
+                                                 p.StartDateTime < planEnd)
+                                     .Select(p => new PlanTimeLine()
+                                     {
+                                         Id = p.Id,
+                                         StartDateTime = p.StartDateTime,
+                                         EndDateTime = p.EndDateTime,
+                                         Schedules = p.Schedules.Select(s => new ScheduleDto()
+                                         {
+                                             Type = s.Type,
+                                             StartTime = s.StartTime,
+                                             EndTime = s.EndTime,
+                                             BreakTime = s.BreakTime,
+                                             PlayTime = s.PlayTime,
+                                             Date = s.Date,
+                                             DayOfWeek = s.DayOfWeek
+                                         }),
+                                         AdPointsDaysOff = p.PlanAdPoints
+                                             .SelectMany(pap => pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek))
+                                     });
+
+            return query.ToListAsync();
+        }
+
+        public Task<List<PlanTimeLine>> GetPlanTimeLinesByPlanAsync(string planId, DateTime planStart, DateTime planEnd)
+        {
+            return GetPlanTimeLinesAsync(p => p.PlanAdPoints.Any(pap => pap.AdPoint.PlanAdPoints.Any(x => x.PlanId == planId)) &&
+                                              planStart < p.EndDateTime &&
+                                              p.StartDateTime < planEnd);
+        }
+
+        public Task<List<PlanTimeLine>> GetPlanTimeLinesByAdPointAsync(string adPointId, DateTime planStart, DateTime planEnd)
+        {
+            return GetPlanTimeLinesAsync(p => p.PlanAdPoints.Any(pap => pap.AdPointId == adPointId) &&
+                                              planStart < p.EndDateTime &&
+                                              p.StartDateTime < planEnd);
+        }
+
+        private Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(Expression<Func<Plan, bool>> predicate)
+        {
+            //todo: do I need a disctinct in DaysOff?
+
+            var query = Context.Plans.Where(predicate)
                                      .Select(p => new PlanTimeLine()
                                      {
                                          Id = p.Id,

@@ -14,9 +14,7 @@ using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Services;
-using AdOut.Planning.WebApi.Auth;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System.Linq;
@@ -26,14 +24,6 @@ namespace AdOut.Planning.WebApi.Configuration
 {
     public static class StartupConfiguration
     {
-        public static void AddWebApiServices(this IServiceCollection services)
-        {
-            services.AddScoped<IAuthorizationHandler, ResourceAuthorizationHandler<AdDto>>();
-            services.AddScoped<IAuthorizationHandler, ResourceAuthorizationHandler<Ad>>();
-            services.AddScoped<IAuthorizationHandler, ResourceAuthorizationHandler<PlanDto>>();
-            services.AddScoped<IAuthorizationHandler, ResourceAuthorizationHandler<Plan>>();
-        }
-
         public static void AddDataProviderServices(this IServiceCollection services)
         {
             services.AddScoped<IDatabaseContext>(p => p.GetRequiredService<PlanningContext>());

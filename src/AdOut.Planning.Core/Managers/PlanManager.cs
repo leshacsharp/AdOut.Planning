@@ -41,7 +41,7 @@ namespace AdOut.Planning.Core.Managers
 
         public async Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(adPointId, dateFrom, dateTo);
+            var planTimeLines = await _planRepository.GetPlanTimeLinesByAdPointAsync(adPointId, dateFrom, dateTo);
             var plansPeriods = new List<PlanPeriod>();
 
             foreach (var plan in planTimeLines)
@@ -143,7 +143,7 @@ namespace AdOut.Planning.Core.Managers
                 return validationResult;
             }
 
-            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(planId, planExtValidation.EndDateTime, newEndDate);
+            var planTimeLines = await _planRepository.GetPlanTimeLinesByPlanAsync(planId, planExtValidation.EndDateTime, newEndDate);
             var existingSchedulePeriods = new List<SchedulePeriod>();
 
             foreach (var p in planTimeLines)

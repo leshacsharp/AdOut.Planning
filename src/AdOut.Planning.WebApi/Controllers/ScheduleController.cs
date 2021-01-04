@@ -50,7 +50,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("schedule")]
         //[ResourceAuthorization(typeof(Schedule))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdateSchedule(UpdateScheduleModel updateModel)
         {
             //wtf?
@@ -64,6 +64,7 @@ namespace AdOut.Planning.WebApi.Controllers
                 DayOfWeek = updateModel.DayOfWeek
             };
 
+            //todo: before validating existing schedule, need to delete it from the list
             var validationResult = await _scheduleManager.ValidateScheduleAsync(scheduleModel);
             if (!validationResult.IsSuccessed)
             {

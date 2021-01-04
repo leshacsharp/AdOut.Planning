@@ -75,7 +75,7 @@ namespace AdOut.Planning.Core.Managers
             var extension = Path.GetExtension(createModel.Content.FileName);
             var contentStream = createModel.Content.OpenReadStream();
 
-            var contentService= _contentServiceProvider.CreateContentService(extension);
+            var contentService = _contentServiceProvider.CreateContentService(extension);
             var thumbnail = contentService.GetThumbnail(contentStream, DefaultValues.DefaultThumbnailWidth, DefaultValues.DefaultThumbnailHeight);
 
             var pathForContent = PathHelper.GeneratePath(extension, Model.Enum.DirectoryPath.None);

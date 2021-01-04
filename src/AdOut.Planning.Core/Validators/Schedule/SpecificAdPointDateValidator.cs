@@ -20,15 +20,15 @@ namespace AdOut.Planning.Core.Validators.Schedule
 
             if (context.ScheduleType == ScheduleType.Specific)
             {
-                var schedulerDate = context.ScheduleDate.Value;
-                var schedulerDayOfWeek = schedulerDate.DayOfWeek;
+                var scheduleDate = context.ScheduleDate.Value;
+                var scheduleDayOfWeek = scheduleDate.DayOfWeek;
 
                 foreach (var adPoint in context.AdPoints)
                 {
-                    var isScheduleDayADayOff = adPoint.DaysOff.Contains(schedulerDayOfWeek);
+                    var isScheduleDayADayOff = adPoint.DaysOff.Contains(scheduleDayOfWeek);
                     if (isScheduleDayADayOff)
                     {
-                        var validationMessage = string.Format(ValidationMessages.Schedule.DateDayOff_T, schedulerDate.ToShortDateString(), adPoint.Location);
+                        var validationMessage = string.Format(ValidationMessages.Schedule.DateDayOff_T, scheduleDate.ToShortDateString(), adPoint.Location);
                         context.Errors.Add(validationMessage);
                     }
                 }
