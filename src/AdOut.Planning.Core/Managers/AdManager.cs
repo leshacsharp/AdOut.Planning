@@ -18,7 +18,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Managers
 {
-    public class AdManager : BaseManager<Ad>, IAdManager
+    public class AdManager : IAdManager
     {
         private readonly IAdRepository _adRepository;
         private readonly IPlanAdRepository _planAdRepository;
@@ -34,7 +34,6 @@ namespace AdOut.Planning.Core.Managers
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
             IContentServiceProvider contentServiceProvider) 
-            : base(adRepository)
         {
             _adRepository = adRepository;
             _planAdRepository = planAdRepository;
@@ -95,7 +94,7 @@ namespace AdOut.Planning.Core.Managers
                 ContentType = ContentTypes[extension]
             };
 
-            Create(ad);
+            _adRepository.Create(ad);
         }
 
         public Task<List<AdListDto>> GetAdsAsync(AdsFilterModel filterModel)
@@ -151,7 +150,7 @@ namespace AdOut.Planning.Core.Managers
 
             ad.Title = updateModel.Title;
 
-            Update(ad);
+            _adRepository.Update(ad);
         }
 
         public async Task DeleteAsync(string adId)
@@ -172,17 +171,12 @@ namespace AdOut.Planning.Core.Managers
             var deletePreviewContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
             await Task.WhenAll(deleteContentTask, deletePreviewContentTask);
 
-            Delete(ad);
+            _adRepository.Delete(ad);
         }
 
         public Task<AdDto> GetDtoByIdAsync(string adId)
         {
             return _adRepository.GetDtoByIdAsync(adId);
-        }
-
-        public async Task<Ad> GetByIdAsync(string adId)
-        {
-            return await _adRepository.GetByIdAsync(adId);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Managers
 {
-    public class PlanAdManager : BaseManager<PlanAd>, IPlanAdManager
+    public class PlanAdManager : IPlanAdManager
     {
         private readonly IPlanAdRepository _planAdRepository;
         private readonly IPlanRepository _planRepository;
@@ -16,9 +16,7 @@ namespace AdOut.Planning.Core.Managers
         public PlanAdManager(
             IPlanAdRepository planAdRepository,
             IPlanRepository planRepository,
-            IAdRepository adRepository) 
-            : base(planAdRepository)
-
+            IAdRepository adRepository)
         {
             _planAdRepository = planAdRepository;
             _planRepository = planRepository;

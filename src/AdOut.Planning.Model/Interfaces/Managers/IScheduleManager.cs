@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Model.Interfaces.Managers
 {
-    public interface IScheduleManager : IBaseManager<Database.Schedule>
+    public interface IScheduleManager
     {
         Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel);
         Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule);

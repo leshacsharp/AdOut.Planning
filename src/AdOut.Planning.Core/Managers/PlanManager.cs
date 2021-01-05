@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace AdOut.Planning.Core.Managers
 {
-    public class PlanManager : BaseManager<Plan>, IPlanManager
+    public class PlanManager : IPlanManager
     {
         private readonly IPlanRepository _planRepository;
         private readonly IPlanAdPointRepository _planAdPointRepository;
@@ -30,7 +30,6 @@ namespace AdOut.Planning.Core.Managers
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper) 
-            : base(planRepository)
         {
             _planRepository = planRepository;
             _planAdPointRepository = planAdPointRepository;
@@ -75,7 +74,7 @@ namespace AdOut.Planning.Core.Managers
                 EndDateTime = createModel.EndDateTime
             };
 
-            Create(plan);
+            _planRepository.Create(plan);
 
             foreach (var adPointId in createModel.AdPointsIds)
             {
@@ -104,7 +103,7 @@ namespace AdOut.Planning.Core.Managers
 
             plan.Title = updateModel.Title;
 
-            Update(plan);
+            _planRepository.Update(plan);
         }
 
         public async Task DeleteAsync(string planId)
@@ -115,17 +114,12 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Plan with id={planId} was not found");
             }
 
-            Delete(plan);
+            _planRepository.Delete(plan);
         }
 
         public Task<PlanDto> GetDtoByIdAsync(string planId)
         {
             return _planRepository.GetDtoByIdAsync(planId);
-        }
-
-        public async Task<Plan> GetByIdAsync(string planId)
-        {
-            return await _planRepository.GetByIdAsync(planId);
         }
 
         public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)
@@ -190,7 +184,7 @@ namespace AdOut.Planning.Core.Managers
 
             plan.EndDateTime = newEndDate;
 
-            Update(plan);
+            _planRepository.Update(plan);
         }
     }
 }

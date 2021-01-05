@@ -15,7 +15,7 @@ using static AdOut.Planning.Model.Constants;
 
 namespace AdOut.Planning.Core.Managers
 {
-    public class ScheduleManager : BaseManager<Model.Database.Schedule>, IScheduleManager
+    public class ScheduleManager : IScheduleManager
     {
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IPlanRepository _planRepository;
@@ -29,7 +29,6 @@ namespace AdOut.Planning.Core.Managers
             IScheduleValidatorFactory scheduleValidatorFactory,
             IScheduleTimeServiceProvider scheduleTimeServiceProvider,
             IMapper mapper)
-            : base(scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
@@ -119,7 +118,7 @@ namespace AdOut.Planning.Core.Managers
                 Plan = plan
             };
 
-            Create(schedule);
+            _scheduleRepository.Create(schedule);
         }
 
         public async Task UpdateAsync(UpdateScheduleModel updateModel)
@@ -159,7 +158,7 @@ namespace AdOut.Planning.Core.Managers
             schedule.DayOfWeek = updateModel.DayOfWeek;
             schedule.Date = updateModel.Date;
 
-            Update(schedule);
+            _scheduleRepository.Update(schedule);
         }
 
         public async Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule)
