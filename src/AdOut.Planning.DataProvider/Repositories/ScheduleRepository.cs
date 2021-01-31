@@ -4,7 +4,6 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using AdOut.Planning.Model.Dto;
 
 namespace AdOut.Planning.DataProvider.Repositories
@@ -14,23 +13,6 @@ namespace AdOut.Planning.DataProvider.Repositories
         public ScheduleRepository(IDatabaseContext context)
             : base(context)
         {
-        }
-
-        public Task<List<ScheduleDto>> GetByPlanAsync(string planId)
-        {
-            var query = Context.Schedules.Where(s => s.PlanId == planId)
-                               .Select(s => new ScheduleDto()
-                               {
-                                   Type = s.Type,
-                                   StartTime = s.StartTime,
-                                   EndTime = s.EndTime,
-                                   BreakTime = s.BreakTime,
-                                   PlayTime = s.PlayTime,
-                                   Date = s.Date,
-                                   DayOfWeek = s.DayOfWeek
-                               });
-
-            return query.ToListAsync();
         }
   
         public Task<ScheduleTime> GetScheduleTimeAsync(string scheduleId)

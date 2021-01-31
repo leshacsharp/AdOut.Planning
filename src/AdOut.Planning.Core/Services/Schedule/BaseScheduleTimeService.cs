@@ -50,15 +50,13 @@ namespace AdOut.Planning.Core.Services.Schedule
                 throw new ArgumentNullException(nameof(scheduleTime));
             }
 
+            var executionPlanTimePerDay = scheduleTime.ScheduleEndTime - scheduleTime.ScheduleStartTime;
+            var countAdPlaysPerDay = executionPlanTimePerDay / (scheduleTime.AdPlayTime + scheduleTime.AdBreakTime);
+            var timeShowingPerDay = countAdPlaysPerDay * scheduleTime.AdPlayTime;
             var planWorkingDays = GetPlanWorkingDays(scheduleTime).Count;
-            var ExecutionPlanTimeByDay = scheduleTime.ScheduleEndTime - scheduleTime.ScheduleStartTime;
-            var executionPlanTime = planWorkingDays * ExecutionPlanTimeByDay;
+            var timeShowing = timeShowingPerDay * planWorkingDays;
 
-            var adTimeWithBreak = scheduleTime.AdPlayTime + scheduleTime.AdBreakTime;
-            var countOfShowingAds = executionPlanTime / adTimeWithBreak;
-            var adsShowingTime = countOfShowingAds * scheduleTime.AdPlayTime;
-
-            return adsShowingTime;
+            return timeShowing;
         }
 
         protected abstract List<DateTime> GetPlanWorkingDays(ScheduleTime scheduleTime);

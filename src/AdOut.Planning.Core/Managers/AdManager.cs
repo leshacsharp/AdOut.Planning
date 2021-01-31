@@ -45,7 +45,7 @@ namespace AdOut.Planning.Core.Managers
 
         public Task<ValidationResult<string>> ValidateAsync(IFormFile content)
         {
-            if(content == null)
+            if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
@@ -80,8 +80,8 @@ namespace AdOut.Planning.Core.Managers
             var pathForContent = PathHelper.GeneratePath(extension, Model.Enum.DirectoryPath.None);
             var pathForThumbnail = PathHelper.GeneratePath(DefaultValues.DefaultThumbnailExtension, Model.Enum.DirectoryPath.None);
 
-            var saveContentTask = _contentStorage.CreateObjectAsync(contentStream, pathForContent);
-            var saveThumbnailTask = _contentStorage.CreateObjectAsync(thumbnail, pathForThumbnail);
+            var saveContentTask = _contentStorage.CreateAsync(contentStream, pathForContent);
+            var saveThumbnailTask = _contentStorage.CreateAsync(thumbnail, pathForThumbnail);
 
             await Task.WhenAll(saveContentTask, saveThumbnailTask);
 
@@ -167,8 +167,8 @@ namespace AdOut.Planning.Core.Managers
                 throw new BadRequestException($"Ad with id={adId} is used in plans");
             }
 
-            var deleteContentTask = _contentStorage.DeleteObjectAsync(ad.Path);
-            var deletePreviewContentTask = _contentStorage.DeleteObjectAsync(ad.PreviewPath);
+            var deleteContentTask = _contentStorage.DeleteAsync(ad.Path);
+            var deletePreviewContentTask = _contentStorage.DeleteAsync(ad.PreviewPath);
             await Task.WhenAll(deleteContentTask, deletePreviewContentTask);
 
             _adRepository.Delete(ad);

@@ -7,7 +7,7 @@ namespace AdOut.Planning.Core.Services.Content
 {
     public class LocalStorage : IContentStorage
     {
-        public Task CreateObjectAsync(Stream content, string filePath)
+        public Task CreateAsync(Stream content, string filePath)
         {
             if (content == null)
             {
@@ -25,7 +25,7 @@ namespace AdOut.Planning.Core.Services.Content
             }
         }
 
-        public Task DeleteObjectAsync(string filePath)
+        public Task DeleteAsync(string filePath)
         {
             ValidateFilePath(filePath);
             File.Delete(filePath);
@@ -33,7 +33,7 @@ namespace AdOut.Planning.Core.Services.Content
             return Task.CompletedTask;
         }
 
-        public Task<Stream> GetObjectAsync(string filePath)
+        public Task<Stream> GetAsync(string filePath)
         {
             ValidateFilePath(filePath);
             var stream = (Stream)File.OpenRead(filePath);

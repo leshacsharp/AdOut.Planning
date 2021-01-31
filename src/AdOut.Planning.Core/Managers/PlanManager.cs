@@ -40,7 +40,7 @@ namespace AdOut.Planning.Core.Managers
 
         public async Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
         {
-            var planTimeLines = await _planRepository.GetPlanTimeLinesByAdPointAsync(adPointId, dateFrom, dateTo);
+            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(new[]{ adPointId }, dateFrom, dateTo);
             var plansPeriods = new List<PlanPeriod>();
 
             foreach (var plan in planTimeLines)
@@ -124,7 +124,7 @@ namespace AdOut.Planning.Core.Managers
 
         public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)
         {
-            var planExtValidation = await _planRepository.GetPlanExtensionValidation(planId);
+            var planExtValidation = await _planRepository.GetPlanExtensionValidationAsync(planId);
             if (planExtValidation == null)
             {
                 throw new ObjectNotFoundException($"Plan with id={planId} was not found");
@@ -133,11 +133,12 @@ namespace AdOut.Planning.Core.Managers
             var validationResult = new ValidationResult<string>();
             if (newEndDate <= planExtValidation.EndDateTime)
             {
-                validationResult.Errors.Add($"New end date can't be less or equal with current end date");
+                validationResult.Errors.Add($"New end date can't be less or equal than current end date");
                 return validationResult;
             }
 
-            var planTimeLines = await _planRepository.GetPlanTimeLinesByPlanAsync(planId, planExtValidation.EndDateTime, newEndDate);
+            var planAdPointsIds = planExtValidation.AdPoints.Select(ap => ap.Id).ToArray();
+            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(planAdPointsIds, planExtValidation.EndDateTime, newEndDate);
             var existingSchedulePeriods = new List<SchedulePeriod>();
 
             foreach (var p in planTimeLines)

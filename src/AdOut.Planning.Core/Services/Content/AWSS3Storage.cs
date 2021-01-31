@@ -18,7 +18,7 @@ namespace AdOut.Planning.Core.Services.Content
             _bucketName = bucketName;
         }
 
-        public Task CreateObjectAsync(Stream content, string filePath)
+        public Task CreateAsync(Stream content, string filePath)
         {
             if (content == null)
             {
@@ -40,7 +40,7 @@ namespace AdOut.Planning.Core.Services.Content
             return _awsClient.PutObjectAsync(putRequest);
         }
 
-        public Task DeleteObjectAsync(string filePath)
+        public Task DeleteAsync(string filePath)
         {
             if (filePath == null)
             {
@@ -56,7 +56,7 @@ namespace AdOut.Planning.Core.Services.Content
             return _awsClient.DeleteObjectAsync(deleteRequest);
         }
 
-        public async Task<Stream> GetObjectAsync(string filePath)
+        public async Task<Stream> GetAsync(string filePath)
         {
             if (filePath == null)
             {

@@ -23,14 +23,15 @@ namespace AdOut.Planning.Core.Validators.Base
                 throw new ArgumentNullException(nameof(content));
             }
 
+            var validationResult = new ValidationResult<string>();
             var isCorrectFormat = await IsCorrectFormatAsync(content);
+
             if (!isCorrectFormat)
             {
-                //throwing an exception because the validators can't validate a content with an invalid format
-                throw new ArgumentException(ValidationMessages.Content.InvalidFormat, nameof(content));
+                validationResult.Errors.Add(ValidationMessages.Content.InvalidFormat);
+                return validationResult;
             }
 
-            var validationResult = new ValidationResult<string>();
             var isCorrectDimension = await IsCorrectDimensionAsync(content);
             var isCorrectSize = await IsCorrectSizeAsync(content);
 

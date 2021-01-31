@@ -9,10 +9,10 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IPlanRepository : IBaseRepository<Plan>
     {
-        Task<PlanExtensionValidation> GetPlanExtensionValidation(string planId);
+        Task<PlanExtensionValidation> GetPlanExtensionValidationAsync(string planId);
+        //todo: rename to GetPlanValidationAsync
         Task<ScheduleValidation> GetScheduleValidationAsync(string planId);
-        Task<List<PlanTimeLine>> GetPlanTimeLinesByPlanAsync(string planId, DateTime planStart, DateTime planEnd);
-        Task<List<PlanTimeLine>> GetPlanTimeLinesByAdPointAsync(string adPointId, DateTime planStart, DateTime planEnd);
+        Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string[] adPointIds, DateTime planStart, DateTime planEnd);
         Task<PlanPriceDto> GetPlanPriceAsync(string planId);
         Task<PlanDto> GetDtoByIdAsync(string planId);
     }

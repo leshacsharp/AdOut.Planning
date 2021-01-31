@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace AdOut.Planning.DataProvider.Repositories
@@ -18,7 +17,7 @@ namespace AdOut.Planning.DataProvider.Repositories
         {
         }
 
-        public Task<PlanExtensionValidation> GetPlanExtensionValidation(string planId)
+        public Task<PlanExtensionValidation> GetPlanExtensionValidationAsync(string planId)
         {
             var query = Context.Plans.Where(p => p.Id == planId)
                                      .Select(p => new PlanExtensionValidation()
@@ -37,6 +36,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                          }),
                                          AdPoints = p.PlanAdPoints.Select(pap => new AdPointValidation()
                                          {
+                                             Id = pap.AdPointId,
                                              StartWorkingTime = pap.AdPoint.StartWorkingTime,
                                              EndWorkingTime = pap.AdPoint.EndWorkingTime,
                                              DaysOff = pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek)
@@ -55,6 +55,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                          PlanEndDateTime = p.EndDateTime,
                                          AdPoints = p.PlanAdPoints.Select(pap => new AdPointValidation()
                                          {
+                                             Id = pap.AdPointId,
                                              StartWorkingTime = pap.AdPoint.StartWorkingTime,
                                              EndWorkingTime = pap.AdPoint.EndWorkingTime,             
                                              DaysOff = pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek)
@@ -64,72 +65,31 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.SingleOrDefaultAsync();
         }
 
-        public Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string planId, DateTime planStart, DateTime planEnd)
+        public Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string[] adPointIds, DateTime planStart, DateTime planEnd)
         {
             //todo: do I need a disctinct in DaysOff?
 
-            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => pap.AdPoint.PlanAdPoints.Any(x => x.PlanId == planId)) &&
+            var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => adPointIds.Contains(pap.AdPointId)) &&
                                                  planStart < p.EndDateTime &&
                                                  p.StartDateTime < planEnd)
-                                     .Select(p => new PlanTimeLine()
-                                     {
-                                         Id = p.Id,
-                                         StartDateTime = p.StartDateTime,
-                                         EndDateTime = p.EndDateTime,
-                                         Schedules = p.Schedules.Select(s => new ScheduleDto()
-                                         {
-                                             Type = s.Type,
-                                             StartTime = s.StartTime,
-                                             EndTime = s.EndTime,
-                                             BreakTime = s.BreakTime,
-                                             PlayTime = s.PlayTime,
-                                             Date = s.Date,
-                                             DayOfWeek = s.DayOfWeek
-                                         }),
-                                         AdPointsDaysOff = p.PlanAdPoints
-                                             .SelectMany(pap => pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek))
-                                     });
-
-            return query.ToListAsync();
-        }
-
-        public Task<List<PlanTimeLine>> GetPlanTimeLinesByPlanAsync(string planId, DateTime planStart, DateTime planEnd)
-        {
-            return GetPlanTimeLinesAsync(p => p.PlanAdPoints.Any(pap => pap.AdPoint.PlanAdPoints.Any(x => x.PlanId == planId)) &&
-                                              planStart < p.EndDateTime &&
-                                              p.StartDateTime < planEnd);
-        }
-
-        public Task<List<PlanTimeLine>> GetPlanTimeLinesByAdPointAsync(string adPointId, DateTime planStart, DateTime planEnd)
-        {
-            return GetPlanTimeLinesAsync(p => p.PlanAdPoints.Any(pap => pap.AdPointId == adPointId) &&
-                                              planStart < p.EndDateTime &&
-                                              p.StartDateTime < planEnd);
-        }
-
-        private Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(Expression<Func<Plan, bool>> predicate)
-        {
-            //todo: do I need a disctinct in DaysOff?
-
-            var query = Context.Plans.Where(predicate)
-                                     .Select(p => new PlanTimeLine()
-                                     {
-                                         Id = p.Id,
-                                         StartDateTime = p.StartDateTime,
-                                         EndDateTime = p.EndDateTime,
-                                         Schedules = p.Schedules.Select(s => new ScheduleDto()
-                                         {
-                                             Type = s.Type,
-                                             StartTime = s.StartTime,
-                                             EndTime = s.EndTime,
-                                             BreakTime = s.BreakTime,
-                                             PlayTime = s.PlayTime,
-                                             Date = s.Date,
-                                             DayOfWeek = s.DayOfWeek
-                                         }),
-                                         AdPointsDaysOff = p.PlanAdPoints
-                                             .SelectMany(pap => pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek))
-                                     });
+                               .Select(p => new PlanTimeLine()
+                               {
+                                   Id = p.Id,
+                                   StartDateTime = p.StartDateTime,
+                                   EndDateTime = p.EndDateTime,
+                                   Schedules = p.Schedules.Select(s => new ScheduleDto()
+                                   {
+                                       Type = s.Type,
+                                       StartTime = s.StartTime,
+                                       EndTime = s.EndTime,
+                                       BreakTime = s.BreakTime,
+                                       PlayTime = s.PlayTime,
+                                       Date = s.Date,
+                                       DayOfWeek = s.DayOfWeek
+                                   }),
+                                   AdPointsDaysOff = p.PlanAdPoints
+                                       .SelectMany(pap => pap.AdPoint.DaysOff.Select(doff => doff.DayOfWeek))
+                               });
 
             return query.ToListAsync();
         }

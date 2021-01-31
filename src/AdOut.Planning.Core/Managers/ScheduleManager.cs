@@ -50,7 +50,8 @@ namespace AdOut.Planning.Core.Managers
                 throw new ObjectNotFoundException($"Plan with id={scheduleModel.PlanId} was not found");
             }
 
-            var planTimeLines = await _planRepository.GetPlanTimeLinesByPlanAsync(scheduleModel.PlanId, scheduleValidation.PlanStartDateTime, scheduleValidation.PlanEndDateTime);
+            var planAdPointsIds = scheduleValidation.AdPoints.Select(ap => ap.Id).ToArray();
+            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(planAdPointsIds, scheduleValidation.PlanStartDateTime, scheduleValidation.PlanEndDateTime);
             var existingSchedulePeriods = new List<SchedulePeriod>();
 
             foreach (var p in planTimeLines)
@@ -142,8 +143,6 @@ namespace AdOut.Planning.Core.Managers
             scheduleTime.ScheduleStartTime = updateModel.StartTime;
             scheduleTime.ScheduleEndTime = updateModel.EndTime;
             scheduleTime.AdBreakTime = updateModel.BreakTime;
-            scheduleTime.ScheduleDayOfWeek = updateModel.DayOfWeek;
-            scheduleTime.ScheduleDate = updateModel.Date;
 
             var timeOfAdsShowingAfterUpdating = scheduleTimeService.GetTimeOfAdsShowing(scheduleTime);
 
@@ -155,8 +154,6 @@ namespace AdOut.Planning.Core.Managers
             schedule.StartTime = updateModel.StartTime;
             schedule.EndTime = updateModel.EndTime;
             schedule.BreakTime = updateModel.BreakTime;
-            schedule.DayOfWeek = updateModel.DayOfWeek;
-            schedule.Date = updateModel.Date;
 
             _scheduleRepository.Update(schedule);
         }
