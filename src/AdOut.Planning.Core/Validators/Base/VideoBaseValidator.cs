@@ -94,6 +94,7 @@ namespace AdOut.Planning.Core.Validators.Base
             var videoBuffer = new byte[content.Length];
             await content.ReadAsync(videoBuffer, 0, videoBuffer.Length);
 
+            //todo: think about the ffmpeg path param in the VideoAnalyzer class 
             var videoAnalyzer = new VideoAnalyzer();
             var analyzerResult = await videoAnalyzer.GetVideoInfoAsync(videoBuffer);
 

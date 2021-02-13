@@ -59,13 +59,11 @@ namespace AdOut.Planning.WebApi.Filters
 
         private string GetResourceIdName(ParameterInfo[] parameters)
         {
-            var resourceIdName = string.Empty;
             foreach (var param in parameters)
             {
                 if (param.GetCustomAttribute(typeof(ResourceIdAttribute)) != null)
                 {
-                    resourceIdName = param.Name;
-                    break;
+                    return param.Name;
                 }
 
                 var prop = param.ParameterType.GetProperties().FirstOrDefault(prop =>
@@ -76,32 +74,26 @@ namespace AdOut.Planning.WebApi.Filters
 
                 if (prop != null)
                 {
-                    resourceIdName = prop.Name;
-                    break;
+                    return prop.Name;
                 }      
             }
-            return resourceIdName;
         }
 
         private object GetResourceId(IDictionary<string, object> ActionArguments, string propName)
         {
-            object resourceId = null;
             foreach (var arg in ActionArguments)
             {
                 if (arg.Key == propName)
                 {
-                    resourceId = arg.Value;
-                    break;
+                    return arg.Value;      
                 }
 
                 var prop = arg.Value.GetType().GetProperty(propName);
                 if (prop != null)
                 {
-                    resourceId = prop.GetValue(arg.Value);
-                    break;
+                    return prop.GetValue(arg.Value);
                 }               
             }
-            return resourceId;
         }
     }
 }

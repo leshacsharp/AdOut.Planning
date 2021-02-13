@@ -21,6 +21,7 @@ namespace AdOut.Planning.Core.Services.Content
                 throw new ArgumentException("Width and height can't be zero and less than zero.");
             }
 
+            //todo: move the RootDirectory path to the appsettings
             var FFMpegOptions = new FFMpegOptions() { RootDirectory = AppDomain.CurrentDomain.BaseDirectory };
             FFMpegOptions.Configure(FFMpegOptions);
 

@@ -179,6 +179,7 @@ namespace AdOut.Planning.Core.Managers
                 {
                     if (timeRange.IsInterescted(tariff.StartTime, tariff.EndTime))
                     {
+                        //todo: check the logic of right/left intersection
                         var minutesInTariff = 0d;
                         if (timeRange.IsRightIntersected(tariff.StartTime, tariff.EndTime))
                         {

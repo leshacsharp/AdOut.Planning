@@ -38,7 +38,7 @@ namespace AdOut.Planning.WebApi.Controllers
         {
             var start = new DateTime(2021, 1, 10);
             var end = new DateTime(2021, 1, 20);
-            var c = await _planRepository.GetPlanTimeLinesByPlanAsync("1",start, end);
+            var c = await _planRepository.GetPlanTimeLinesAsync(new[] { "1" }, start, end);
 
             var b = await _planRepository.GetPlanPriceAsync("1");
             var a = await _tariffRepository.GetPlanTariffsAsync("1");
