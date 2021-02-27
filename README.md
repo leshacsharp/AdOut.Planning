@@ -1,2 +1,2 @@
 # AdOut.Planning
-Microservice that contains logic of planning advertisings
+The microservice of planning advertisings and schedules
