@@ -20,7 +20,7 @@ namespace AdOut.Planning.Core.Services.Schedule
                 }
                 currentDate = currentDate.AddDays(1);
             }
-
+            
             return workingDays;
         }
     }

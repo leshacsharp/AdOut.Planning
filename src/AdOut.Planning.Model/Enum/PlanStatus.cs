@@ -2,7 +2,10 @@
 {
     public enum PlanStatus
     {
-        Off = 0,
-        On = 1
+        WaitForModeration = 0,
+        OnModeration = 1,
+        Rejected = 2,
+        Accepted = 3,
+        Works = 4
     }
 }

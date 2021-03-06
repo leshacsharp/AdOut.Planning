@@ -8,8 +8,6 @@ using AdOut.Planning.Core.Validators.Content;
 using AdOut.Planning.Core.Validators.Schedule;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.DataProvider.Repositories;
-using AdOut.Planning.Model.Database;
-using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
@@ -37,6 +35,7 @@ namespace AdOut.Planning.WebApi.Configuration
             services.AddScoped<IAdRepository, AdRepository>();
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
             services.AddScoped<ITariffRepository, TariffRepository>();
+            services.AddScoped<IPlanTimeRepository, PlanTimeRepository>();
 
             services.AddScoped<IAdManager, AdManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();
@@ -84,6 +83,7 @@ namespace AdOut.Planning.WebApi.Configuration
             services.AddAutoMapper(c =>
             {
                 c.AddProfile<ScheduleProfile>();
+                c.AddProfile<PlanProfile>();
                 c.AddProfile<EventProfile>();
             });
         }

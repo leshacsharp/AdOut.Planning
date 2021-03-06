@@ -25,7 +25,6 @@ namespace AdOut.Planning.DataProvider.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<PlanAd>().HasKey(pa => new { pa.PlanId, pa.AdId });
             modelBuilder.Entity<PlanAdPoint>().HasKey(pap => new { pap.PlanId, pap.AdPointId });
         }

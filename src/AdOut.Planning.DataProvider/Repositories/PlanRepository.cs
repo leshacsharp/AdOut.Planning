@@ -94,6 +94,41 @@ namespace AdOut.Planning.DataProvider.Repositories
             return query.ToListAsync();
         }
 
+        public Task<PlanTimeDto> GetPlanTimeAsync(string planId)
+        {
+            var query = Context.Plans.Where(p => p.Id == planId)
+                               .Select(p => new PlanTimeDto()
+                               {
+                                   Id = p.Id,
+                                   Title = p.Title,
+                                   StartDateTime = p.StartDateTime,
+                                   EndDateTime = p.EndDateTime,  
+                                   Schedules = p.Schedules.Select(s => new ScheduleDto()
+                                   {
+                                       Type = s.Type,
+                                       StartTime = s.StartTime,
+                                       EndTime = s.EndTime,
+                                       BreakTime = s.BreakTime,
+                                       PlayTime = s.PlayTime,
+                                       Date = s.Date,
+                                       DayOfWeek = s.DayOfWeek
+                                   }),
+                                   Ads = p.PlanAds.Select(pa => new AdPlanTime() 
+                                   { 
+                                       Title = pa.Ad.Title,
+                                       Path = pa.Ad.Path,
+                                       Order = pa.Order
+                                   }),
+                                   AdPoints = p.PlanAdPoints.Select(pap => new AdPointPlanTimeDto()
+                                   { 
+                                        Id = pap.AdPointId,
+                                        DaysOff = pap.AdPoint.DaysOff.Select(d => d.DayOfWeek)
+                                   })
+                               });
+
+            return query.SingleOrDefaultAsync();
+        }
+
         public Task<PlanPriceDto> GetPlanPriceAsync(string planId)
         {
             var query = Context.Plans.Where(p => p.Id == planId)

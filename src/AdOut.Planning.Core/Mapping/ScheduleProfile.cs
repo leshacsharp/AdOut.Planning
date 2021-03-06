@@ -27,6 +27,11 @@ namespace AdOut.Planning.Core.Mapping
                 .ForMember(x => x.PlanEndDateTime, x => x.MapFrom(m => m.EndDateTime))
                 .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPointsDaysOff));
 
+            CreateMap<PlanTimeDto, ScheduleTime>()
+                .ForMember(x => x.PlanStartDateTime, x => x.MapFrom(m => m.StartDateTime))
+                .ForMember(x => x.PlanEndDateTime, x => x.MapFrom(m => m.EndDateTime))
+                .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.Select(ap => ap.DaysOff)));
+
             CreateMap<ScheduleValidation, ScheduleTime>()
                 .ForMember(x => x.AdPointsDaysOff, x => x.MapFrom(m => m.AdPoints.SelectMany(ap => ap.DaysOff)));
 

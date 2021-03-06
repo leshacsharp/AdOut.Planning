@@ -18,20 +18,18 @@ namespace AdOut.Planning.Core.EventHandlers
 
         protected override async Task HandleAsync(AdPointDeletedEvent deliveredEvent)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            using var scope = _serviceScopeFactory.CreateScope();
+            var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
+            var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
+
+            var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.Id);
+            if (adPoint == null)
             {
-                var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
-                var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
-
-                var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.Id);
-                if (adPoint == null)
-                {
-                    throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
-                }
-
-                adPointRepository.Delete(adPoint);
-                await commitProvider.SaveChangesAsync();
+                throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
             }
+
+            adPointRepository.Delete(adPoint);
+            await commitProvider.SaveChangesAsync();
         }
     }
 }

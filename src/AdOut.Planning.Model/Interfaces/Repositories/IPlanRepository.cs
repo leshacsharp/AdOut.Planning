@@ -13,6 +13,7 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
         //todo: rename to GetPlanValidationAsync
         Task<ScheduleValidation> GetScheduleValidationAsync(string planId);
         Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string[] adPointIds, DateTime planStart, DateTime planEnd);
+        Task<PlanTimeDto> GetPlanTimeAsync(string planId);
         Task<PlanPriceDto> GetPlanPriceAsync(string planId);
         Task<PlanDto> GetDtoByIdAsync(string planId);
     }

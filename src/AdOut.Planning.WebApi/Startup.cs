@@ -2,6 +2,7 @@ using AdOut.Extensions.Communication;
 using AdOut.Extensions.Communication.Interfaces;
 using AdOut.Extensions.Filters;
 using AdOut.Planning.DataProvider.Context;
+using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Settings;
 using AdOut.Planning.WebApi.Configuration;
 using IdentityServer4.AccessTokenValidation;
@@ -49,6 +50,7 @@ namespace AdOut.Planning.WebApi
                         options.RoleClaimType = "role";
                     });
 
+            services.AddScoped<ITimeLineContext, TimeLineContext>(p => new TimeLineContext(Configuration.GetConnectionString("MongoConnection")));
             services.AddDbContext<PlanningContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevConnection")).EnableSensitiveDataLogging());
 

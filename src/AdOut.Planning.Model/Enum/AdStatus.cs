@@ -3,6 +3,7 @@
     public enum AdStatus
     {
         OnModeration = 0,
-        Checked = 1,
+        Rejected = 1,
+        Accepted = 2
     }
 }

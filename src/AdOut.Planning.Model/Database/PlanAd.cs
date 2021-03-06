@@ -19,6 +19,6 @@ namespace AdOut.Planning.Model.Database
         [Required]
         public virtual Ad Ad { get; set; }
 
-        public int Order { get; set; }
+        public int? Order { get; set; }
     }
 }
