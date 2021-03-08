@@ -52,7 +52,7 @@ namespace AdOut.Planning.WebApi
 
             services.AddScoped<ITimeLineContext, TimeLineContext>(p => new TimeLineContext(Configuration.GetConnectionString("MongoConnection")));
             services.AddDbContext<PlanningContext>(options =>
-                     options.UseSqlServer(Configuration.GetConnectionString("DevConnection")).EnableSensitiveDataLogging());
+                     options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")).EnableSensitiveDataLogging());
 
             services.AddDataProviderServices();
             services.AddCoreServices();

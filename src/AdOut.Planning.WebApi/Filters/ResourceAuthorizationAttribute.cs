@@ -35,7 +35,7 @@ namespace AdOut.Planning.WebApi.Filters
             }
 
             var actionDesc = (ControllerActionDescriptor)context.ActionDescriptor;
-            var resourceIdName = GetResourceIdName(actionDesc.MethodInfo.GetParameters());
+            var resourceIdName = FindResourceIdName(actionDesc.MethodInfo.GetParameters());
             resourceIdName = !string.IsNullOrEmpty(resourceIdName) ? resourceIdName : _resourceIdName;         
             var resourceId = GetResourceId(context.ActionArguments, resourceIdName);
 
@@ -57,7 +57,7 @@ namespace AdOut.Planning.WebApi.Filters
             await next();
         }
 
-        private string GetResourceIdName(ParameterInfo[] parameters)
+        private string FindResourceIdName(ParameterInfo[] parameters)
         {
             foreach (var param in parameters)
             {
@@ -77,6 +77,7 @@ namespace AdOut.Planning.WebApi.Filters
                     return prop.Name;
                 }      
             }
+            return null;
         }
 
         private object GetResourceId(IDictionary<string, object> ActionArguments, string propName)
@@ -94,6 +95,7 @@ namespace AdOut.Planning.WebApi.Filters
                     return prop.GetValue(arg.Value);
                 }               
             }
+            return null;
         }
     }
 }

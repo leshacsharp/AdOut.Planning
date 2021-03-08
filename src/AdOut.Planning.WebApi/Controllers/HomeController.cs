@@ -8,6 +8,9 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Dto;
+using AdOut.Extensions.Context;
+using AdOut.Planning.Model.Database;
+using AdOut.Planning.Model.Interfaces.Context;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
@@ -19,60 +22,81 @@ namespace AdOut.Planning.WebApi.Controllers
         private readonly IPlanRepository _planRepository;
         private readonly IPlanManager _planManager;
         private readonly ITariffRepository _tariffRepository;
+        private readonly ICommitProvider _commitProvider;
+        private readonly IDatabaseContext _context;
 
         public HomeController(
             IScheduleRepository scheduleRepository, 
             IPlanRepository planRepository,
             IPlanManager planManager,
-            ITariffRepository tariffRepository)
+            ITariffRepository tariffRepository,
+            ICommitProvider commitProvider,
+            IDatabaseContext context)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
             _planManager = planManager;
             _tariffRepository = tariffRepository;
+            _commitProvider = commitProvider;
+            _context = context;
         }
 
         [HttpGet]
         [Route("test")]
         public async Task<IActionResult> Test()
         {
-            var start = new DateTime(2021, 1, 10);
-            var end = new DateTime(2021, 1, 20);
-            var c = await _planRepository.GetPlanTimeLinesAsync(new[] { "1" }, start, end);
-
-            var b = await _planRepository.GetPlanPriceAsync("1");
-            var a = await _tariffRepository.GetPlanTariffsAsync("1");
-
-            var scheduleTimes = new List<ScheduleTime>()
+            var plan = new Plan()
             {
-                new ScheduleTime()
-                {
-                    PlanStartDateTime = new DateTime(2020, 1, 1),
-                    PlanEndDateTime = new DateTime(2020, 1, 2),
-                    ScheduleType = Model.Enum.ScheduleType.Daily,
-                    ScheduleStartTime = new TimeSpan(0, 0, 0),
-                    ScheduleEndTime = new TimeSpan(23, 59, 0),
-                    AdPlayTime = new TimeSpan(4, 0, 0 ),
-                    AdBreakTime = new TimeSpan(0, 40, 0),
-                    AdPointsDaysOff = new List<DayOfWeek>()
-                }
+                Id = "1",
+                Title = "test1",
+                Status = Model.Enum.PlanStatus.Works,
+                Creator = "test"
             };
 
-            var tariffs = new List<TariffDto>()
-            {
-                new TariffDto()
-                {
-                    StartTime = new TimeSpan(0, 0, 0),
-                    EndTime = new TimeSpan(12, 0, 0),
-                    PriceForMinute = 1
-                },
-                new TariffDto()
-                {
-                    StartTime = new TimeSpan(12, 0, 0),
-                    EndTime = new TimeSpan(23, 59, 0),
-                    PriceForMinute = 2
-                },
-            };
+
+            _context.ChangeTracker.Context.Entry(plan).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+          //  _context.Attach(plan);
+            //_planRepository.Update(plan);
+            await _commitProvider.SaveChangesAsync(false);
+
+            //var start = new DateTime(2021, 1, 10);
+            //var end = new DateTime(2021, 1, 20);
+            //var c = await _planRepository.GetPlanTimeLinesAsync(new[] { "1" }, start, end);
+
+            //var b = await _planRepository.GetPlanPriceAsync("1");
+            //var a = await _tariffRepository.GetPlanTariffsAsync("1");
+
+            //var scheduleTimes = new List<ScheduleTime>()
+            //{
+            //    new ScheduleTime()
+            //    {
+            //        PlanStartDateTime = new DateTime(2020, 1, 1),
+            //        PlanEndDateTime = new DateTime(2020, 1, 2),
+            //        ScheduleType = Model.Enum.ScheduleType.Daily,
+            //        ScheduleStartTime = new TimeSpan(0, 0, 0),
+            //        ScheduleEndTime = new TimeSpan(23, 59, 0),
+            //        AdPlayTime = new TimeSpan(4, 0, 0 ),
+            //        AdBreakTime = new TimeSpan(0, 40, 0),
+            //        AdPointsDaysOff = new List<DayOfWeek>()
+            //    }
+            //};
+
+            //var tariffs = new List<TariffDto>()
+            //{
+            //    new TariffDto()
+            //    {
+            //        StartTime = new TimeSpan(0, 0, 0),
+            //        EndTime = new TimeSpan(12, 0, 0),
+            //        PriceForMinute = 1
+            //    },
+            //    new TariffDto()
+            //    {
+            //        StartTime = new TimeSpan(12, 0, 0),
+            //        EndTime = new TimeSpan(23, 59, 0),
+            //        PriceForMinute = 2
+            //    },
+            //};
 
             //var price = _planManager.CalculatePlanPrice(scheduleTimes, tariffs);
             return Ok();

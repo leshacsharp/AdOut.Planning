@@ -25,7 +25,7 @@ namespace AdOut.Planning.Core.EventHandlers
             var adPoint = await adPointRepository.GetByIdAsync(deliveredEvent.Id);
             if (adPoint == null)
             {
-                throw new ObjectNotFoundException($"Delivered AdPoint with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
+                throw new ObjectNotFoundException($"AdPoint with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
             }
 
             adPointRepository.Delete(adPoint);

@@ -22,6 +22,7 @@ namespace AdOut.Planning.Model.Interfaces.Context
         ChangeTracker ChangeTracker { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
+        EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
