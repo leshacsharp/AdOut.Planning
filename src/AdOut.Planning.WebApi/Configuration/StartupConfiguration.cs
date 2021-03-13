@@ -41,6 +41,7 @@ namespace AdOut.Planning.WebApi.Configuration
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IPlanManager, PlanManager>();
             services.AddScoped<IPlanAdManager, PlanAdManager>();
+            services.AddScoped<IPlanTimeManager, PlanTimeManager>();
             services.AddScoped<IUserService, UserService>();
         }
 
@@ -79,6 +80,7 @@ namespace AdOut.Planning.WebApi.Configuration
             services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();
             services.AddSingleton<IBasicConsumer, AdPointDeletedConsumer>();
             services.AddSingleton<IBasicConsumer, TariffCreatedConsumer>();
+            services.AddSingleton<IBasicConsumer, PlanAcceptedConsumer>();
 
             services.AddAutoMapper(c =>
             {

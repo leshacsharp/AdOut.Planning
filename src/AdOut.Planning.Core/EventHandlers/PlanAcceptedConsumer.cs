@@ -61,6 +61,9 @@ namespace AdOut.Planning.Core.EventHandlers
             planEntity.Status = Planning.Model.Enum.PlanStatus.Accepted;
             planRepository.Update(planEntity);
             await commitProvider.SaveChangesAsync();
+
+            //todo: generate an event smth like PlanReadyToBeShown. AdPoints will consume the event and re-build their ads-queues.
+            //Need to generate the event only when the plan StartTime is today for re-building ads-queues.
         }
     }
 }

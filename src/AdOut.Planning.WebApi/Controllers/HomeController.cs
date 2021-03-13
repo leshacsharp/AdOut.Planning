@@ -11,6 +11,8 @@ using AdOut.Planning.Model.Dto;
 using AdOut.Extensions.Context;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Interfaces.Context;
+using AdOut.Extensions.Communication.Interfaces;
+using AdOut.Planning.Model.Events;
 
 namespace AdOut.Planning.WebApi.Controllers
 {
@@ -24,6 +26,8 @@ namespace AdOut.Planning.WebApi.Controllers
         private readonly ITariffRepository _tariffRepository;
         private readonly ICommitProvider _commitProvider;
         private readonly IDatabaseContext _context;
+        private readonly IMessageBroker _broker;
+        private readonly IPlanTimeManager _planTimeManager;
 
         public HomeController(
             IScheduleRepository scheduleRepository, 
@@ -31,7 +35,9 @@ namespace AdOut.Planning.WebApi.Controllers
             IPlanManager planManager,
             ITariffRepository tariffRepository,
             ICommitProvider commitProvider,
-            IDatabaseContext context)
+            IDatabaseContext context,
+            IMessageBroker broker,
+            IPlanTimeManager planTimeManager)
         {
             _scheduleRepository = scheduleRepository;
             _planRepository = planRepository;
@@ -39,6 +45,25 @@ namespace AdOut.Planning.WebApi.Controllers
             _tariffRepository = tariffRepository;
             _commitProvider = commitProvider;
             _context = context;
+            _broker = broker;
+            _planTimeManager = planTimeManager;
+        }
+
+        [HttpPost]
+        [Route("accept-plan")]
+        public IActionResult AcceptPlan(string planId)
+        {
+            var acceptEvent = new PlanAcceptedEvent() { PlanId = planId, Creator = "test" };
+            _broker.Publish(acceptEvent);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("plan-times")]
+        public async Task<IActionResult> GetPlanTimes(string adPointId)
+        {
+            var result = await _planTimeManager.GetTodaysPlanTimesAsync(adPointId);
+            return Ok(result);
         }
 
         [HttpGet]

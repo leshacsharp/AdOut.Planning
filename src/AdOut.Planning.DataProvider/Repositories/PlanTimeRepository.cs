@@ -46,14 +46,24 @@ namespace AdOut.Planning.DataProvider.Repositories
             return _db.Plans.AsQueryable().Where(predicate);
         }
 
-        //todo: need to return some PlanTimePortion
-        public Task<List<PlanTime>> GetPlanTimes(string[] adPointIds, DateTime planStart, DateTime planEnd)
+        public Task<List<PlanTime>> GetPlanTimes(string adPointId, DateTime scheduleDate)
         {
             var query = _db.Plans.AsQueryable()
                                  .AsExpandable()
-                                 .Where(p => p.AdPoints.Any(id => adPointIds.Contains(id)) &&
-                                             planStart < p.EndDateTime &&
-                                             p.StartDateTime < planEnd);
+                                 .Where(p => p.AdPoints.Any(id => id == adPointId) &&
+                                             scheduleDate < p.EndDateTime &&
+                                             p.StartDateTime < scheduleDate)
+                                 .Select(p => new PlanTime()
+                                 {
+                                     Id = p.Id,
+                                     Title = p.Title,
+                                     StartDateTime = p.StartDateTime,
+                                     EndDateTime = p.EndDateTime,
+                                     Creator = p.Creator,
+                                     AdPoints = p.AdPoints,
+                                     Ads = p.Ads,
+                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
+                                 });
 
             return query.ToListAsync();
         }

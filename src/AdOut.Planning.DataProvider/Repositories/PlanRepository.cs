@@ -164,6 +164,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                    Title = p.Title,
                                    StartDateTime = p.StartDateTime,
                                    EndDateTime = p.EndDateTime,
+                                   Creator = p.Creator,
                                    Schedules = p.Schedules.Select(s => new ScheduleDto()
                                    {
                                        Type = s.Type,

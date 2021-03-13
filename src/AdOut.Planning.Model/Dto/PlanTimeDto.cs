@@ -10,6 +10,8 @@ namespace AdOut.Planning.Model.Dto
 
         public string Title { get; set; }
 
+        public string Creator { get; set; }
+
         public DateTime StartDateTime { get; set; }
 
         public DateTime EndDateTime { get; set; }
