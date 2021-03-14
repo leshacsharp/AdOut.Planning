@@ -38,90 +38,6 @@ namespace AdOut.Planning.Core.Managers
             _mapper = mapper;
         }
 
-        public async Task<List<PlanPeriod>> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
-        {
-            var planTimeLines = await _planRepository.GetPlanTimeLinesAsync(new[]{ adPointId }, dateFrom, dateTo);
-            var plansPeriods = new List<PlanPeriod>();
-
-            foreach (var plan in planTimeLines)
-            {
-                var planPeriod = new PlanPeriod() { PlanId = plan.Id };
-                foreach (var schedule in plan.Schedules)
-                {
-                    var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(schedule.Type);
-                    var scheduleTime = _mapper.MergeInto<ScheduleTime>(plan, schedule);
-                    var schedulePeriod = timeService.GetSchedulePeriod(scheduleTime);
-                    planPeriod.SchedulePeriods.Add(schedulePeriod);
-                }
-
-                plansPeriods.Add(planPeriod);
-            }
-
-            return plansPeriods;
-        }
-
-        public void Create(CreatePlanModel createModel)
-        {
-            if (createModel == null)
-            {
-                throw new ArgumentNullException(nameof(createModel));
-            }
-
-            var plan = new Plan()
-            {
-                Title = createModel.Title,
-                StartDateTime = createModel.StartDateTime,
-                EndDateTime = createModel.EndDateTime
-            };
-
-            _planRepository.Create(plan);
-
-            foreach (var adPointId in createModel.AdPointsIds)
-            {
-                var planAdPoint = new PlanAdPoint()
-                {
-                    AdPointId = adPointId,
-                    Plan = plan
-                };
-
-                _planAdPointRepository.Create(planAdPoint);
-            }
-        }
-
-        public async Task UpdateAsync(UpdatePlanModel updateModel)
-        {
-            if (updateModel == null)
-            {
-                throw new ArgumentNullException(nameof(updateModel));
-            }
-
-            var plan = await _planRepository.GetByIdAsync(updateModel.PlanId);
-            if (plan == null)
-            {
-                throw new ObjectNotFoundException($"Plan with id={updateModel.PlanId} was not found");
-            }
-
-            plan.Title = updateModel.Title;
-
-            _planRepository.Update(plan);
-        }
-
-        public async Task DeleteAsync(string planId)
-        {
-            var plan = await _planRepository.GetByIdAsync(planId);
-            if (plan == null)
-            {
-                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
-            }
-
-            _planRepository.Delete(plan);
-        }
-
-        public Task<PlanDto> GetDtoByIdAsync(string planId)
-        {
-            return _planRepository.GetDtoByIdAsync(planId);
-        }
-
         public async Task<ValidationResult<string>> ValidatePlanExtensionAsync(string planId, DateTime newEndDate)
         {
             var planExtValidation = await _planRepository.GetPlanExtensionValidationAsync(planId);
@@ -186,6 +102,68 @@ namespace AdOut.Planning.Core.Managers
             plan.EndDateTime = newEndDate;
 
             _planRepository.Update(plan);
+        }
+
+        public void Create(CreatePlanModel createModel)
+        {
+            if (createModel == null)
+            {
+                throw new ArgumentNullException(nameof(createModel));
+            }
+
+            var plan = new Plan()
+            {
+                Title = createModel.Title,
+                StartDateTime = createModel.StartDateTime,
+                EndDateTime = createModel.EndDateTime
+            };
+
+            _planRepository.Create(plan);
+
+            foreach (var adPointId in createModel.AdPointsIds)
+            {
+                var planAdPoint = new PlanAdPoint()
+                {
+                    AdPointId = adPointId,
+                    Plan = plan
+                };
+
+                _planAdPointRepository.Create(planAdPoint);
+            }
+        }
+
+        public async Task UpdateAsync(UpdatePlanModel updateModel)
+        {
+            if (updateModel == null)
+            {
+                throw new ArgumentNullException(nameof(updateModel));
+            }
+
+            var plan = await _planRepository.GetByIdAsync(updateModel.PlanId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={updateModel.PlanId} was not found");
+            }
+
+            plan.Title = updateModel.Title;
+
+            _planRepository.Update(plan);
+        }
+
+        public async Task DeleteAsync(string planId)
+        {
+            var plan = await _planRepository.GetByIdAsync(planId);
+            if (plan == null)
+            {
+                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+            }
+
+            _planRepository.Delete(plan);
+        }
+
+        public Task<PlanDto> GetDtoByIdAsync(string planId)
+        {
+            return _planRepository.GetDtoByIdAsync(planId);
         }
     }
 }

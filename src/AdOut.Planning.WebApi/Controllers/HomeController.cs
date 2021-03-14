@@ -53,7 +53,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("accept-plan")]
         public IActionResult AcceptPlan(string planId)
         {
-            var acceptEvent = new PlanAcceptedEvent() { PlanId = planId, Creator = "test" };
+            var acceptEvent = new PlanAcceptedEvent() { Id = planId, Creator = "test" };
             _broker.Publish(acceptEvent);
             return Ok();
         }
@@ -62,7 +62,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("plan-times")]
         public async Task<IActionResult> GetPlanTimes(string adPointId)
         {
-            var result = await _planTimeManager.GetTodaysPlanTimesAsync(adPointId);
+            var result = await _planTimeManager.GetTodaysStreamPlanTimesAsync(adPointId);
             return Ok(result);
         }
 
@@ -74,10 +74,9 @@ namespace AdOut.Planning.WebApi.Controllers
             {
                 Id = "1",
                 Title = "test1",
-                Status = Model.Enum.PlanStatus.Works,
+                Status = Model.Enum.PlanStatus.OnModeration,
                 Creator = "test"
             };
-
 
             _context.ChangeTracker.Context.Entry(plan).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 

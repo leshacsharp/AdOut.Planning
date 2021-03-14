@@ -28,15 +28,16 @@ namespace AdOut.Planning.WebApi.Controllers
             _commitProvider = commitProvider;
         }
 
-        [HttpGet]
-        [Route("plans-timelines")]
-        //[ResourceAuthorization(typeof(Plan), "adPointId")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
-        {
-            var plansTimeLines = await _planManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
-            return Ok(plansTimeLines);
-        }
+        //[HttpGet]
+        //[Route("plans-timelines")]
+        ////[ResourceAuthorization(typeof(Plan), "adPointId")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
+        //{
+        //    //todo: planTimeManager
+        //    var plansTimeLines = await _planManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
+        //    return Ok(plansTimeLines);
+        //}
 
         [HttpPut]
         [Route("extend-plan")]

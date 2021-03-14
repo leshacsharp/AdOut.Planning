@@ -1,5 +1,6 @@
 ﻿using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
+using AdOut.Planning.Model.Enum;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -67,9 +68,8 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<PlanTimeLine>> GetPlanTimeLinesAsync(string[] adPointIds, DateTime planStart, DateTime planEnd)
         {
-            //todo: do I need a disctinct in DaysOff?
-
             var query = Context.Plans.Where(p => p.PlanAdPoints.Any(pap => adPointIds.Contains(pap.AdPointId)) &&
+                                                 (p.Status == PlanStatus.OnModeration || p.Status == PlanStatus.Accepted) &&
                                                  planStart < p.EndDateTime &&
                                                  p.StartDateTime < planEnd)
                                .Select(p => new PlanTimeLine()

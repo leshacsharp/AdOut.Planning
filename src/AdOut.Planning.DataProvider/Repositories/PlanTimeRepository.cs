@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LinqKit;
 using System.Data.Entity;
+using AdOut.Planning.Model.Dto;
 
 namespace AdOut.Planning.DataProvider.Repositories
 {
@@ -18,6 +19,40 @@ namespace AdOut.Planning.DataProvider.Repositories
         public PlanTimeRepository(ITimeLineContext db)
         {
             _db = db;
+        }
+
+        public Task<List<StreamPlanTime>> GetStreamPlanTimesAsync(string adPointId, DateTime scheduleDate)
+        {
+            var query = _db.Plans.AsQueryable()
+                               .AsExpandable()
+                               .Where(p => p.AdPoints.Any(id => id == adPointId) &&
+                                           scheduleDate < p.EndDateTime &&
+                                           p.StartDateTime < scheduleDate)
+                               .Select(p => new StreamPlanTime()
+                               {
+                                   Id = p.Id,
+                                   Title = p.Title,  
+                                   Ads = p.Ads,
+                                   Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
+                               });
+
+            return query.ToListAsync();
+        }
+
+        public Task<List<PlanPeriod>> GetPlanPeriodsAsync(string adPointId, DateTime scheduleStart, DateTime scheduleEnd)
+        {
+            var query = _db.Plans.AsQueryable()
+                                 .AsExpandable()
+                                 .Where(p => p.AdPoints.Any(id => id == adPointId) &&
+                                             scheduleStart < p.EndDateTime &&
+                                             p.StartDateTime < scheduleEnd)
+                                 .Select(p => new PlanPeriod()
+                                 {
+                                     PlanId = p.Id,
+                                     SchedulePeriods = p.Schedules.Where(sp => sp.Dates.Any(d => d >= scheduleStart && d <= scheduleEnd))
+                                 });
+
+            return query.ToListAsync();
         }
 
         public void Create(PlanTime entity)
@@ -44,28 +79,6 @@ namespace AdOut.Planning.DataProvider.Repositories
         public IQueryable<PlanTime> Read(Expression<Func<PlanTime, bool>> predicate)
         {
             return _db.Plans.AsQueryable().Where(predicate);
-        }
-
-        public Task<List<PlanTime>> GetPlanTimes(string adPointId, DateTime scheduleDate)
-        {
-            var query = _db.Plans.AsQueryable()
-                                 .AsExpandable()
-                                 .Where(p => p.AdPoints.Any(id => id == adPointId) &&
-                                             scheduleDate < p.EndDateTime &&
-                                             p.StartDateTime < scheduleDate)
-                                 .Select(p => new PlanTime()
-                                 {
-                                     Id = p.Id,
-                                     Title = p.Title,
-                                     StartDateTime = p.StartDateTime,
-                                     EndDateTime = p.EndDateTime,
-                                     Creator = p.Creator,
-                                     AdPoints = p.AdPoints,
-                                     Ads = p.Ads,
-                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
-                                 });
-
-            return query.ToListAsync();
         }
     }
 }

@@ -2,9 +2,8 @@
 
 namespace AdOut.Planning.Model.Events
 {
-    //todo: add the 'PlanReadyEvent' with plan information
     public class PlanAcceptedEvent : IntegrationEvent
     {
-        public string PlanId { get; set; }
+        public string Id { get; set; }
     }
 }

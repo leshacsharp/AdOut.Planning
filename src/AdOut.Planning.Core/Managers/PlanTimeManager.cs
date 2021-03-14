@@ -1,4 +1,4 @@
-﻿using AdOut.Planning.Model.Database;
+﻿using AdOut.Planning.Model.Dto;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
 using System;
@@ -15,9 +15,14 @@ namespace AdOut.Planning.Core.Managers
             _planTimeRepository = planTimeRepository;
         }
 
-        public Task<List<PlanTime>> GetTodaysPlanTimesAsync(string adPointId)
+        public Task<List<StreamPlanTime>> GetTodaysStreamPlanTimesAsync(string adPointId)
         {
-            return _planTimeRepository.GetPlanTimes(adPointId, DateTime.Now.Date);
+            return _planTimeRepository.GetStreamPlanTimesAsync(adPointId, DateTime.Now.Date);
+        }
+
+        public Task<List<PlanPeriod>> GetPlanPeriods(string adPointId, DateTime dateFrom, DateTime dateTo)
+        {
+            return _planTimeRepository.GetPlanPeriodsAsync(adPointId, dateFrom, dateTo);     
         }
     }
 }

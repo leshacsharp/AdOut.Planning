@@ -1,4 +1,5 @@
 ﻿using AdOut.Extensions.Communication;
+using AdOut.Extensions.Communication.Interfaces;
 using AdOut.Extensions.Context;
 using AdOut.Extensions.Exceptions;
 using AdOut.Planning.Core.Mapping;
@@ -36,11 +37,12 @@ namespace AdOut.Planning.Core.EventHandlers
             var scheduleTimeServiceProvider = scope.ServiceProvider.GetRequiredService<IScheduleTimeServiceProvider>();
             var dbContext = scope.ServiceProvider.GetRequiredService<IDatabaseContext>();
             var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
+            var messageBroker = scope.ServiceProvider.GetRequiredService<IMessageBroker>();
 
-            var planTimeDto = await planRepository.GetPlanTimeAsync(deliveredEvent.PlanId);
+            var planTimeDto = await planRepository.GetPlanTimeAsync(deliveredEvent.Id);
             if (planTimeDto == null)
             {
-                throw new ObjectNotFoundException($"Plan with id={deliveredEvent.PlanId} was not found (EventId={deliveredEvent.EventId})");
+                throw new ObjectNotFoundException($"Plan with id={deliveredEvent.Id} was not found (EventId={deliveredEvent.EventId})");
             }
 
             var schedulePeriods = new List<SchedulePeriod>();
@@ -52,9 +54,9 @@ namespace AdOut.Planning.Core.EventHandlers
                 schedulePeriods.Add(schedulePeriod);
             }
 
-            var planTime = _mapper.Map<PlanTime>(planTimeDto);
-            planTime.Schedules = schedulePeriods;
-            planTimeRepository.Create(planTime);
+            var planTimeEntity = _mapper.Map<PlanTime>(planTimeDto);
+            planTimeEntity.Schedules = schedulePeriods;
+            planTimeRepository.Create(planTimeEntity);
 
             var planEntity = _mapper.Map<Plan>(planTimeDto);
             dbContext.Attach(planEntity);
@@ -62,8 +64,9 @@ namespace AdOut.Planning.Core.EventHandlers
             planRepository.Update(planEntity);
             await commitProvider.SaveChangesAsync();
 
-            //todo: generate an event smth like PlanReadyToBeShown. AdPoints will consume the event and re-build their ads-queues.
-            //Need to generate the event only when the plan StartTime is today for re-building ads-queues.
+            //todo: send to the header exchange 
+            var planHandledEvent = _mapper.Map<PlanHandledEvent>(planTimeEntity);
+            messageBroker.Publish(planHandledEvent);
         }
     }
 }
