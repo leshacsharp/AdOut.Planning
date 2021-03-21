@@ -14,8 +14,9 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
-namespace AdOut.Planning.Core.EventHandlers
+namespace AdOut.Planning.Core.Consumers
 {
     public class PlanAcceptedConsumer : BaseConsumer<PlanAcceptedEvent>
     {
@@ -63,10 +64,10 @@ namespace AdOut.Planning.Core.EventHandlers
             planEntity.Status = Planning.Model.Enum.PlanStatus.Accepted;
             planRepository.Update(planEntity);
             await commitProvider.SaveChangesAsync();
-
-            //todo: send to the header exchange 
+       
             var planHandledEvent = _mapper.Map<PlanHandledEvent>(planTimeEntity);
-            messageBroker.Publish(planHandledEvent);
+            var eventArgs = planTimeEntity.AdPoints.ToDictionary(ap => $"adpoint-{ap}", ap => (object)true);                                               
+            messageBroker.Publish(planHandledEvent, null, eventArgs);
         }
     }
 }

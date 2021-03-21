@@ -1,5 +1,5 @@
 ﻿using AdOut.Extensions.Context;
-using AdOut.Planning.Core.EventHandlers;
+using AdOut.Planning.Core.Consumers;
 using AdOut.Planning.Core.Managers;
 using AdOut.Planning.Core.Mapping;
 using AdOut.Planning.Core.Services.Content;

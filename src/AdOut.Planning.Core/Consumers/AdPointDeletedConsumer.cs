@@ -6,7 +6,7 @@ using AdOut.Planning.Model.Interfaces.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.Core.EventHandlers
+namespace AdOut.Planning.Core.Consumers
 {
     public class AdPointDeletedConsumer : BaseConsumer<AdPointDeletedEvent>
     {

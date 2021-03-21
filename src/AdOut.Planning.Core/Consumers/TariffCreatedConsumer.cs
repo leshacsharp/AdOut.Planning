@@ -7,14 +7,14 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace AdOut.Planning.Core.EventHandlers
+namespace AdOut.Planning.Core.Consumers
 {
-    public class AdPointCreatedConsumer : BaseConsumer<AdPointCreatedEvent>
+    public class TariffCreatedConsumer : BaseConsumer<TariffCreatedEvent>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMapper _mapper;
 
-        public AdPointCreatedConsumer(
+        public TariffCreatedConsumer(
             IServiceScopeFactory serviceScopeFactory,
             IMapper mapper)
         {
@@ -22,16 +22,16 @@ namespace AdOut.Planning.Core.EventHandlers
             _mapper = mapper;
         }
 
-        protected override Task HandleAsync(AdPointCreatedEvent deliveredEvent)
+        protected override Task HandleAsync(TariffCreatedEvent deliveredEvent)
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            var adPointRepository = scope.ServiceProvider.GetRequiredService<IAdPointRepository>();
+            var tariffRepository = scope.ServiceProvider.GetRequiredService<ITariffRepository>();
             var commitProvider = scope.ServiceProvider.GetRequiredService<ICommitProvider>();
 
-            var adPoint = _mapper.Map<AdPoint>(deliveredEvent);
-            adPointRepository.Create(adPoint);
+            var tariff = _mapper.Map<Tariff>(deliveredEvent);
+            tariffRepository.Create(tariff);
 
-            return commitProvider.SaveChangesAsync(false);
+            return commitProvider.SaveChangesAsync();
         }
     }
 }
