@@ -100,7 +100,6 @@ namespace AdOut.Planning.Core.Managers
             }
 
             plan.EndDateTime = newEndDate;
-
             _planRepository.Update(plan);
         }
 
@@ -117,7 +116,6 @@ namespace AdOut.Planning.Core.Managers
                 StartDateTime = createModel.StartDateTime,
                 EndDateTime = createModel.EndDateTime
             };
-
             _planRepository.Create(plan);
 
             foreach (var adPointId in createModel.AdPointsIds)
@@ -127,7 +125,6 @@ namespace AdOut.Planning.Core.Managers
                     AdPointId = adPointId,
                     Plan = plan
                 };
-
                 _planAdPointRepository.Create(planAdPoint);
             }
         }
@@ -146,7 +143,6 @@ namespace AdOut.Planning.Core.Managers
             }
 
             plan.Title = updateModel.Title;
-
             _planRepository.Update(plan);
         }
 

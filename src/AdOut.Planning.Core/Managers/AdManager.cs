@@ -22,7 +22,7 @@ namespace AdOut.Planning.Core.Managers
     {
         private readonly IAdRepository _adRepository;
         private readonly IPlanAdRepository _planAdRepository;
-        private readonly IUserService _userManager;
+        private readonly IUserService _userService;
         private readonly IContentStorage _contentStorage;
         private readonly IContentValidatorProvider _contentValidatorProvider;
         private readonly IContentServiceProvider _contentServiceProvider;
@@ -30,14 +30,14 @@ namespace AdOut.Planning.Core.Managers
         public AdManager(
             IAdRepository adRepository,
             IPlanAdRepository planAdRepository,
-            IUserService userManager,
+            IUserService userService,
             IContentStorage contentStorage,
             IContentValidatorProvider contentValidatorProvider,
             IContentServiceProvider contentServiceProvider) 
         {
             _adRepository = adRepository;
             _planAdRepository = planAdRepository;
-            _userManager = userManager;
+            _userService = userService;
             _contentStorage = contentStorage;
             _contentValidatorProvider = contentValidatorProvider;
             _contentServiceProvider = contentServiceProvider;
@@ -55,6 +55,7 @@ namespace AdOut.Planning.Core.Managers
 
             if (!isAllowedExtension)
             {
+                //todo: add the message to the response instead of throwing the exception
                 throw new BadRequestException($"{extension} extension is not allowed");
             }
 
@@ -104,29 +105,25 @@ namespace AdOut.Planning.Core.Managers
                 throw new ArgumentNullException(nameof(filterModel));
             }
 
-            var userId = _userManager.GetUserId();
+            var userId = _userService.GetUserId();
             var filter = PredicateBuilder.New<Ad>(ad => ad.Creator == userId);
 
             if (filterModel.Title != null)
             {
                 filter = filter.And(ad => EF.Functions.Like(ad.Title, $"%{filterModel.Title}%"));
             }
-
             if (filterModel.ContentType != null)
             {
                 filter = filter.And(ad => ad.ContentType == filterModel.ContentType);
             }
-
             if (filterModel.Status != null)
             {
                 filter = filter.And(ad => ad.Status == filterModel.Status);
             }
-
             if (filterModel.FromDate != null)
             {
                 filter = filter.And(ad => ad.AddedDate >= filterModel.FromDate);
             }
-
             if (filterModel.ToDate != null)
             {
                 filter = filter.And(ad => ad.AddedDate <= filterModel.ToDate);
@@ -149,7 +146,6 @@ namespace AdOut.Planning.Core.Managers
             }
 
             ad.Title = updateModel.Title;
-
             _adRepository.Update(ad);
         }
 

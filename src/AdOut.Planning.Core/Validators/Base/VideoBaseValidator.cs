@@ -70,7 +70,6 @@ namespace AdOut.Planning.Core.Validators.Base
         {
             var minVideoWidthCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoWidth);
             var minVideoHeightCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoHeight);
-
             var minVideoWidth = int.Parse(minVideoWidthCfg);
             var minVideoHeight = int.Parse(minVideoHeightCfg);
 
@@ -81,12 +80,10 @@ namespace AdOut.Planning.Core.Validators.Base
         {
             var minVideoDurationCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinVideoDuration);
             var maxVideoDurationCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MaxVideoDuration);
-
             var minVideoDurationSec = int.Parse(minVideoDurationCfg);
             var maxVideoDurationSec = int.Parse(maxVideoDurationCfg);
 
-            var videoDurationSec = videoInfo.Duration;
-            return videoDurationSec >= minVideoDurationSec && videoDurationSec <= maxVideoDurationSec;
+            return videoInfo.Duration >= minVideoDurationSec && videoInfo.Duration <= maxVideoDurationSec;
         }
 
         private async Task<Alturos.VideoInfo.Model.Stream> GetVideoInfoAsync(Stream content)

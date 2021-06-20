@@ -18,21 +18,21 @@ namespace AdOut.Planning.DataProvider.Repositories
         public Task<ScheduleTime> GetScheduleTimeAsync(string scheduleId)
         {
             var query = Context.Schedules.Where(s => s.Id == scheduleId)
-                               .Select(s => new ScheduleTime()
-                               {
-                                   PlanStartDateTime = s.Plan.StartDateTime,
-                                   PlanEndDateTime = s.Plan.EndDateTime,
-                                   ScheduleType = s.Type,
-                                   ScheduleStartTime = s.StartTime,
-                                   ScheduleEndTime = s.EndTime,
-                                   ScheduleDayOfWeek = s.DayOfWeek,
-                                   ScheduleDate = s.Date,
-                                   AdPlayTime = s.PlayTime,
-                                   AdBreakTime = s.BreakTime,
-                                   AdPointsDaysOff = s.Plan.PlanAdPoints
-                                         .SelectMany(pap => pap.AdPoint.DaysOff)
-                                         .Select(doof => doof.DayOfWeek)
-                               });
+                                         .Select(s => new ScheduleTime()
+                                         {
+                                             PlanStartDateTime = s.Plan.StartDateTime,
+                                             PlanEndDateTime = s.Plan.EndDateTime,
+                                             ScheduleType = s.Type,
+                                             ScheduleStartTime = s.StartTime,
+                                             ScheduleEndTime = s.EndTime,
+                                             ScheduleDayOfWeek = s.DayOfWeek,
+                                             ScheduleDate = s.Date,
+                                             AdPlayTime = s.PlayTime,
+                                             AdBreakTime = s.BreakTime,
+                                             AdPointsDaysOff = s.Plan.PlanAdPoints
+                                                   .SelectMany(pap => pap.AdPoint.DaysOff)
+                                                   .Select(doof => doof.DayOfWeek)
+                                         });
 
             return query.SingleOrDefaultAsync();
         }

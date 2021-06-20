@@ -64,7 +64,7 @@ namespace AdOut.Planning.Core.Managers
             var planAdsCount = await _planAdRepository.Read(pa => pa.PlanId == planId).CountAsync();
             if (planAdsCount == 1)
             {
-                throw new BadRequestException($"Plan can't exists without ads. Plan with id={planId} has one ad");
+                throw new BadRequestException($"Plan can't exists without ads. Plan with id={planId} has single ad");
             }
 
             _planAdRepository.Delete(planAd);
@@ -79,7 +79,6 @@ namespace AdOut.Planning.Core.Managers
             }
 
             planAd.Order = order;
-
             _planAdRepository.Update(planAd);
         }
     }

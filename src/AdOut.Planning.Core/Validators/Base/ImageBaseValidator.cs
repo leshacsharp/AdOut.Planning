@@ -53,7 +53,6 @@ namespace AdOut.Planning.Core.Validators.Base
         {
             var minImageWidthCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageWidth);
             var minImageHeightCfg = await _configurationRepository.GetByTypeAsync(ConfigurationsTypes.MinImageHeight);
-
             var minImageWidth = int.Parse(minImageWidthCfg);
             var minImageHeight = int.Parse(minImageHeightCfg);
 

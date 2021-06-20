@@ -148,6 +148,7 @@ namespace AdOut.Planning.Core.Managers
 
             if (timeOfAdsShowingAfterUpdating > timeOfAdsShowingBeforeUpdating)
             {
+                //todo: probably need to give this possibility fot extra money
                 throw new UnprocessableEntityException(ValidationMessages.Schedule.TimeIncreased);
             }
 
@@ -158,6 +159,7 @@ namespace AdOut.Planning.Core.Managers
             _scheduleRepository.Update(schedule);
         }
 
+        //todo: redundancy of planId parameter, the ScheduleModel already has that
         public async Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule)
         {
             var planPrice = await _planRepository.GetPlanPriceAsync(planId);
