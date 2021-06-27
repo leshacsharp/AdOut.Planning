@@ -15,9 +15,9 @@ namespace AdOut.Planning.Core.Managers
             _planTimeRepository = planTimeRepository;
         }
 
-        public Task<List<StreamPlanTime>> GetTodaysStreamPlanTimesAsync(string adPointId)
+        public Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime date)
         {
-            return _planTimeRepository.GetStreamPlanTimesAsync(adPointId, DateTime.Now.Date);
+            return _planTimeRepository.GetStreamPlansTimeAsync(adPointId, date);
         }
 
         public Task<List<PlanPeriod>> GetPlanPeriods(string adPointId, DateTime dateFrom, DateTime dateTo)

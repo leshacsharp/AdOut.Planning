@@ -7,7 +7,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
 {
     public interface IPlanTimeManager
     {
-        Task<List<StreamPlanTime>> GetTodaysStreamPlanTimesAsync(string adPointId);
+        Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime date);
         Task<List<PlanPeriod>> GetPlanPeriods(string adPointId, DateTime dateFrom, DateTime dateTo);
     }
 }

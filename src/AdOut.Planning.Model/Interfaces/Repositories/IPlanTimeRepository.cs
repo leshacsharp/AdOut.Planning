@@ -9,7 +9,7 @@ namespace AdOut.Planning.Model.Interfaces.Repositories
 {
     public interface IPlanTimeRepository : IBaseRepository<PlanTime>
     {
-        Task<List<StreamPlanTime>> GetStreamPlanTimesAsync(string adPointId, DateTime scheduleDate);
+        Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime scheduleDate);
         Task<List<PlanPeriod>> GetPlanPeriodsAsync(string adPointId, DateTime scheduleStart, DateTime scheduleEnd);
     }
 }

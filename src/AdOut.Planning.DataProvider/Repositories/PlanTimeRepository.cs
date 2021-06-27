@@ -21,24 +21,25 @@ namespace AdOut.Planning.DataProvider.Repositories
             _db = db;
         }
 
-        public Task<List<StreamPlanTime>> GetStreamPlanTimesAsync(string adPointId, DateTime scheduleDate)
+        public Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime scheduleDate)
         {
             var query = _db.Plans.AsQueryable()
-                               .AsExpandable()
-                               .Where(p => p.AdPoints.Any(id => id == adPointId) &&
-                                           scheduleDate < p.EndDateTime &&
-                                           p.StartDateTime < scheduleDate)
-                               .Select(p => new StreamPlanTime()
-                               {
-                                   Id = p.Id,
-                                   Title = p.Title,  
-                                   Ads = p.Ads,
-                                   Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
-                               });
+                                 .AsExpandable()
+                                 .Where(p => p.AdPoints.Any(id => id == adPointId) &&
+                                             scheduleDate <= p.EndDateTime &&
+                                             scheduleDate >= p.StartDateTime)
+                                 .Select(p => new StreamPlanTime()
+                                 {
+                                     Id = p.Id,
+                                     Title = p.Title,
+                                     Ads = p.Ads,
+                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
+                                 });
 
             return query.ToListAsync();
         }
 
+        //probably will be used in generating an AdPoint's board of schedules.
         public Task<List<PlanPeriod>> GetPlanPeriodsAsync(string adPointId, DateTime scheduleStart, DateTime scheduleEnd)
         {
             var query = _db.Plans.AsQueryable()
