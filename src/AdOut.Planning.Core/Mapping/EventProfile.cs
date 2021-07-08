@@ -8,11 +8,6 @@ namespace AdOut.Planning.Core.Mapping
     {
         public EventProfile()
         {
-            CreateMap<AdPointCreatedEvent, AdPoint>();
-            CreateMap<AdPointDeletedEvent, AdPoint>();
-            CreateMap<PlanAdPoint, PlanAdPointCreatedEvent>();
-            CreateMap<Plan, PlanCreatedEvent>();
-            CreateMap<TariffCreatedEvent, Tariff>();
             CreateMap<PlanTime, PlanHandledEvent>();
         }
     }

@@ -1,13 +1,17 @@
-﻿using AdOut.Extensions.Context;
+﻿using AdOut.Extensions.Communication;
+using AdOut.Extensions.Communication.Interfaces;
+using AdOut.Extensions.Context;
 using AdOut.Planning.Core.Consumers;
 using AdOut.Planning.Core.Managers;
 using AdOut.Planning.Core.Mapping;
+using AdOut.Planning.Core.Replication;
 using AdOut.Planning.Core.Services.Content;
 using AdOut.Planning.Core.Services.Schedule;
 using AdOut.Planning.Core.Validators.Content;
 using AdOut.Planning.Core.Validators.Schedule;
 using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.DataProvider.Repositories;
+using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Interfaces.Managers;
 using AdOut.Planning.Model.Interfaces.Repositories;
@@ -77,9 +81,11 @@ namespace AdOut.Planning.WebApi.Configuration
             services.AddScoped<IContentServiceProvider, ContentServiceProvider>();
             services.AddScoped<IContentValidatorProvider, ContentValidatorProvider>();
 
-            services.AddSingleton<IBasicConsumer, AdPointCreatedConsumer>();
-            services.AddSingleton<IBasicConsumer, AdPointDeletedConsumer>();
-            services.AddSingleton<IBasicConsumer, TariffCreatedConsumer>();
+            services.AddScoped<IReplicationHandlerFactory<AdPoint>, AdPointReplicationFactory>();
+            services.AddScoped<IReplicationHandlerFactory<Tariff>, TariffReplicationFactory>();
+
+            services.AddSingleton<IBasicConsumer, ReplicationConsumer<AdPoint>>();
+            services.AddSingleton<IBasicConsumer, ReplicationConsumer<Tariff>>();
             services.AddSingleton<IBasicConsumer, PlanAcceptedConsumer>();
 
             services.AddAutoMapper(c =>

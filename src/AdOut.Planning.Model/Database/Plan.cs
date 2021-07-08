@@ -1,4 +1,5 @@
-﻿using AdOut.Extensions.Repositories;
+﻿using AdOut.Extensions.Communication.Attributes;
+using AdOut.Extensions.Repositories;
 using AdOut.Planning.Model.Enum;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
+    [Replication]
     [Table("Plans")]
     public class Plan : PersistentEntity
     {

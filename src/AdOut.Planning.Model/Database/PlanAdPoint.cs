@@ -1,9 +1,11 @@
-﻿using AdOut.Extensions.Repositories;
+﻿using AdOut.Extensions.Communication.Attributes;
+using AdOut.Extensions.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdOut.Planning.Model.Database
 {
+    [Replication]
     [Table("PlanAdPoints")]
     public class PlanAdPoint : PersistentEntity
     {
