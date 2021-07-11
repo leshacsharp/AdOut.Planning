@@ -1,0 +1,1093 @@
+{
+ "openapi": "3.0.1",
+ "info": {
+    "title": "AdOut.Planning API",
+    "description": "Access to Apps API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{host}:{port}/api/{version}",
+      "variables": {
+        "host": {
+          "default": "localhost"
+        },
+        "port": {
+          "default": "443"
+        },
+        "version": {
+          "enum": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "default": "v1"
+        }
+      }
+    },
+    {
+      "url": "http://{host}:{port}/api/{version}",
+      "variables": {
+        "host": {
+          "default": "localhost"
+        },
+        "port": {
+          "default": "80"
+        },
+        "version": {
+          "enum": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "default": "v1"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/ad": {
+      "post": {
+        "tags": [
+          "Ad"
+        ],
+		"summary": "Create an advertisement.",
+        "operationId": "CreateAd",
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContentError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Ad"
+        ],
+		"summary": "Update an advertisement.",
+        "operationId": "UpdateAd",
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "403": {
+            "description": "Forbidden"
+          },
+          "204": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/ads": {
+      "get": {
+        "tags": [
+          "Ad"
+        ],
+		"summary": "Get all advertisements.",
+        "operationId": "GetAds",
+        "parameters": [
+          {
+            "name": "Title",
+            "in": "query",
+            "schema": {
+              "type": "string",
+			  "nullable": true
+            }
+          },
+          {
+            "name": "ContentType",
+            "in": "query",
+            "schema": {		
+			  "$ref": "#/components/schemas/ContentType",
+			  "nullable": true
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/AdStatus",
+			  "nullable": true
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+			  "nullable": true
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+			  "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdListDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ad/{id}": {
+      "get": {
+        "tags": [
+          "Ad"
+        ],
+		"summary": "Get a advertisement by id.",
+        "operationId": "GetAd",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ad"
+        ],
+		"summary": "Delete an advertisement.",
+        "operationId": "DeleteAd",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/Home/accept-plan": {
+      "post": {
+        "tags": [
+          "Home"
+        ],
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Home/plan-times": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "parameters": [
+          {
+            "name": "adPointId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Home/test": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/stream-plans": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "parameters": [
+          {
+            "name": "adPointId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreamPlanTime"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/extend-plan": {
+      "put": {
+        "tags": [
+          "Plan"
+        ],
+        "parameters": [
+          {
+            "name": "planId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newEndDate",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/plan/{id}": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/plan": {
+      "post": {
+        "tags": [
+          "Plan"
+        ],
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plan"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+			"required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Plan"
+        ],
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlanModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/plan-ad": {
+      "post": {
+        "tags": [
+          "PlanAd"
+        ],
+        "parameters": [
+          {
+            "name": "planId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "adId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PlanAd"
+        ],
+        "parameters": [
+          {
+            "name": "planId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "adId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PlanAd"
+        ],
+        "parameters": [
+          {
+            "name": "planId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "adId",
+			"required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/schedule": {
+      "post": {
+        "tags": [
+          "Schedule"
+        ],
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Schedule"
+        ],
+        "requestBody": {
+		  "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScheduleModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Client Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AdStatus"
+          },
+          "path": {
+            "type": "string"
+          },
+          "addedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "plans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdPlanDto"
+            }
+          }
+        }
+      },
+      "AdListDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AdStatus"
+          },
+          "previewPath": {
+            "type": "string"
+          }
+        }
+      },
+      "AdPlanDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PlanStatus"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "AdPointDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "daysOff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            }
+          },
+          "tariffs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TariffDto"
+            }
+          }
+        }
+      },
+      "AdStatus": {
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ContentError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ContentErrorCode"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "ContentErrorCode": {
+        "enum": [
+          100,
+          200,
+          300
+        ]
+      },
+      "ContentType": {
+        "enum": [
+          0,
+          1   
+        ]
+      },
+      "CreateAdModel": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "CreatePlanModel": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 70,
+            "minLength": 1,
+            "type": "string"
+          },
+          "startDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "adPointsIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DayOfWeek": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "PlanDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PlanStatus"
+          },
+          "startDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleDto"
+            }
+          },
+          "ads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdListDto"
+            }
+          },
+          "adPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdPointDto"
+            }
+          }
+        }
+      },
+      "PlanStatus": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },  
+      "ScheduleDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ScheduleType"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "breakTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "playTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "dayOfWeek": {
+            "$ref": "#/components/schemas/DayOfWeek"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ScheduleModel": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ScheduleType"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "breakTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "playTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "dayOfWeek": {
+            "$ref": "#/components/schemas/DayOfWeek"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ScheduleType": {
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "TariffDto": {
+        "type": "object",
+        "properties": {
+          "priceForMinute": {
+            "type": "number",
+            "format": "double"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-span"
+          }
+        }
+      },
+      "UpdateAdModel": {
+        "type": "object",
+        "properties": {
+          "adId": {
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string"
+          }
+        }
+      },
+      "UpdatePlanModel": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 70,
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "UpdateScheduleModel": {
+        "type": "object",
+        "properties": {
+          "scheduleId": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "breakTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "playTime": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "dayOfWeek": {
+            "$ref": "#/components/schemas/DayOfWeek"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+	  "StreamPlanTime": {
+		"type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Title": {
+            "type": "string"
+          },
+		  "Ads": {
+		   "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdPlanTime"
+            }
+		  },
+		  "Schedules": {
+		   "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SchedulePeriod"
+            }
+		  }
+        }
+	  },
+	  "AdPlanTime": {
+	   "type": "object",
+        "properties": {
+          "Title": {
+            "type": "string"
+          },
+		  "Path": {
+            "type": "string"
+          },
+		  "Order": {
+            "type": "integer",
+			"nullable": true
+          }
+		}
+	  },
+	  "SchedulePeriod": {
+		"type": "object",
+        "properties": {
+          "TimeRanges": {
+           "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeRange"
+            }
+          },
+		  "Dates": {
+          "type": "array",
+            "items": {
+				"type": "string",
+				"format": "date-time"
+            }
+          }
+		}
+	  },
+	  "TimeRange": {
+		"type": "object",
+        "properties": {
+          "Start": {
+            "type": "string",
+            "format": "date-span"
+          },
+		  "End": {
+            "type": "string",
+            "format": "date-span"
+          }
+		}
+	  } 
+    }
+  }
+}
