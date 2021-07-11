@@ -66,8 +66,8 @@ namespace AdOut.Planning.Core.Consumers
             await commitProvider.SaveChangesAsync();
        
             var planHandledEvent = _mapper.Map<PlanHandledEvent>(planTimeEntity);
-            var eventArgs = planTimeEntity.AdPoints.ToDictionary(ap => $"adpoint-{ap}", ap => (object)true);                                               
-            messageBroker.Publish(planHandledEvent, null, eventArgs);
+            var eventArgs = planTimeEntity.AdPoints.ToDictionary(ap => $"adpoint-{ap}", ap => (object)true);
+            messageBroker.Publish(planHandledEvent, arguments: eventArgs);
         }
     }
 }
