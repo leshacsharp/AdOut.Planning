@@ -741,9 +741,9 @@
       },
       "AdStatus": {
         "enum": [
-          0,
-          1,
-          2
+          "OnModeration",
+          "Rejected",
+          "Accepted"
         ]
       },
       "ContentError": {
@@ -766,8 +766,8 @@
       },
       "ContentType": {
         "enum": [
-          0,
-          1   
+          "Image",
+          "Video"
         ]
       },
       "CreateAdModel": {
@@ -861,10 +861,10 @@
       },
       "PlanStatus": {
         "enum": [
-          0,
-          1,
-          2,
-          3
+          "WaitForModeration",
+          "OnModeration",
+          "Rejected",
+          "Accepted"
         ]
       },  
       "ScheduleDto": {
@@ -936,9 +936,9 @@
       },
       "ScheduleType": {
         "enum": [
-          0,
-          1,
-          2
+          "Daily",
+          "Weekly",
+          "Specific"
         ]
       },
       "TariffDto": {
@@ -1054,7 +1054,10 @@
 		  "Order": {
             "type": "integer",
 			"nullable": true
-          }
+          },
+		  "ContentType": {
+			"$ref": "#/components/schemas/ContentType"
+		  }
 		}
 	  },
 	  "SchedulePeriod": {

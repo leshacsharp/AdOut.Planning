@@ -179,9 +179,10 @@ namespace AdOut.Planning.DataProvider.Repositories
                                    {
                                        Title = pa.Ad.Title,
                                        Path = pa.Ad.Path,
+                                       ContentType = pa.Ad.ContentType,
                                        Order = pa.Order
                                    }),
-                                   AdPoints = p.PlanAdPoints.Select(pap => new AdPointPlanTimeDto()
+                                   AdPoints = p.PlanAdPoints.Select(pap => new AdPointDto()
                                    {
                                        Id = pap.AdPointId,
                                        DaysOff = pap.AdPoint.DaysOff.Select(d => d.DayOfWeek)

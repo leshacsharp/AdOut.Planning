@@ -23,6 +23,7 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime scheduleDate)
         {
+            var dateWithoutTime = scheduleDate.Date;
             var query = _db.Plans.AsQueryable()
                                  .AsExpandable()
                                  .Where(p => p.AdPoints.Any(id => id == adPointId) &&
@@ -33,7 +34,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                      Id = p.Id,
                                      Title = p.Title,
                                      Ads = p.Ads,
-                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(scheduleDate))
+                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(dateWithoutTime))
                                  });
 
             return query.ToListAsync();
