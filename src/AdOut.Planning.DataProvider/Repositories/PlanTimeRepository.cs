@@ -23,7 +23,6 @@ namespace AdOut.Planning.DataProvider.Repositories
 
         public Task<List<StreamPlanTime>> GetStreamPlansTimeAsync(string adPointId, DateTime scheduleDate)
         {
-            var dateWithoutTime = scheduleDate.Date;
             var query = _db.Plans.AsQueryable()
                                  .AsExpandable()
                                  .Where(p => p.AdPoints.Any(id => id == adPointId) &&
@@ -34,7 +33,7 @@ namespace AdOut.Planning.DataProvider.Repositories
                                      Id = p.Id,
                                      Title = p.Title,
                                      Ads = p.Ads,
-                                     Schedules = p.Schedules.Where(sp => sp.Dates.Contains(dateWithoutTime))
+                                     Schedules = p.Schedules
                                  });
 
             return query.ToListAsync();
@@ -51,6 +50,8 @@ namespace AdOut.Planning.DataProvider.Repositories
                                  .Select(p => new PlanPeriod()
                                  {
                                      PlanId = p.Id,
+                                     //this condition won't work properly, mongodb stores dates in UTC, but the condition compares local datetimes 
+                                     //[BsonDateTimeOptions(Kind = DateTimeKind.Local)] - mongodb; store dates in local time
                                      SchedulePeriods = p.Schedules.Where(sp => sp.Dates.Any(d => d >= scheduleStart && d <= scheduleEnd))
                                  });
 

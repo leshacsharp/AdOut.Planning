@@ -7,6 +7,7 @@ namespace AdOut.Planning.Model.Classes
     {
         public List<TimeRange> TimeRanges { get; set; }
 
+        //[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public List<DateTime> Dates { get; set; } 
     }
 }

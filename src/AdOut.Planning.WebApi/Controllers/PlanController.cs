@@ -1,4 +1,5 @@
-﻿using AdOut.Extensions.Context;
+﻿using AdOut.Extensions.Authorization;
+using AdOut.Extensions.Context;
 using AdOut.Planning.Model.Api;
 using AdOut.Planning.Model.Database;
 using AdOut.Planning.Model.Dto;
@@ -14,37 +15,42 @@ namespace AdOut.Planning.WebApi.Controllers
 {
     [Route("api/v1")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class PlanController : ControllerBase
     {
         private readonly IPlanManager _planManager;
+        private readonly IPlanTimeManager _planTimeManager;
         private readonly ICommitProvider _commitProvider;
 
         public PlanController(
             IPlanManager planManager,
+            IPlanTimeManager planTimeManager,
             ICommitProvider commitProvider)
         {
             _planManager = planManager;
+            _planTimeManager = planTimeManager;
             _commitProvider = commitProvider;
         }
 
-        //[HttpGet]
-        //[Route("plans-timelines")]
-        ////[ResourceAuthorization(typeof(Plan), "adPointId")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //public async Task<IActionResult> GetPlansTimeLines(string adPointId, DateTime dateFrom, DateTime dateTo)
-        //{
-        //    //todo: planTimeManager
-        //    var plansTimeLines = await _planManager.GetPlansTimeLines(adPointId, dateFrom, dateTo);
-        //    return Ok(plansTimeLines);
-        //}
+        [Authorize]
+        [HttpGet]
+        [Route("stream-plans")]
+        //[ResourceAuthorization(typeof(Plan))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetStreamPlans([ResourceId] string adPointId, DateTime date)
+        {
+            var plansTimeLines = await _planTimeManager.GetStreamPlansTimeAsync(adPointId, date);
+            return Ok(plansTimeLines);
+        }
 
         [HttpPut]
         [Route("extend-plan")]
-        //[ResourceAuthorization(typeof(Plan), "planId")]
+        //[ResourceAuthorization(typeof(Plan))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExtendPlan(string planId, DateTime newEndDate)
+        public async Task<IActionResult> ExtendPlan([ResourceId] string planId, DateTime newEndDate)
         {
             var validationResult = await _planManager.ValidatePlanExtensionAsync(planId, newEndDate);
             if (!validationResult.IsSuccessed)
@@ -62,6 +68,7 @@ namespace AdOut.Planning.WebApi.Controllers
         [Route("plan/{id}")]
         //[ResourceAuthorization(typeof(Plan))]
         [ProducesResponseType(typeof(PlanDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPlan(string id)
         {     
@@ -87,7 +94,8 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpDelete]
         [Route("plan")]
         //[ResourceAuthorization(typeof(Plan))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]   
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeletePlan(string id)
         {
             await _planManager.DeleteAsync(id);
@@ -99,7 +107,8 @@ namespace AdOut.Planning.WebApi.Controllers
         [HttpPut]
         [Route("plan")]
         //[ResourceAuthorization(typeof(Plan))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]      
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdatePlan(UpdatePlanModel updateModel)
         {
             await _planManager.UpdateAsync(updateModel);
