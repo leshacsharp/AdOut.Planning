@@ -5,6 +5,7 @@ using AdOut.Planning.DataProvider.Context;
 using AdOut.Planning.Model.Interfaces.Context;
 using AdOut.Planning.Model.Settings;
 using AdOut.Planning.WebApi.Configuration;
+using AdOut.Planning.WebApi.Filters;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
+using System.Net.Mime;
+using Swashbuckle.AspNetCore;
 
 namespace AdOut.Planning.WebApi
 {
@@ -34,12 +38,15 @@ namespace AdOut.Planning.WebApi
             {
                 options.Filters.Add<ExceptionFilterAttribute>();
                 options.Filters.Add<ModelStateFilterAttribute>();
-            });
+            }).AddNewtonsoftJson();
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
                         options.Authority = Configuration.GetValue<string>("Authorization:Authority");
+
+                        //todo: the following 2 lines probably can be deleted
+                        //the params are needed for the /introspection endpoint (validate reference tokens)
                         options.ApiName = Configuration.GetValue<string>("Authorization:ApiName");
                         options.ApiSecret = Configuration.GetValue<string>("Authorization:ApiSecret");
 
@@ -64,7 +71,10 @@ namespace AdOut.Planning.WebApi
             services.AddSwaggerGen(setup =>
             {
                 setup.SwaggerDoc("v1", new OpenApiInfo { Title = "AdOut.Planning API", Version = "v1" });
+                setup.OperationFilter<SwaggerContentTypeFilter>((object)new string[] { MediaTypeNames.Application.Json });
+                setup.OperationFilter<SwaggerDeleteProblemDetailsTypeFilter>();
             });
+            services.AddSwaggerGenNewtonsoftSupport();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
