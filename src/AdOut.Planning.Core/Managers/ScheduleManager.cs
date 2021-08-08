@@ -159,13 +159,12 @@ namespace AdOut.Planning.Core.Managers
             _scheduleRepository.Update(schedule);
         }
 
-        //todo: redundancy of planId parameter, the ScheduleModel already has that
-        public async Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule)
+        public async Task<double> CalculateSchedulePriceAsync(ScheduleModel schedule)
         {
-            var planPrice = await _planRepository.GetPlanPriceAsync(planId);
+            var planPrice = await _planRepository.GetPlanPriceAsync(schedule.PlanId);
             if (planPrice == null)
             {
-                throw new ObjectNotFoundException($"Plan with id={planId} was not found");
+                throw new ObjectNotFoundException($"Plan with id={schedule.PlanId} was not found");
             }
 
             var timeService = _scheduleTimeServiceProvider.CreateScheduleTimeService(schedule.Type);

@@ -7,7 +7,7 @@ namespace AdOut.Planning.Model.Interfaces.Managers
     public interface IScheduleManager
     {
         Task<ValidationResult<string>> ValidateScheduleAsync(ScheduleModel scheduleModel);
-        Task<double> CalculateSchedulePriceAsync(string planId, ScheduleModel schedule);
+        Task<double> CalculateSchedulePriceAsync(ScheduleModel schedule);
         Task CreateAsync(ScheduleModel createModel);
         Task UpdateAsync(UpdateScheduleModel updateModel);
     }
